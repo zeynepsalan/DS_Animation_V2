@@ -1,0 +1,12 @@
+Şimdi siteye girdiğimizde ne göreceğimize karar verelim. Öncelikle genel baktığımızda en solda bir Sidebar, ortada codebar, en sağda ise Veri yapılarımızın animasyon ile visualizationu.
+
+Sidebarımız Folder/File structure gibi olmalı. Fonksiyonlarımız file olucak.
+
+Codebarımız bir ide görünümünde olmalı. visualization ile paralel olacak şekilde mevcut olarak bulunduğumuz kod satırı highlightlı olmalı.
+
+visualization barımızda veri yapımız ne ile kurulmuşsa görmeliyiz. Örneğin: Bir linkedlist için node yapısı bir data tutan kısım ve bir next pointerı olarak gözükmeli.
+visualization barımızda üst kısımda yapılan adımlar kısaca açıklanmalı ve bütün algoritmalarımızın sağladığı değişiklikler gözükmeli.
+Örneğin: bir for döngüsü dönerken oluşturulan geçici i değişkeni for her döndüğünde nasıl etkileniyor, bunu açıklamamızda görmeliyiz. 
+Aynı şekilde node görüntülerimiz için de for döngüsü dönerken pointerlar bundan nasıl etkileniyor görsel olarak animasyonlu bir biçimde görmeliyiz.
+
+Senden kodlama yaparken bir yandan yeni bir dosya oluşturup orda uml diyagram tutmanı istiyorum. her yaptığın değişiklikte uml diyagramı da güncelle.
