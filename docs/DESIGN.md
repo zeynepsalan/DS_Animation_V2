@@ -1,14 +1,35 @@
 # Çalışma ekranı tasarım sözleşmesi
 
-## Yetki ve kapsam
-Kullanıcının docs/DECISIONS.md ve AGENTS.md gereksinimleri esastır. 2026-10-13 değişikliği layout/flow kapsamındadır. Tek dosya yazarı Codex; Claude Code salt okunur ve sınırlı kaynak incelemesi yaptı. Yeni asset, paket veya ücretli servis eklenmedi.
+## Kaynak ve kapsam
+2026-10-13 revizyonu: Kullanıcının ilk projesi DataStructures_Animation tasarım referansıdır. Kaynaklar: src/styles/tokens.scss, layout/sidebar, shared/code-panel, shared/controls, shared/list-visual ve docs/ui-layout.md. İlk proje dev server ile açıldı fakat Chrome sayfa boş kaldı ve sayfa kontrolü zaman aşımına uğradı; canlı referans render'ı doğrulanmış sayılmaz. Çıkarım kaynak kodu ve tasarım belgelerine dayanır. Referans kodu değişmedi. Mevcut V2 live browser kontrolü ayrı yapılır.
+Kapsam layout/flow + component görsel sistemi; tek dosya yazarı Codex, Claude Code salt okunur kaynak incelemesi. Checkpoint temiz Git revision 041486b ve /tmp/ds-reference-checkpoint. Yeni dependency, ücretli servis, yayın veya harici asset yok.
 
-## Yerleşim
-Öğrenci kod ile animasyonu eşzamanlı karşılaştırır. Ana eylem method imzasına parametre girip Run kullanmaktır. Üç seçenek değerlendirildi: üstte büyük ders başlığı (fazla yükseklik tüketiyor), üstte kompakt dosya yolu (seçildi), kod içinde ek konum başlığı (tekrarlı içerik). Seçilen konum üst bardadır; kod alanında dil sekmeleri kalır.
-Masaüstünde Sidebar / Code / Visualization; dar ekranda kod ve görsel üst üste, Sidebar açılabilir katmandır. Sayfa 100dvh içinde kalır; kod, Sidebar ve kart içerikleri gerekirse kendi içinde kayar. Bilgi kartları 1:3 oranını korur. Öğretici açıklamalar Türkçe; teknik keywordler İngilizce.
+## Yön seçimi ve ürün kuralları
+Üç yön değerlendirildi: tüm mevcut panelleri koyu tutup yalnız paleti değiştirmek; referansı aynen aktararak runtime/reset/dil davranışını da değiştirmek; referansın görünümünü V2 akışına uyarlamak. Üçüncü yön seçildi: kullanıcı görsel benzerlik istedi; paylaşılan liste, Reset işlemin başlangıcı, Türkçe açıklamalar ve İngilizce keywordler korunur.
+Ana eylem method imzasına parametre girip Run kullanmaktır. Koyu Sidebar/IDE, kod altında koyu controls kartı, sağda açık Visualization; üstte kompakt dosya breadcrumb. Playback aynı method kartındadır. Variables/Execution üstte 1:3 oranlı bilgi kartlarıdır. Node data koyu indigo; next bebek mavisi. Kuyruk alanı veya reference projedeki diğer veri yapıları bu revizyonla eklenmez.
 
-## Tokenlar ve biçim
-src/styles.css: --bg #ffffff, --panel #1e2046, --surface #2d305b, --line #42466e, --muted #b4bedb, --text #e6edf8, --blue #a4d8f5. Parameter input #3b3f70. Hata #ffb3c4. Sistem sans-serif ve mevcut monospace stack korunur. Kart radius 9–12px; aralık 8–10px; çalışma üst boşluğu 12px. Bilgi kartı başlıkları 9px, açıklama 12px/1.5. Mevcut sembol ikonları ve erişilebilir button adları korunur. Animasyon motoru değiştirilmedi; reduced-motion davranışı korunur.
+## Tokenlar ve geometri
+src/styles.css tek otoritedir. --primary #261b3e; --panel #18122a; --surface #211a36; --blue #a8d4f0; --blue-strong #6bb3de; --arrow #397ba5 (açık zeminde daha okunur); --canvas #f7f9fc; --bg #ffffff; --border-light #d8dee8; --callout #eaf5fc; --bookkeeping #f1f3f8. Text-code #e8ecf4; muted-dark #9aa3b5; text-light #261b3e; muted-light #5c6578. Gradient/dot texture/ağır gölge kullanılmaz.
+Sans: Inter/Helvetica Neue/Helvetica/Arial/system fallback; mono: JetBrains Mono/SF Mono/Menlo/Consolas. Font dosyası indirilmedi, mevcut yerel fallback kullanılır. Masaüstü code 13.5px/24px; code tab 42px; controls 14×16px padding; kart radius 12px; gap 12px; küçük kart başlığı 9px. SVG icon ailesi UiIcon, 24×24 viewBox ve 1.7px stroke; eylem adları button'da erişilebilir label ile tanımlanır.
 
-## Kontrol ve geri alma
-Değişiklik öncesi dosyalar /tmp/ds-layout-checkpoint altında; ön görünüm /tmp/ds-before.png. Geri alma yalnız görev dosyaları incelenerek yapılmalı; sonraki değişiklikler korunmalıdır. Source testleri ve browser ölçümleri docs/VALIDATION.md içindedir. Kullanıcı kabulü henüz alınmadı; production yayını yapılmadı. Web Vitals ve frame performansı ölçülmedi; bu değişiklikte yeni media/motion eklenmedi. Build boyutu ayrıca kaydedilir.
+## Responsive ve durumlar
+Sayfa 100dvh; içerikler panel içinde scroll. Code min 320px, Visualization min 360px, açık Sidebar min 180px. Kapalı masaüstü Sidebar 48px Explorer rail. Üç sütun sığmazsa Sidebar overlay; iki çalışma paneli sığmazsa stacked layout. Pencere/Sidebar genişliği değişince kod genişliği yeniden sınırlandırılır. 1:3 kart oranı her iki görünümde korunur; taşan açıklama/değişken içeriği kartta kayar. Search fonksiyon dosyalarını filtreler, işlem/list state'ini değiştirmez. Eşleşme yoksa kısa Türkçe mesaj gösterilir. Invalid input method içindeki role=alert ile açıklanır. Return doğrudan sonuç şeridindedir.
+
+## Motion ve kanıt
+Mevcut SceneMotion/RAF motoru korunur; SVG grup kimlikleri değişmedi, data/next hücre renkleri aynı grup içindedir. CSS geometriye ikinci saat eklemez. Reduced-motion kamera/progress geçişlerini de kapatır. Ölçümler ve browser senaryoları docs/VALIDATION.md içinde; Web Vitals ve frame süreleri ölçülmemiştir. Referans kabulü kullanıcının referans seçimiyle verildi; sonuç tasarımının kullanıcı kabulü henüz bekleniyor. Production yayını yapılmadı.
+
+## Tekrarlanabilirlik ve içerik
+Node ekranı yalnız bu token/geometri sözleşmesiyle uygulandı; ardından aynı kurallar AddFirst/AddLast içeriklerine uygulandı. Tam bağımsız yeniden inşa değildir: aynı componentler korunur. Bilerek kötü varyant olarak koyu metni koyu Visualization'a uygulayan eski tüm-indigo düzen kontrast/yüzey ayrımı incelemesinde reddedildi; production'a koyulmadı. Gerçek işlevler dışında öğretim, performans veya kullanıcı başarısı iddiası eklenmez. Empty: ilk eleman için addFirst/addLast önerilir; error: hangi parametrenin geçersiz olduğu açıklanır; success: gerçek Return ve korunan liste görünür. UI copy Türkçe öğretici prose + English teknik keyword.
+
+## Pointer/kamera revizyonu
+2026-10-13: Normal sıra y=90, x başlangıcı 90; sahne flex-start ve 16px canvas padding ile sol üstte durur. Aynı y ve ileri hedef için nextPoints düz doğru örnekler; farklı satırlarda yalnız gerekli güvenli şerit kullanılır. layoutReferences aynı Node'a gelen referansları karşılıklı kolonlara ve ayrı top port'lara yerleştirir. sceneBounds ok köşeleri + etiketler + 24px emniyet boşluğu üzerinden hesaplanır. Fit'in minimum yüzdesi yok; kamera CSS transition gecikmesi Fit modunda kapalıdır. SceneMotion Node/ref RAF hareketi korunur; manual kamera Zoom geçişi çalışır. Kullanıcı screenshot'larının piksel detayına erişilemediğinden özgün görüntüyle birebir eşleşme iddia edilmez.
+
+- 2026-10-13: Kullanıcı revizyonu: header kaldırıldı; logo ve Sidebar kontrolü sabit sol şeritte alt alta. Explorer varsayılan 200px, maksimum 240px (önceki masaüstü maksimumunun yaklaşık üçte biri). Node pitch 210px ile aradaki oklar kısaltıldı. Pointer label 72×24px/12px; değişken içerikleri 13px ve belirgin, execution açıklaması 14px. Kart başlıkları korunur. ds↗ logosu public/favicon.svg ile sekme ikonu yapıldı.
+
+- 2026-10-13: Kullanıcı Sidebar kararı: açık durumda ayrı sol şerit/boşluk yok; ds↗ logo ve DATA STRUCTURES aynı satırda, menu toggle ve search ikinci satırda. Kapalı durumda yalnız tekrar açma şeridi korunur. Araya ekleme bağlantıları karşılıklı ayrı koridorlardan geçer; dönüşler quadratic SVG eğrisiyle 24px radius (kısa segmentte güvenli sınır) kullanır. previous etiketi ok koridorundan çıkarıldı; üç ortak referans ayrı sol satırlara alınır. Fonksiyonlar ve RAF motoru korunur.
+
+- 2026-10-13: Kullanıcı next bağlantı kararı: aynı Node’a gelen birden fazla ok aynı noktada birleşmez. Hedef sol kenarı eşit aralıklı girişlere bölünür; iki ok merkez çevresinde yukarı/aşağı simetriktir. Kaynaklar y/x/kimlik sırasıyla deterministik sıralanır. Aynı satırdaki ok yalnız giriş yüksekliği farkı kadar kısa radiuslu koridorda ayrılır; tek bağlantı merkezde düz kalır.
+
+- 2026-10-13: Son kullanıcı revizyonu önceki koşullu sol şerit kararını değiştirir: ds↗ logo ve altındaki tek Sidebar kontrolü kalıcı 48px şerittedir. Açma/kapatmada kontrol yeniden oluşturulmaz ve konumu değişmez. Sidebar içinde logo/menu tekrarı kaldırıldı. Variable satır aralığı 2px, satır padding 3px; Execution açıklaması masaüstünde 16px/500, küçük ekranda 14px. Kart başlıkları korunur.
+
+- 2026-10-13: Son kullanıcı düzeltmesi: açık Sidebar yanında ayrı sol sütun kaldırıldı; logo başlıkta, menu logo altında search yanında. Yalnız kapalı durumda 48px logo/menu şeridi görünür. Açık panel genişlik hesabından rail çıkarılmaz. Önceki kalıcı şerit kararı bu kararla değiştirildi; kompakt variable ve büyük execution metni korunur.

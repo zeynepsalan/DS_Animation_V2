@@ -1,20 +1,56 @@
-<header class="topbar">
-  <button class="sidebar-toggle" aria-label="Sidebar aç/kapat" [attr.aria-expanded]="layout.sidebarOpen()" (click)="layout.toggleSidebar()">☰</button>
-  <a class="brand" href="/" aria-label="Data Structures Lab ana sayfa"
-    ><span class="brand-symbol">ds<span>↗</span></span
-    ><span class="breadcrumb" aria-label="Seçili dosya">Data Structures<span class="brand-light"> / </span>@if (selection() !== 'node') {<span>SinglyLinkedList</span><span class="brand-light"> / </span>}<span class="breadcrumb-current">{{ selection() === 'node' ? 'Node' : selection().charAt(0).toUpperCase() + selection().slice(1) }}</span></span></a
-  >
-  <div class="topbar-right">
-    <span class="status-dot"></span><span>Learn by seeing</span
-    ><span class="version-pill">v0.1</span>
-  </div>
-</header>
-<div class="workspace" [class.sidebar-closed]="!layout.sidebarOpen()" [class.compact-layout]="layout.compact()" [style.--sidebar-width]="layout.effectiveSidebarWidth() + 'px'">
-  <app-sidebar [class.closed]="!layout.sidebarOpen()" [attr.inert]="layout.sidebarOpen() ? null : ''" [selected]="selection()" (select)="select($event)" />
-  <div class="panel-divider sidebar-divider" role="separator" tabindex="0" aria-label="Sidebar genişliği" aria-orientation="vertical" [attr.aria-valuenow]="layout.effectiveSidebarWidth()" (pointerdown)="beginResize($event, 'sidebar')" (pointermove)="resize($event)" (pointerup)="endResize()" (pointercancel)="endResize()" (keydown)="resizeKey($event, 'sidebar')"></div>
+<!-- Açık Sidebar sol kenardan başlar; kapalıyken logo ve açma kontrolü dar şeritte kalır. -->
+@if (!layout.sidebarOpen()) {
+  <aside class="closed-rail">
+    <a class="brand-symbol" href="/" aria-label="Data Structures Lab ana sayfa">ds<span>↗</span></a>
+    <!-- Aynı buton açık ve kapalı durumları yönetir; erişilebilir durum bilgisi güncellenir. -->
+    <button
+      class="sidebar-toggle"
+      aria-label="Sidebar aç/kapat"
+      [attr.aria-expanded]="layout.sidebarOpen()"
+      (click)="layout.toggleSidebar()"
+    >
+      <app-icon name="menu" />
+    </button>
+  </aside>
+}
+<div
+  class="workspace"
+  [class.sidebar-closed]="!layout.sidebarOpen()"
+  [class.compact-layout]="layout.compact()"
+  [class.sidebar-overlay]="layout.overlay()"
+  [style.--sidebar-width]="layout.effectiveSidebarWidth() + 'px'"
+>
+  <app-sidebar
+    [class.closed]="!layout.sidebarOpen()"
+    [attr.inert]="layout.sidebarOpen() ? null : ''"
+    (toggle)="layout.toggleSidebar()"
+    [selected]="selection()"
+    (functionSelected)="select($event)"
+  />
+  <div
+    class="panel-divider sidebar-divider"
+    role="separator"
+    tabindex="0"
+    aria-label="Sidebar genişliği"
+    aria-orientation="vertical"
+    [attr.aria-valuenow]="layout.effectiveSidebarWidth()"
+    (pointerdown)="beginResize($event, 'sidebar')"
+    (pointermove)="resize($event)"
+    (pointerup)="endResize()"
+    (pointercancel)="endResize()"
+    (keydown)="resizeKey($event, 'sidebar')"
+  ></div>
   <main class="workbench">
-    <!-- Üst bardaki breadcrumb dosya konumunu gösterir; kalan yükseklik çalışma panellerine ayrılır. -->
-    <div #panels class="panels" [class.compact-panels]="layout.compact()" [style.--code-width]="layout.codeWidth() ? layout.codeWidth() + 'px' : '1fr'" [style.--motion]="900 / player.speed() + 'ms'">
+    <!-- Üst header kaldırıldığı için çalışma panelleri ekranın tüm yüksekliğini kullanır. -->
+    <div
+      #panels
+      class="panels"
+      [class.compact-panels]="layout.compact()"
+      [style.--code-width]="
+        layout.effectiveCodeWidth() ? layout.effectiveCodeWidth() + 'px' : '1fr'
+      "
+      [style.--motion]="900 / player.speed() + 'ms'"
+    >
       <section class="editor-column" aria-label="Codebar ve fonksiyon çalıştırma">
         <app-codebar
           [selection]="selection()"
@@ -64,7 +100,9 @@
               <span>)</span>
             </div>
             <button class="run-button" type="submit">
-              {{ selection() === 'node' ? '◇ Preview' : '▶ Run' }}
+              <app-icon [name]="selection() === 'node' ? 'code' : 'play'" />{{
+                selection() === 'node' ? 'Preview' : 'Run'
+              }}
             </button>
           </form>
           @if (message()) {
@@ -73,6 +111,77 @@
           @if (notice()) {
             <p class="form-message" role="status">{{ notice() }}</p>
           }
+          <!-- İlerleme çubuğu aktif adımın tüm işlem içindeki konumunu gösterir. -->
+          <div class="operation-progress" aria-hidden="true">
+            <span
+              [style.width.%]="
+                player.trace() && selection() !== 'node'
+                  ? (100 * player.cursor()) / (player.trace()!.steps.length - 1 || 1)
+                  : 0
+              "
+            ></span>
+          </div>
+          <div class="playback" aria-label="Animasyon kontrolleri">
+            <div class="playback-buttons">
+              <button
+                title="Reset"
+                aria-label="Reset"
+                (click)="player.reset()"
+                [disabled]="!player.trace() || selection() === 'node'"
+              >
+                <app-icon name="reset" />
+              </button>
+              <button
+                title="Previous Step"
+                aria-label="Previous Step"
+                (click)="player.previous()"
+                [disabled]="visualBusy() || player.cursor() === 0 || selection() === 'node'"
+              >
+                <app-icon name="previous" />
+              </button>
+              <button
+                class="play-button"
+                [attr.aria-label]="player.playing() ? 'Pause' : 'Play'"
+                [title]="player.playing() ? 'Pause' : 'Play'"
+                (click)="player.toggle()"
+                [disabled]="
+                  (!player.playing() && visualBusy()) ||
+                  !player.trace() ||
+                  player.atEnd() ||
+                  selection() === 'node'
+                "
+              >
+                <app-icon [name]="player.playing() ? 'pause' : 'play'" />
+              </button>
+              <button
+                title="Next Step"
+                aria-label="Next Step"
+                (click)="next()"
+                [disabled]="
+                  visualBusy() || !player.trace() || player.atEnd() || selection() === 'node'
+                "
+              >
+                <app-icon name="next" />
+              </button>
+            </div>
+            <span class="transport-step">{{
+              selection() !== 'node' && player.trace()
+                ? player.cursor() + 1 + ' / ' + player.trace()!.steps.length
+                : '—'
+            }}</span>
+            <label class="speed-label"
+              >Speed
+              <input
+                type="range"
+                min="0.25"
+                max="3"
+                step="0.25"
+                [value]="player.speed()"
+                (input)="changeSpeed($event)"
+                aria-label="Animasyon hızı"
+              /><span>{{ player.speed() }}×</span></label
+            >
+          </div>
           <div class="operation-meta">
             @if (selection() === 'node') {
               <span>Bağımsız Node; listeyi değiştirmez.</span>
@@ -94,7 +203,19 @@
           </div>
         </div>
       </section>
-      <div class="panel-divider code-divider" role="separator" tabindex="0" aria-label="Kod ve görsel genişliği" aria-orientation="vertical" [attr.aria-valuenow]="layout.codeWidth()" (pointerdown)="beginResize($event, 'code')" (pointermove)="resize($event)" (pointerup)="endResize()" (pointercancel)="endResize()" (keydown)="resizeKey($event, 'code')"></div>
+      <div
+        class="panel-divider code-divider"
+        role="separator"
+        tabindex="0"
+        aria-label="Kod ve görsel genişliği"
+        aria-orientation="vertical"
+        [attr.aria-valuenow]="layout.codeWidth()"
+        (pointerdown)="beginResize($event, 'code')"
+        (pointermove)="resize($event)"
+        (pointerup)="endResize()"
+        (pointercancel)="endResize()"
+        (keydown)="resizeKey($event, 'code')"
+      ></div>
       <section class="visual-panel" aria-label="Visualization">
         <div class="panel-heading">
           <span>VISUALIZATION</span
@@ -106,7 +227,8 @@
           [snapshot]="selection() === 'node' ? nodeSnapshot() : player.list()"
           [step]="selection() === 'node' ? null : player.step()"
           [previousStep]="previousStep()"
-          [speed]="player.speed()" (moving)="visualBusy.set($event)"
+          [speed]="player.speed()"
+          (moving)="visualBusy.set($event)"
           [trace]="selection() === 'node' ? null : player.trace()"
           [operation]="selection()"
           [standalone]="selection() === 'node'"
@@ -116,55 +238,6 @@
               : ''
           "
         />
-        <div class="playback" aria-label="Animasyon kontrolleri">
-          <div class="playback-buttons">
-            <button
-              title="Reset"
-              aria-label="Reset"
-              (click)="player.reset()"
-              [disabled]="!player.trace() || selection() === 'node'"
-            >
-              ↺
-            </button>
-            <button
-              title="Previous Step"
-              aria-label="Previous Step"
-              (click)="player.previous()"
-              [disabled]="visualBusy() || player.cursor() === 0 || selection() === 'node'"
-            >
-              ◀│
-            </button>
-            <button
-              class="play-button"
-              [attr.aria-label]="player.playing() ? 'Pause' : 'Play'"
-              [title]="player.playing() ? 'Pause' : 'Play'"
-              (click)="player.toggle()"
-              [disabled]="(!player.playing() && visualBusy()) || !player.trace() || player.atEnd() || selection() === 'node'"
-            >
-              {{ player.playing() ? 'Ⅱ' : '▶' }}
-            </button>
-            <button
-              title="Next Step"
-              aria-label="Next Step"
-              (click)="next()"
-              [disabled]="visualBusy() || !player.trace() || player.atEnd() || selection() === 'node'"
-            >
-              │▶
-            </button>
-          </div>
-          <label class="speed-label"
-            >Speed
-            <input
-              type="range"
-              min="0.25"
-              max="3"
-              step="0.25"
-              [value]="player.speed()"
-              (input)="changeSpeed($event)"
-              aria-label="Animasyon hızı"
-            /><span>{{ player.speed() }}×</span></label
-          >
-        </div>
       </section>
     </div>
     <footer class="workspace-footer">

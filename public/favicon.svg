@@ -1,0 +1,6 @@
+<!-- Uygulamanın ds↗ markası: küçük sekme boyutunda okunur, bağımsız SVG. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="8" fill="#a8d4f0"/>
+  <text x="4" y="22" fill="#261b3e" font-family="Menlo,Consolas,monospace" font-size="17" font-weight="700">ds</text>
+  <path d="M24 8h4v4m0-4-5 5" fill="none" stroke="#261b3e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

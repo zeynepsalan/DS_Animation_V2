@@ -1,0 +1,156 @@
+{
+  "assets": [
+    {
+      "id": "ui-icons",
+      "path": "src/app/components/ui-icon.ts",
+      "source": "Bu görevde özgün yerel SVG path kodu",
+      "rights": "Proje kaynak kodu; harici asset alınmadı",
+      "purpose": "Explorer, code ve transport eylem ikonları",
+      "dimensions": "24x24 SVG viewBox",
+      "bytes": 1760,
+      "alt": "Dekoratif SVG aria-hidden; button label eylemi açıklar",
+      "fallback": "Native button text/aria-label"
+    },
+    {
+      "id": "reference-revision-desktop",
+      "path": "docs/screenshots/reference-revision-desktop.png",
+      "source": "Bu görevde yerel V2 uygulamasından Chrome screenshot",
+      "rights": "Kullanıcının kendi proje ekranı",
+      "purpose": "Referans tasarım revizyonunun browser QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 102512,
+      "alt": "Koyu IDE ve açık Visualization çalışma ekranı",
+      "fallback": "Çalışan Angular görünümü; screenshot ürün asseti olarak yüklenmez"
+    },
+    {
+      "id": "reference-revision-node",
+      "path": "docs/screenshots/reference-revision-node.png",
+      "source": "Bu görevde yerel V2 uygulamasından Chrome screenshot",
+      "rights": "Kullanıcının kendi proje ekranı",
+      "purpose": "Referans tasarım revizyonunun browser QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 93404,
+      "alt": "Koyu IDE ve açık Visualization çalışma ekranı",
+      "fallback": "Çalışan Angular görünümü; screenshot ürün asseti olarak yüklenmez"
+    },
+    {
+      "id": "reference-revision-mobile",
+      "path": "docs/screenshots/reference-revision-mobile.png",
+      "source": "Bu görevde yerel V2 uygulamasından Chrome screenshot",
+      "rights": "Kullanıcının kendi proje ekranı",
+      "purpose": "Referans tasarım revizyonunun browser QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 44147,
+      "alt": "Koyu IDE ve açık Visualization çalışma ekranı",
+      "fallback": "Çalışan Angular görünümü; screenshot ürün asseti olarak yüklenmez"
+    },
+    {
+      "id": "pointer-straight-list",
+      "path": "docs/screenshots/pointer-straight-list.png",
+      "source": "Yerel V2 uygulamasından Chrome screenshot",
+      "rights": "Kullanıcının kendi proje ekranı",
+      "purpose": "Düz ok, ayrı referans portu ve görünürlük QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 97492,
+      "alt": "Pointer ve Node görünürlük kontrolü"
+    },
+    {
+      "id": "pointer-separate-ports",
+      "path": "docs/screenshots/pointer-separate-ports.png",
+      "source": "Yerel V2 uygulamasından Chrome screenshot",
+      "rights": "Kullanıcının kendi proje ekranı",
+      "purpose": "Düz ok, ayrı referans portu ve görünürlük QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 99380,
+      "alt": "Pointer ve Node görünürlük kontrolü"
+    },
+    {
+      "id": "pointer-staged-visible",
+      "path": "docs/screenshots/pointer-staged-visible.png",
+      "source": "Yerel V2 uygulamasından Chrome screenshot",
+      "rights": "Kullanıcının kendi proje ekranı",
+      "purpose": "Düz ok, ayrı referans portu ve görünürlük QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 97214,
+      "alt": "Pointer ve Node görünürlük kontrolü"
+    },
+    {
+      "id": "pointer-staged-mobile",
+      "path": "docs/screenshots/pointer-staged-mobile.png",
+      "source": "Yerel V2 uygulamasından Chrome screenshot",
+      "rights": "Kullanıcının kendi proje ekranı",
+      "purpose": "Düz ok, ayrı referans portu ve görünürlük QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 42583,
+      "alt": "Pointer ve Node görünürlük kontrolü"
+    },
+    {
+      "id": "ds-favicon",
+      "path": "public/favicon.svg",
+      "source": "Yerel ds↗ logo biçiminden özgün SVG",
+      "rights": "Proje markası",
+      "purpose": "Tarayıcı sekme ikonu",
+      "dimensions": "32x32 SVG viewBox",
+      "bytes": 456,
+      "alt": "ds↗",
+      "fallback": "SVG destekleyen tarayıcılar için vector favicon"
+    },
+    {
+      "id": "rail-and-compact-nodes",
+      "path": "docs/screenshots/rail-and-compact-nodes.png",
+      "source": "Yerel uygulama Chrome screenshot",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Header kaldırma ve kompakt Node revizyonu",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 99348
+    },
+    {
+      "id": "rounded-insert-and-sidebar",
+      "path": "docs/screenshots/rounded-insert-and-sidebar.png",
+      "source": "Canlı V2 Chrome screenshot",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "insertAt attach adımı ve Sidebar revizyonu QA",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 109119
+    },
+    {
+      "id": "separate-next-ports",
+      "path": "docs/screenshots/separate-next-ports.png",
+      "source": "Yerel V2 Chrome screenshot",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Aynı hedefe gelen next oklarının ayrı girişleri",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 109804
+    }
+  ]
+}

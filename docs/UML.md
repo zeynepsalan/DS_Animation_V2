@@ -2,7 +2,7 @@
 
 ## Durum
 
-2026-10-12: Bu diyagram artık çalışan kaynak kodu yansıtır. Angular ekranı TypeScript sınıflarını çalıştırır; Java/C örnekleri aynı işlem davranışını öğretir. Array henüz uygulanmadı.
+2026-10-13: Bu diyagram artık çalışan kaynak kodu yansıtır. Angular ekranı TypeScript sınıflarını çalıştırır; Java/C örnekleri aynı işlem davranışını öğretir. Array henüz uygulanmadı.
 
 ## Sınıflar ve ilişkiler
 
@@ -20,7 +20,11 @@ classDiagram
     }
     class Sidebar {
         selected: InputSignal
-        select: OutputEmitterRef
+        functionSelected: OutputEmitterRef
+        query: Signal
+        normalizedQuery: ComputedSignal
+        groups: ComputedSignal
+        search(event)
         expanded: Signal
         functionsFor(group)
     }
@@ -35,7 +39,8 @@ classDiagram
     class Visualization {
         snapshot: InputSignal
         step: InputSignal
-        nodes: ComputedSignal
+        nodes: Signal
+        targetNodes: ComputedSignal
         variables: ComputedSignal
         positionedReferences: ComputedSignal
         path(node)
@@ -46,6 +51,30 @@ classDiagram
         zoomIn()
         zoomOut()
         fit()
+    }
+    class UiIcon {
+        name: InputSignal
+        path: ComputedSignal
+    }
+    class PanelLayout {
+        sidebarOpen: Signal
+        sidebarWidth: Signal
+        codeWidth: Signal
+        compact: ComputedSignal
+        overlay: ComputedSignal
+        effectiveSidebarWidth: ComputedSignal
+        effectiveCodeWidth: ComputedSignal
+        setViewport(width)
+        toggleSidebar()
+        resizeSidebar(width)
+        resizeCode(width, available)
+    }
+    class SceneMotion {
+        nodes: Signal
+        references: Signal
+        busy: Signal
+        moveTo(nodes, bindings, duration)
+        stop()
     }
     class PlaybackService {
         list: Signal
@@ -128,14 +157,23 @@ classDiagram
     }
     class VisualGeometry {
         <<module functions>>
-        layoutNodes(snapshot, standalone, detachedIndex)
+        layoutNodes(snapshot, standalone, detachedIndex, context)
         nextPath(node, nodes)
+        nextPoints(node, nodes)
+        layoutReferences(nodes, references)
+        sceneBounds(nodes, references)
         detachedIndexFor(step, operation)
     }
     App *-- Sidebar
     App *-- Codebar
     App *-- Visualization
     App --> PlaybackService : inject
+    App --> PanelLayout : inject
+    App *-- UiIcon
+    Sidebar *-- UiIcon
+    Codebar *-- UiIcon
+    Visualization *-- UiIcon
+    Visualization *-- SceneMotion : interpolates geometry
     App --> Node~T~ : independent preview
     PlaybackService *-- TraceEngine
     PlaybackService --> "0..1" Trace
@@ -226,3 +264,21 @@ Fonksiyon değişimi tamamlanmamış işlemi iptal eder; tamamlanan işlemin lis
 - 2026-10-13: Git başlangıcı sırasında UML gözden geçirildi; sürüm kontrolü uygulama sınıflarını veya ilişkilerini değiştirmedi.
 
 - 2026-10-13: GitHub remote ve push kurulumu sonrasında UML kontrol edildi; uygulama sınıfları ve ilişkileri değişmedi.
+
+- 2026-10-13: Referans tasarım revizyonu: Sidebar.query ile ağaç filtrelenir; output functionSelected native input select olayıyla çakışmaz. UiIcon paylaşılan yerel SVG componentidir. App, playback'i method kartında tutar. PanelLayout rail/overlay ve normalize genişlikleri yönetir. SceneMotion gerçek ara node pozlarını üretir; yeni data/next renkleri aynı SVG grubunda uygulanır. Liste algoritması değişmedi.
+
+- Son-adım kamera düzeltmesi: SceneMotion.busy bitmeden trace sahnesinin geniş/yüksek sınırları korunur; Node’lar yerleşince final kamera ölçüsüne geçilir. Component ilişkileri değişmedi.
+
+- 2026-10-13: VisualGeometry pointer port dağıtımı ve sceneBounds kamera sınırlarını sağlar. Visualization.bounds, tüm trace pozları ve hareketli pozlardan türetilir; autoFit sınırları kullanır. Normal sırada düz ok ve canvas sol üst hizası uygulandı. Sınıf ilişkileri değişmedi.
+
+- Canvas ölçümü afterRenderEffect ile gerçek ViewChild elementini izler; ResizeObserver cleanup eski DOM ölçümlerini sonlandırır. UML sınıf ilişkileri değişmedi.
+
+- 2026-10-13: App header yerine activity-rail kullanır; logo ve Sidebar toggle bu şerittedir. PanelLayout SIDEBAR_MAX=240 sınırını uygular, 48px şerit kullanılabilir genişlikten çıkarılır. SVG favicon eklendi; sınıf ilişkileri değişmedi.
+
+- Sidebar.toggle output’u App üzerinden PanelLayout.toggleSidebar() çağırır. Logo/başlık ve search/menu Sidebar içinde gruplanır. VisualGeometry.nextPath, nextPoints koridorlarını radiuslu L/Q path’e dönüştürür; layoutReferences etiketleri koridor dışında tutar. Normal sıra y=122, alt hazırlık satırı y=290. Sınıf ilişkileri değişmedi.
+
+- VisualGeometry.nextPoints, incoming kaynak grubundan her next okunun hedef portunu hesaplar: y=target.y+height×(rank+1)/(count+1). Node veri modeli değişmedi; ayrı portlar yalnız görsel geometridir.
+
+- 2026-10-13: Kalıcı sol şerit App template’indedir; Sidebar.toggle output kaldırıldı. Tek kontrol doğrudan PanelLayout.toggleSidebar() çağırır; aria-expanded durumla eşleşir. Sidebar yalnız başlık, search ve fonksiyon ağacını taşır. Model ve animasyon sınıf ilişkileri değişmedi.
+
+- 2026-10-13: App kapalı Sidebar için conditional rail render eder; açık Sidebar.toggle output yeniden App→PanelLayout.toggleSidebar ilişkisini kullanır. PanelLayout açık durumda rail genişliğini düşmez. Veri modeli/animasyon ilişkileri değişmedi.

@@ -10,6 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { UiIcon } from './components/ui-icon';
 import { Sidebar } from './components/sidebar';
 import { Codebar } from './components/codebar';
 import { Visualization } from './components/visualization';
@@ -23,7 +24,7 @@ import { returnTypeFor } from './education/code-documents';
 /** Root component panelleri birleştirir; algoritma ve oynatma mantığı ayrı sınıflardadır. */
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, Sidebar, Codebar, Visualization],
+  imports: [FormsModule, Sidebar, Codebar, Visualization, UiIcon],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -40,16 +41,23 @@ export class App implements OnDestroy {
     // İlk render'da gerçek ekran genişliğini al ve pencere küçülmesini izle.
     afterNextRender(() => {
       const update = () => this.layout.setViewport(window.innerWidth);
-      update(); window.addEventListener('resize', update);
+      update();
+      window.addEventListener('resize', update);
       this.removeResizeListener = () => window.removeEventListener('resize', update);
     });
   }
   private removeResizeListener = () => {};
   beginResize(event: PointerEvent, kind: 'sidebar' | 'code') {
     // Pointer capture, sürükleme ayraç dışına çıksa da resize olayını burada tutar.
-    event.preventDefault(); (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
-    this.resizeKind = kind; this.resizeStart = event.clientX;
-    this.resizeWidth = kind === 'sidebar' ? this.layout.sidebarWidth() : this.panels()!.nativeElement.querySelector('.editor-column')!.getBoundingClientRect().width;
+    event.preventDefault();
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+    this.resizeKind = kind;
+    this.resizeStart = event.clientX;
+    this.resizeWidth =
+      kind === 'sidebar'
+        ? this.layout.sidebarWidth()
+        : this.panels()!.nativeElement.querySelector('.editor-column')!.getBoundingClientRect()
+            .width;
   }
   resize(event: PointerEvent) {
     if (!this.resizeKind) return;
@@ -58,13 +66,21 @@ export class App implements OnDestroy {
     if (this.resizeKind === 'sidebar') this.layout.resizeSidebar(width);
     else this.layout.resizeCode(width, this.panels()!.nativeElement.clientWidth);
   }
-  endResize() { this.resizeKind = null; }
+  endResize() {
+    this.resizeKind = null;
+  }
   resizeKey(event: KeyboardEvent, kind: 'sidebar' | 'code') {
     // Klavye kullanıcıları da ayraçları 20 px adımlarla değiştirebilir.
     if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-    event.preventDefault(); const delta = event.key === 'ArrowLeft' ? -20 : 20;
+    event.preventDefault();
+    const delta = event.key === 'ArrowLeft' ? -20 : 20;
     if (kind === 'sidebar') this.layout.resizeSidebar(this.layout.sidebarWidth() + delta);
-    else this.layout.resizeCode(this.panels()!.nativeElement.querySelector('.editor-column')!.getBoundingClientRect().width + delta, this.panels()!.nativeElement.clientWidth);
+    else
+      this.layout.resizeCode(
+        this.panels()!.nativeElement.querySelector('.editor-column')!.getBoundingClientRect()
+          .width + delta,
+        this.panels()!.nativeElement.clientWidth,
+      );
   }
   readonly selection = signal<Selection>('node');
   readonly language = signal<Language>('java');

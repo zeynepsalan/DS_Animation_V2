@@ -74,3 +74,7 @@ Keyfi eleman sınırı yok; uzun listeler yatay kaydırılır. Her adım snapsho
 - [Doğrulama kaydı](docs/VALIDATION.md)
 
 - 2026-10-13: Kullanıcı görünüm kararı: Core concept başlık/açıklama alanı kaldırıldı; üst barda Data Structures / SinglyLinkedList / AddFirst biçiminde seçili dosya yolu gösterilir. Kod ve Visualization üstten genişletildi. Method çalıştırma kartı açık indigo, çerçeveli ve radiuslu; IDE arkasında beyaz dolgu yok. Visualization başlığının hemen altında Variables & References solda, Execution Step sağda 1:3 oranında küçük başlıklı açık indigo kartlardır. Sidebar, üst bar, IDE ve Visualization indigo; paneller dışında kalan zemin beyazdır.
+
+- 2026-10-13: Kullanıcı DataStructures_Animation ilk denemesini tasarım referansı olarak seçti. Kaynak token ve component düzeninden midnight indigo (#261b3e), koyu IDE (#18122a), controls (#211a36), bebek mavisi (#a8d4f0) ve açık Visualization/çizim zemini alındı. Bu karar önceki tüm panelleri indigo yapan görünümün yerini alır. Üst breadcrumb ve 1:3 Variables/Execution kartları korunur; playback method kartına taşınır. Sidebar araması ve kapalı Explorer rail eklenir. İşlem motoru, Reset baseline davranışı, Türkçe öğretici açıklamalar ve API korunur. Referans projenin kendisi değiştirilmez.
+
+- Pointer görünümü: Aynı satırda düz next bağlantıları; ortak hedefte ayrı referans girişleri. Fit tüm bağlantı ve etiketleri kapsar, tamamlanan liste sol üstte gösterilir.

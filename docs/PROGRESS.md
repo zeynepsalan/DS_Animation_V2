@@ -72,3 +72,25 @@
 - 2026-10-13: Kullanıcı Git kurulumu ve kendi adına push istedi. Mevcut klasörde Git repo bulunmadığı için main dalıyla yerel repo başlatıldı; hedef remote kullanıcıdan bekleniyor. Git sistemde zaten kurulu.
 
 - 2026-10-13: Kullanıcının verdiği https://github.com/zeynepsalan/DS_Animation_V2.git origin olarak eklendi. Uzak repo başlangıçta boştu; main dalı başarıyla pushlandı ve origin/main takibi kuruldu. Mevcut Git kimlik doğrulaması yeterli olduğundan ek GitHub CLI girişi gerekmedi.
+
+- 2026-10-13: Kullanıcı DataStructures_Animation ilk denemesini tasarım referansı olarak seçti. Kaynak token ve component düzeninden midnight indigo (#261b3e), koyu IDE (#18122a), controls (#211a36), bebek mavisi (#a8d4f0) ve açık Visualization/çizim zemini alındı. Bu karar önceki tüm panelleri indigo yapan görünümün yerini alır. Üst breadcrumb ve 1:3 Variables/Execution kartları korunur; playback method kartına taşınır. Sidebar araması ve kapalı Explorer rail eklenir. İşlem motoru, Reset baseline davranışı, Türkçe öğretici açıklamalar ve API korunur. Referans projenin kendisi değiştirilmez.
+
+- Referans revizyonu teknik notu: Yeni UiIcon ve sidebar search eklendi. Sidebar output functionSelected, native input select olayıyla çakışmayı giderir; regression testi bu olayı gerçek DOM üzerinden dispatch eder. CSS kuralları konsolide edildi. 15 test geçti; son build yaklaşık 263 kB.
+
+- Referans revizyonu tamamlandı: 1440×900, 800×700 ve 390×844 browser QA, source/build ve 15 test başarılı. Son-adım kamera erken küçülme/kırpılma sorunu giderildi; UI screenshotları assets.json ile kaydedildi. Kullanıcı tasarım kabulü bekleniyor.
+
+- 2026-10-13: Kullanıcı pointer görünümü kararı: aynı sıradaki Node bağlantıları düz olmalı; aynı Node'u gösteren pointer'lar farklı giriş noktaları kullanmalı. Tamamlanan liste çizim alanının sol üstüne yakın durur. Kamera/Fit, Node kutuları yanında tüm ok şeritlerini, referans/null/kimlik etiketlerini de kapsar. Fit'te keyfi minimum zoom kaldırıldı; uzun listelerin son bağlantısı da sığar. Manual Zoom büyütme/kaydırma davranışı korunur. Gönderilen üç screenshot geçici macOS konumundaki erişim hatası nedeniyle görülemedi; uygulama canlıda ve tarif üzerinden kontrol edildi.
+
+- Pointer revizyonu doğrulandı: düz next okları, ayrı ref portları, sol üst liste hizası, kamera sınırları ve sıfır boyut/HMR Fit kontrolü tamamlandı. 17 test + build geçti; masaüstü/telefon hazırlık adımında kırpılan eleman gözlenmedi.
+
+- 2026-10-13: Kullanıcı revizyonu: header kaldırıldı; logo ve Sidebar kontrolü sabit sol şeritte alt alta. Explorer varsayılan 200px, maksimum 240px (önceki masaüstü maksimumunun yaklaşık üçte biri). Node pitch 210px ile aradaki oklar kısaltıldı. Pointer label 72×24px/12px; değişken içerikleri 13px ve belirgin, execution açıklaması 14px. Kart başlıkları korunur. ds↗ logosu public/favicon.svg ile sekme ikonu yapıldı.
+
+- 2026-10-13: Kullanıcı Sidebar kararı: açık durumda ayrı sol şerit/boşluk yok; ds↗ logo ve DATA STRUCTURES aynı satırda, menu toggle ve search ikinci satırda. Kapalı durumda yalnız tekrar açma şeridi korunur. Araya ekleme bağlantıları karşılıklı ayrı koridorlardan geçer; dönüşler quadratic SVG eğrisiyle 24px radius (kısa segmentte güvenli sınır) kullanır. previous etiketi ok koridorundan çıkarıldı; üç ortak referans ayrı sol satırlara alınır. Fonksiyonlar ve RAF motoru korunur.
+
+- 2026-10-13: Kullanıcı next bağlantı kararı: aynı Node’a gelen birden fazla ok aynı noktada birleşmez. Hedef sol kenarı eşit aralıklı girişlere bölünür; iki ok merkez çevresinde yukarı/aşağı simetriktir. Kaynaklar y/x/kimlik sırasıyla deterministik sıralanır. Aynı satırdaki ok yalnız giriş yüksekliği farkı kadar kısa radiuslu koridorda ayrılır; tek bağlantı merkezde düz kalır.
+
+- 2026-10-13: Son kullanıcı revizyonu önceki koşullu sol şerit kararını değiştirir: ds↗ logo ve altındaki tek Sidebar kontrolü kalıcı 48px şerittedir. Açma/kapatmada kontrol yeniden oluşturulmaz ve konumu değişmez. Sidebar içinde logo/menu tekrarı kaldırıldı. Variable satır aralığı 2px, satır padding 3px; Execution açıklaması masaüstünde 16px/500, küçük ekranda 14px. Kart başlıkları korunur.
+
+- 2026-10-13: Son kullanıcı düzeltmesi: açık Sidebar yanında ayrı sol sütun kaldırıldı; logo başlıkta, menu logo altında search yanında. Yalnız kapalı durumda 48px logo/menu şeridi görünür. Açık panel genişlik hesabından rail çıkarılmaz. Önceki kalıcı şerit kararı bu kararla değiştirildi; kompakt variable ve büyük execution metni korunur.
+
+- 2026-10-13: Kullanıcı mevcut UI, Sidebar, pointer routing ve favicon revizyonlarının GitHub’a pushlanmasını istedi. Yayın paketi kaynak kodu, Markdown/UML ve yerel ekran kanıtlarını kapsar; son doğrulama 20 test + production build başarılı.

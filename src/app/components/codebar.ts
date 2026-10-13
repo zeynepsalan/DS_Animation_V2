@@ -8,19 +8,21 @@ import {
   output,
   viewChild,
 } from '@angular/core';
+import { UiIcon } from './ui-icon';
 import { LANGUAGES } from '../education/catalog';
 import { codeFor } from '../education/code-documents';
 import type { Language, Selection } from '../core/execution.types';
 
 @Component({
   selector: 'app-codebar',
+  imports: [UiIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="editor-tab">
       <span class="file-icon">{{
         language() === 'java' ? 'J' : language() === 'c' ? 'C' : '≡'
       }}</span
-      >{{ filename() }}<span class="muted">×</span>
+      >{{ filename() }}<span class="muted tab-close"><app-icon name="close" /></span>
     </div>
     <div class="editor-toolbar">
       <!-- Dosya konumu üst barda gösterildiğinden burada yalnız kod dili seçilir. -->
@@ -80,7 +82,10 @@ export class Codebar {
       const container = this.scroller()?.nativeElement;
       const line = container?.querySelector<HTMLElement>('.highlighted');
       if (container && line) {
-        const top = line.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+        const top =
+          line.getBoundingClientRect().top -
+          container.getBoundingClientRect().top +
+          container.scrollTop;
         if (
           top < container.scrollTop ||
           top + line.offsetHeight > container.scrollTop + container.clientHeight

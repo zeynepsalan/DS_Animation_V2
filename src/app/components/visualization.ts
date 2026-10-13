@@ -3,7 +3,7 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  afterNextRender,
+  afterRenderEffect,
   effect,
   untracked,
   InjectionToken,
@@ -14,10 +14,13 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { UiIcon } from './ui-icon';
 import type { ExecutionStep, ListSnapshot, Trace, Selection } from '../core/execution.types';
 
 import {
   layoutNodes,
+  layoutReferences,
+  sceneBounds,
   nextPath,
   detachedIndexFor,
   type PositionedNode,
@@ -27,35 +30,38 @@ import { SceneMotion, MOTION_MS } from '../core/scene-motion';
 
 // DOM testleri hareketi kapatabilir; gerçek uygulama sistemin hareket tercihini dikkate alır.
 export const SCENE_MOTION_ENABLED = new InjectionToken<boolean>('sceneMotionEnabled', {
-  providedIn: 'root', factory: () => typeof matchMedia !== 'function' || !matchMedia('(prefers-reduced-motion: reduce)').matches,
+  providedIn: 'root',
+  factory: () =>
+    typeof matchMedia !== 'function' || !matchMedia('(prefers-reduced-motion: reduce)').matches,
 });
 
 @Component({
   selector: 'app-visualization',
+  imports: [UiIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Değişkenler solda, aktif adım açıklaması sağda aynı satırda karşılaştırılır. -->
     <div class="execution-summary">
-    <div class="variables-panel">
-      <span class="mini-label">{{ standalone() ? 'FIELDS' : 'VARIABLES & REFERENCES' }}</span>
-      <div class="variable-chips">
-        @for (variable of variables(); track variable.name) {
-          <div class="variable-chip" [class.changed]="variable.changed">
-            <span>{{ variable.name }}</span
-            ><code>{{ variable.value }}</code>
-          </div>
-        }
-        @if (!variables().length) {
-          <span class="muted small">İşlem başladığında yerel değişkenler burada görünür.</span>
-        }
+      <div class="variables-panel">
+        <span class="mini-label">{{ standalone() ? 'FIELDS' : 'VARIABLES & REFERENCES' }}</span>
+        <div class="variable-chips">
+          @for (variable of variables(); track variable.name) {
+            <div class="variable-chip" [class.changed]="variable.changed">
+              <span>{{ variable.name }}</span
+              ><code>{{ variable.value }}</code>
+            </div>
+          }
+          @if (!variables().length) {
+            <span class="muted small">İşlem başladığında yerel değişkenler burada görünür.</span>
+          }
+        </div>
       </div>
-    </div>
-    <div class="explanation" aria-live="polite">
-      <div class="eyebrow">
-        {{ standalone() ? 'NODE ANATOMY' : 'EXECUTION STEP' }}<span>{{ stepNumber() }}</span>
+      <div class="explanation" aria-live="polite">
+        <div class="eyebrow">
+          {{ standalone() ? 'NODE ANATOMY' : 'EXECUTION STEP' }}<span>{{ stepNumber() }}</span>
+        </div>
+        <p>{{ explanation() }}</p>
       </div>
-      <p>{{ explanation() }}</p>
-    </div>
     </div>
     <div class="zoom-toolbar" aria-label="Zoom kontrolleri">
       <span class="mini-label">MEMORY VIEW</span>
@@ -66,16 +72,22 @@ export const SCENE_MOTION_ENABLED = new InjectionToken<boolean>('sceneMotionEnab
           (click)="zoomOut()"
           [disabled]="zoom() <= 0.2"
         >
-          −</button
+          <app-icon name="minus" /></button
         ><span>{{ zoomPercent() }}%</span
         ><button aria-label="Zoom In" title="Zoom In" (click)="zoomIn()" [disabled]="zoom() >= 2">
-          +</button
+          <app-icon name="plus" /></button
         ><button class="fit-button" aria-label="Fit to View" title="Fit to View" (click)="fit()">
           Fit
         </button>
       </div>
     </div>
-    <div #canvas class="canvas-scroll" tabindex="0" aria-label="Node ve pointer görselleştirmesi">
+    <div
+      #canvas
+      class="canvas-scroll"
+      [class.auto-fit]="autoFit()"
+      tabindex="0"
+      aria-label="Node ve pointer görselleştirmesi"
+    >
       <div
         class="scene-viewport motion-scene"
         [style.width.px]="width() * zoom()"
@@ -103,7 +115,7 @@ export const SCENE_MOTION_ENABLED = new InjectionToken<boolean>('sceneMotionEnab
               markerHeight="7"
               orient="auto-start-reverse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#a4d8f5" />
+              <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head" />
             </marker>
           </defs>
           @if (!nodes().length) {
@@ -116,13 +128,10 @@ export const SCENE_MOTION_ENABLED = new InjectionToken<boolean>('sceneMotionEnab
             <path
               class="pointer-path"
               [attr.d]="path(node)"
-              
               [attr.data-source]="node.id"
               [style.opacity]="node.opacity"
               [attr.data-target]="node.next || 'null'"
               marker-end="url(#arrow)"
-              
-              
             >
               <title>{{ node.id }}.next → {{ node.next || 'null' }}</title>
             </path>
@@ -135,8 +144,6 @@ export const SCENE_MOTION_ENABLED = new InjectionToken<boolean>('sceneMotionEnab
             </g>
             <g
               class="node-shape"
-              
-              
               [attr.data-node-id]="node.id"
               [style.transform]="'translate(' + node.x + 'px,' + node.y + 'px)'"
               [class.detached]="node.detached"
@@ -145,10 +152,21 @@ export const SCENE_MOTION_ENABLED = new InjectionToken<boolean>('sceneMotionEnab
               <text x="0" y="82" class="node-id">
                 {{ node.id }}{{ node.detached ? ' · detached' : '' }}
               </text>
-              <rect width="144" height="64" rx="12" class="node-box" />
+              <!-- Tek taşıma grubunu korurken data ve next hücrelerini farklı renklerle ayırırız. -->
+              <clipPath [attr.id]="'node-clip-' + node.id">
+                <rect width="144" height="64" rx="8" />
+              </clipPath>
+              <rect width="144" height="64" rx="8" class="node-box" />
+              <rect
+                x="85"
+                width="59"
+                height="64"
+                class="node-next-cell"
+                [attr.clip-path]="'url(#node-clip-' + node.id + ')'"
+              />
               <path d="M 85 0 V 64" class="node-divider" />
               <text x="12" y="20" class="field-label">data</text>
-              <text x="100" y="20" class="field-label">next</text>
+              <text x="100" y="20" class="field-label next-field">next</text>
               <foreignObject x="10" y="29" width="68" height="29"
                 ><div xmlns="http://www.w3.org/1999/xhtml" class="node-value" [title]="node.data">
                   {{ node.data }}
@@ -160,21 +178,15 @@ export const SCENE_MOTION_ENABLED = new InjectionToken<boolean>('sceneMotionEnab
           @for (ref of positionedReferences(); track ref.name) {
             <g
               class="reference-label"
-              
-              
               [attr.data-reference]="ref.name"
               [attr.data-target]="ref.target"
               [style.opacity]="ref.opacity"
               [style.transform]="'translate(' + ref.x + 'px,' + ref.y + 'px)'"
             >
               <title>{{ ref.name }} → {{ ref.target }}</title>
-            <rect width="58" height="18" rx="5" />
-              <text x="29" y="13" text-anchor="middle">{{ ref.name }}</text>
-              <path
-                [attr.d]="ref.path"
-                
-                marker-end="url(#arrow)"
-              />
+              <rect width="72" height="24" rx="6" />
+              <text x="36" y="16" text-anchor="middle">{{ ref.name }}</text>
+              <path [attr.d]="ref.path" marker-end="url(#arrow)" />
             </g>
           }
         </svg>
@@ -217,7 +229,9 @@ export class Visualization {
     // Snapshot değiştiğinde hedef geometriyi hesapla; çizim her karede SceneMotion'dan gelir.
     effect(() => {
       const positions = this.targetNodes();
-      const bindings = this.standalone() ? {} : { head: this.snapshot().head, ...this.step()?.references };
+      const bindings = this.standalone()
+        ? {}
+        : { head: this.snapshot().head, ...this.step()?.references };
       const scopeChanged = this.lastOperation !== this.operation();
       this.lastOperation = this.operation();
       // Süre hesabı effect tarafından izlenir; animasyonun her karedeki iç sinyalleri izlenmez.
@@ -229,15 +243,24 @@ export class Visualization {
     effect(() => this.moving.emit(this.motion.busy()));
     // Component kaldırılırken bekleyen animasyon karesini iptal et.
     this.destroyRef.onDestroy(() => this.motion.stop());
-    afterNextRender(() => {
+    // ViewChild değişirse gözlemci gerçek çizim elemanına yeniden bağlanır.
+    afterRenderEffect((onCleanup) => {
       const element = this.canvas()?.nativeElement;
+      // DOM hazır değilse veya ortamda ResizeObserver yoksa mevcut kamera değeri korunur.
       if (!element || typeof ResizeObserver === 'undefined') return;
-      const observer = new ResizeObserver((entries) => {
-        const rect = entries[0].contentRect;
-        this.viewport.set({ width: rect.width, height: rect.height });
-      });
+      const measure = () => {
+        // Kaldırılmış/HMR sırasında sıfır ölçülen eleman, Fit'i görünmez hale getirmemelidir.
+        if (!element.clientWidth || !element.clientHeight) return;
+        // client ölçüsü padding'i kapsar; Fit kullanılabilir alan için 32px'i ayrıca çıkarır.
+        this.viewport.set({ width: element.clientWidth, height: element.clientHeight });
+      };
+      // İlk ölçüm ResizeObserver callback'ini beklemeden yapılır.
+      measure();
+      // Pencere ve panel sürükleme değişimleri aynı ölçüm yolundan geçer.
+      const observer = new ResizeObserver(measure);
       observer.observe(element);
-      this.destroyRef.onDestroy(() => observer.disconnect());
+      // Eleman değiştiğinde eski DOM gözlemcisi sıfır boyut raporlamaya devam etmez.
+      onCleanup(() => observer.disconnect());
     });
   }
   readonly explanation = computed(() =>
@@ -247,30 +270,48 @@ export class Visualization {
         'Bir fonksiyon seç, gerekli parametreleri gir ve Run ile işlemi hazırla. Liste fonksiyonlar arasında korunur.'),
   );
   readonly detachedIndex = computed(() => detachedIndexFor(this.step(), this.operation()));
-  readonly targetNodes = computed(() => layoutNodes(this.snapshot(), this.standalone(), this.detachedIndex(), this.trace() ? {
-    baseline: this.trace()!.baseline, operation: this.operation(), completed: this.trace()!.steps.at(-1) === this.step(),
-  } : undefined));
+  readonly targetNodes = computed(() =>
+    layoutNodes(
+      this.snapshot(),
+      this.standalone(),
+      this.detachedIndex(),
+      this.trace()
+        ? {
+            baseline: this.trace()!.baseline,
+            operation: this.operation(),
+            completed: this.trace()!.steps.at(-1) === this.step(),
+          }
+        : undefined,
+    ),
+  );
   // SVG yalnız interpolasyonun gerçek ara pozlarını çizer; oklar da bunları kullanır.
   readonly nodes = this.motion.nodes;
   // Kamera boyutunu bütün trace için sabit tut: yeni Node oluşunca her adımda zoom sıçramaz.
   readonly sceneNodes = computed(() =>
-    this.trace()?.steps.at(-1) === this.step()
+    // Son adımda Node'lar yerleşmeden kamerayı küçültmek ara pozları kırpabilir.
+    this.trace()?.steps.at(-1) === this.step() && !this.motion.busy()
       ? this.targetNodes()
       : (this.trace()?.steps.flatMap((step) =>
-          layoutNodes(step.snapshot, false, detachedIndexFor(step, this.operation()), { baseline: this.trace()!.baseline, operation: this.operation(), completed: step === this.trace()!.steps.at(-1) }),
+          layoutNodes(step.snapshot, false, detachedIndexFor(step, this.operation()), {
+            baseline: this.trace()!.baseline,
+            operation: this.operation(),
+            completed: step === this.trace()!.steps.at(-1),
+          }),
         ) ?? this.targetNodes()),
   );
-  readonly canvasHeight = computed(() => (this.sceneNodes().some((n) => n.y > 200) ? 390 : 225));
-  readonly width = computed(() => Math.max(350, ...this.sceneNodes().map((n) => n.x + 230)));
+  // Tüm trace pozları ve mevcut ara pozlar birlikte ölçülür; hareket sırasında kamera daralmaz.
+  readonly bounds = computed(() =>
+    sceneBounds([...this.sceneNodes(), ...this.nodes()], this.motion.references()),
+  );
+  readonly canvasHeight = computed(() => this.bounds().height);
+  readonly width = computed(() => this.bounds().width);
+  // Fit için minimum yüzde koymayız: uzun bir listenin son okunun da görünmesi gerekir.
   readonly zoom = computed(() =>
     this.autoFit()
-      ? Math.max(
-          0.2,
-          Math.min(
-            1,
-            (this.viewport().width - 12) / this.width(),
-            (this.viewport().height - 12) / this.canvasHeight(),
-          ),
+      ? Math.min(
+          1,
+          Math.max(1, this.viewport().width - 32) / this.width(),
+          Math.max(1, this.viewport().height - 32) / this.canvasHeight(),
         )
       : this.manualZoom(),
   );
@@ -305,16 +346,14 @@ export class Visualization {
   });
   // Referans etiketleri Node döngüsünün dışında, isimleriyle track edilir.
   // current başka bir Node'a geçtiğinde aynı SVG öğesi taşınır; bu hareket animasyonlanabilir.
-  readonly positionedReferences = computed(() => this.motion.references().flatMap(ref => {
-    const node = this.nodes().find(n => n.id === ref.target);
-    if (!node) return [];
-    // İsimlerin sabit şeritleri, current/previous yer değişiminde etiketlerin kesişmesini önler.
-    const index = ref.name === 'previous' ? 0 : ref.name === 'current' ? 1 : ref.name === 'head' ? 2 : 3;
-    const lift = 95 - index * 20;
-    const anchor = 122 - index * 14;
-    return [{ ...ref, opacity: ref.opacity * node.opacity, x: node.x, y: node.y - lift,
-      path: `M 58 9 C ${anchor} 9, ${anchor} ${lift - 25}, ${anchor} ${lift - 5}` }];
-  }));
+  // Aynı Node'a yönelen pointer'ların etiketleri ve giriş portları birlikte hesaplanır.
+  readonly positionedReferences = computed(() =>
+    layoutReferences(this.nodes(), this.motion.references()).map((ref) => ({
+      ...ref,
+      // Node görünürleşirken onun referansı da aynı görünürlük oranıyla belirir.
+      opacity: ref.opacity * (this.nodes().find((node) => node.id === ref.target)?.opacity ?? 0),
+    })),
+  );
   path(node: PositionedNode): string {
     return nextPath(node, this.nodes());
   }

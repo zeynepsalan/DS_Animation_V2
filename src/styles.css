@@ -1,1307 +1,976 @@
-/* Tasarım token'ları: indigo seçimleri, bebek mavisi referansları vurgular. */
+/* İlk projenin midnight indigo ve bebek mavisi paleti, yüzey rollerine göre tek yerde tanımlanır. */
 :root {
-  color-scheme: dark;
-  --bg: #0c101b;
-  --panel: #111725;
-  --surface: #161e30;
-  --line: #253047;
-  --muted: #8290a9;
-  --text: #e6edf8;
-  --indigo: #818cf8;
-  --indigo-deep: #4f46e5;
-  --blue: #a4d8f5;
-  --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  color-scheme: light;
+  --primary: #261b3e;
+  --blue: #a8d4f0;
+  --blue-strong: #6bb3de;
+  --arrow: #397ba5;
+  --bg: #ffffff;
+  --canvas: #f7f9fc;
+  --panel: #18122a;
+  --surface: #211a36;
+  --line: #2e2648;
+  --border-light: #d8dee8;
+  --muted: #9aa3b5;
+  --text: #e8ecf4;
+  --text-light: #261b3e;
+  --muted-light: #5c6578;
+  --callout: #eaf5fc;
+  --bookkeeping: #f1f3f8;
+  --hover-dark: rgb(255 255 255 / 6%);
+  --selected-dark: rgb(168 212 240 / 16%);
+  --active-code: rgb(168 212 240 / 18%);
+  --error-dark: #ffb3c4;
+  --error-light: #a33442;
+  --mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  --sans: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --radius: 12px;
   --motion: 400ms;
 }
+/* Padding ve border, tanımlanan genişliğin içinde hesaplanır. */
 * {
   box-sizing: border-box;
 }
+/* Sayfa yerine çalışma panellerinin kendi içinde scroll yapması sağlanır. */
+html,
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font:
-    14px -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
+  height: 100%;
+  overflow: hidden;
 }
+/* İçeriğin arkasındaki boş zemin beyaz; yazı ailesi referansın sans-serif düzenidir. */
+body {
+  background: var(--bg);
+  color: var(--text-light);
+  font: 14px var(--sans);
+}
+/* Root yüksekliği dinamik viewport'a sabitlenir; üst bar ve workspace bu alanı paylaşır. */
+app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+/* Form kontrolleri uygulamanın yazı ailesini miras alır. */
 button,
 input {
   font: inherit;
 }
+/* Button varsayılanı, her yüzeyde mevcut metin rengini ve küçük radius'u kullanır. */
 button {
-  cursor: pointer;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
   color: inherit;
+  cursor: pointer;
 }
+/* Devre dışı eylemler görsel olarak anlaşılır kalır. */
 button:disabled {
-  cursor: not-allowed;
   opacity: 0.35;
+  cursor: not-allowed;
 }
+/* Klavye ile odaklanan eylem, açık ve koyu yüzeylerde belirgin mavi çerçeve alır. */
 button:focus-visible,
 input:focus-visible,
 [tabindex]:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--blue-strong);
   outline-offset: 3px;
 }
-button,
-input {
-  border-radius: 6px;
-}
-button {
-  border: 0;
-  background: transparent;
-}
+/* Linkler bulundukları yüzeyin rengini korur. */
 a {
   color: inherit;
   text-decoration: none;
 }
+/* Kod, state değerleri ve method imzaları monospace ile hizalanır. */
 code {
   font-family: var(--mono);
 }
+/* Ortak yardımcı metin sınıfları koyu paneller için kullanılır. */
 .muted {
   color: var(--muted);
 }
+/* Teknik vurgu rengi bebek mavisidir. */
 .blue {
   color: var(--blue);
 }
+/* Yardımcı açıklama metni ana içerikten küçük görünür. */
 .small {
-  font-size: 12px;
+  font-size: 11px;
 }
+/* Küçük başlıklar içerikle yarışmadan bölümleri ayırır. */
 .mini-label,
 .eyebrow {
   font-size: 10px;
-  letter-spacing: 1.5px;
-  font-weight: 650;
+  font-weight: 600;
+  letter-spacing: 1px;
   color: var(--muted);
 }
-/* Uygulama başlığı ve marka. */
+/* Tüm arayüz ikonları tek boyut ve çizgi kalınlığı sistemini kullanır. */
+app-icon {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  vertical-align: middle;
+}
+/* SVG, ikonun host alanını doldurur ve satır yüksekliğini büyütmez. */
+app-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Üst bar dosya yolunu taşıyan kompakt, koyu indigo bir yüzeydir. */
 .topbar {
-  height: 64px;
+  height: 54px;
+  flex: 0 0 54px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  background: var(--primary);
+  color: var(--text);
   border-bottom: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 28px;
-  background: #101522;
 }
+/* Sidebar aç/kapat eylemi, Explorer rail ile aynı ikon dilini kullanır. */
+.sidebar-toggle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--blue);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+/* Marka ve dosya yolu kalan alanı paylaşır; uzun yol sağdaki bilgiyi itmez. */
 .brand {
+  min-width: 0;
+  margin-right: auto;
   display: flex;
-  gap: 15px;
   align-items: center;
-  font-size: 15px;
-  font-weight: 650;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
 }
+/* Marka sembolü flat renk kullanır; süs gradient'i veya ağır gölge eklenmez. */
+.brand-symbol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--blue);
+  color: var(--primary);
+  font: 600 15px var(--mono);
+}
+/* Küçük yön işareti marka sembolünün görsel ağırlığını azaltır. */
+.brand-symbol span {
+  font-size: 12px;
+}
+/* Dosya konumu dar ekranda tek satırda kısaltılır. */
+.breadcrumb {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* Yol ayırıcıları aktif dosyadan daha düşük vurgu taşır. */
 .brand-light {
   color: var(--muted);
   font-weight: 400;
 }
-.brand-symbol {
-  width: 35px;
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 9px;
-  background: var(--indigo-deep);
-  font-family: var(--mono);
-  font-size: 16px;
-  color: white;
-}
-.brand-symbol span {
+/* Aktif dosya adı bebek mavisi ile ayırt edilir. */
+.breadcrumb-current {
   color: var(--blue);
-  font-size: 15px;
 }
+/* Durum alanı ikincil bilgi olarak küçük tutulur. */
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-size: 11px;
   color: var(--muted);
+  flex-shrink: 0;
 }
+/* Ortak durum noktası yalnız renk ile bilgi vermek yerine yanındaki metni destekler. */
 .status-dot {
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: var(--blue);
   border-radius: 50%;
+  background: var(--blue);
 }
+/* Versiyon etiketi ana akışı kesmeden üst barın sonunda görünür. */
 .version-pill {
   border: 1px solid var(--line);
-  padding: 4px 8px;
-  border-radius: 20px;
-  margin-left: 12px;
+  border-radius: 12px;
+  padding: 3px 7px;
+  margin-left: 8px;
 }
-/* Sidebar ile ana çalışma alanı arasındaki yerleşim. */
+/* Sidebar, ayraç ve workbench ana grid'in üç sütunudur. */
 .workspace {
   display: grid;
-  grid-template-columns: 242px minmax(0, 1fr);
-  min-height: calc(100vh - 64px);
-}
-app-sidebar {
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid var(--line);
-  background: #0f1420;
-}
-.panel-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 19px 20px;
-  height: 56px;
-  border-bottom: 1px solid var(--line);
-  font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 1.4px;
-  color: var(--muted);
-}
-app-sidebar nav {
-  padding: 16px 10px;
+  grid-template-columns: var(--sidebar-width, 228px) 10px minmax(0, 1fr);
   flex: 1;
-}
-.tree-root {
-  font-size: 10px;
-  font-weight: 650;
-  letter-spacing: 0.8px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  padding: 5px 9px 16px;
-  color: #bac5d9;
-}
-.file,
-.folder {
-  display: flex;
-  align-items: center;
-  text-align: left;
-  width: 100%;
-  gap: 9px;
-  min-height: 31px;
-  padding: 6px 10px;
-  color: #b2bfd5;
-  font-size: 12px;
-  white-space: nowrap;
-}
-.file {
-  padding-left: 28px;
-}
-.file:hover,
-.folder:hover {
-  background: #1a2235;
-}
-.file.selected {
-  background: #272c51;
-  color: #d9defe;
-  box-shadow: inset 2px 0 var(--indigo);
-}
-.file-icon {
-  color: var(--indigo);
-  font: 15px var(--mono);
-  min-width: 14px;
-}
-.node-file {
-  padding-left: 13px;
-  margin-bottom: 14px;
-}
-.file-tag {
-  margin-left: auto;
-  font-size: 9px;
-  color: var(--muted);
-}
-.folder-icon {
-  font-size: 19px;
-  color: var(--blue);
-}
-.tree-group {
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #697b9a;
-  padding: 18px 0 7px 29px;
-}
-.future {
-  margin-top: 20px;
-  color: #67768e;
-}
-.sidebar-note {
-  margin: 10px 18px 25px;
-  display: flex;
-  gap: 9px;
-  font-size: 11px;
-  line-height: 1.7;
-  color: var(--muted);
-}
-/* IDE panelleri ve kod satırının aktif adım vurgusu. */
-.workbench {
-  padding: 28px 28px 12px;
-  min-width: 0;
-}
-.workbench-heading {
-  margin-bottom: 24px;
-}
-.workbench-heading .eyebrow {
-  color: var(--indigo);
-  font-size: 10px;
-}
-.workbench-heading h1 {
-  font-size: 28px;
-  font-weight: 550;
-  letter-spacing: -0.7px;
-  margin: 9px 0;
-}
-.workbench-heading p {
-  color: var(--muted);
-  font-size: 12px;
-  margin: 0;
-  line-height: 1.6;
-}
-.panels {
-  display: grid;
-  grid-template-columns: minmax(310px, 1fr) minmax(360px, 1.15fr);
-  gap: 18px;
-  align-items: stretch;
-}
-app-codebar,
-.visual-panel {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel);
+  min-height: 0;
   overflow: hidden;
-  min-width: 0;
-}
-app-codebar {
-  display: flex;
-  flex-direction: column;
-}
-.editor-tab {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  height: 56px;
-  border-bottom: 1px solid var(--line);
-  padding: 0 20px;
-  background: #151b2b;
-  font-size: 12px;
-  font-family: var(--mono);
-  box-shadow: inset 0 2px var(--indigo);
-}
-.editor-tab .muted {
-  margin-left: auto;
-}
-.editor-toolbar {
-  padding: 15px 17px 13px;
-  border-bottom: 1px solid var(--line);
-}
-.breadcrumb {
-  color: var(--muted);
-  font-size: 10px;
-  display: block;
-  margin-bottom: 13px;
-}
-.language-tabs {
-  display: flex;
-  gap: 5px;
-}
-.language-tabs button {
-  font-size: 11px;
-  color: var(--muted);
-  padding: 6px 13px;
-  border: 1px solid transparent;
-}
-.language-tabs button.active {
-  background: #253246;
-  color: var(--blue);
-  border-color: #364b65;
-}
-.code-scroll {
   position: relative;
-  overflow: auto;
-  padding: 22px 0;
-  flex: 1;
-  min-height: 420px;
-  max-height: 650px;
 }
-.code-line {
-  display: flex;
-  align-items: start;
-  min-height: 27px;
-  line-height: 27px;
-  border-left: 2px solid transparent;
-  width: max-content;
-  min-width: 100%;
-  font-size: 11px;
-}
-.line-number {
-  position: sticky;
-  left: 0;
-  background: var(--panel);
-  width: 47px;
-  flex-shrink: 0;
-  text-align: right;
-  padding-right: 15px;
-  color: #56657e;
-  user-select: none;
-}
-.code-line code {
-  padding-right: 25px;
-  white-space: pre;
-}
-.code-line.highlighted {
-  background: #24384c;
-  border-color: var(--blue);
-}
-.code-line.highlighted .line-number {
-  background: #24384c;
-  color: var(--blue);
-}
-.syntax-keyword {
-  color: #adadff;
-}
-.syntax-string {
-  color: #b8d7b0;
-}
-.syntax-number {
-  color: #e8b89a;
-}
-.syntax-comment {
-  color: #647b8d;
-}
-.code-footer {
-  font-size: 9px;
-  color: var(--muted);
-  padding: 13px 16px;
-  border-top: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-}
-.code-footer .blue {
-  margin-right: 5px;
-}
-/* Adım açıklamaları, SVG Node/pointer görünümü ve değişkenler. */
-.live-indicator {
-  font-size: 9px;
-  letter-spacing: 0;
-  font-weight: 400;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--blue);
-}
-.explanation {
-  padding: 20px 22px 14px;
-  min-height: 106px;
-  background: linear-gradient(100deg, #1b2140, #151d2e);
-}
-.explanation .eyebrow {
-  color: var(--indigo);
-  display: flex;
-  justify-content: space-between;
-}
-.explanation p {
-  font-size: 12px;
-  line-height: 1.85;
-  margin: 12px 0 0;
-  color: #d1dbec;
-}
-.variables-panel {
-  padding: 16px 22px;
-  border-bottom: 1px solid var(--line);
-  min-height: 95px;
-}
-.variable-chips {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-.variable-chip {
-  font-size: 10px;
-  border: 1px solid #2b374d;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 9px;
-  max-width: 100%;
-  transition:
-    background var(--motion),
-    border-color var(--motion);
-}
-.variable-chip span {
-  color: var(--muted);
-}
-.variable-chip code {
-  color: var(--blue);
-  overflow-wrap: anywhere;
-}
-.variable-chip.changed {
-  background: #293057;
-  border-color: var(--indigo);
-}
-.canvas-scroll {
-  overflow: auto;
-  background-color: #101724;
-  background-image: radial-gradient(#273247 0.7px, transparent 0.7px);
-  background-size: 18px 18px;
-  min-height: 390px;
-}
-.canvas-scroll svg {
-  display: block;
-}
-.node-shape,
-.reference-label {
-  transition: transform var(--motion) ease;
-}
-.node-box {
-  fill: #252b50;
-  stroke: var(--indigo);
-  stroke-width: 1.5;
-}
-.node-divider {
-  stroke: #555f93;
-  stroke-width: 1;
-}
-.field-label {
-  font-size: 10px;
-  fill: #a1aad4;
-  font-family: var(--mono);
-}
-.node-id {
-  font-size: 10px;
-  fill: #7186a2;
-  font-family: var(--mono);
-}
-.node-value {
-  font: 18px var(--mono);
-  color: #edf1ff;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-.next-value {
-  font: 12px var(--mono);
-  fill: var(--blue);
-}
-.detached .node-box {
-  stroke-dasharray: 5 3;
-  fill: #1b203a;
-}
-.pointer-path {
-  fill: none;
-  stroke: var(--blue);
-  stroke-width: 1.8;
-  transition:
-    d var(--motion),
-    opacity var(--motion);
-}
-.null-path {
-  transition: none;
-}
-.null-label {
-  font: 12px var(--mono);
-  fill: #8095ad;
-}
-.reference-label rect {
-  fill: #273950;
-  stroke: #526e8b;
-  stroke-width: 0.8;
-}
-.reference-label text {
-  font: 10px var(--mono);
-  fill: var(--blue);
-}
-.reference-label path {
-  fill: none;
-  stroke: var(--blue);
-  stroke-width: 1;
-}
-.empty-title {
-  fill: var(--blue);
-  font: 21px var(--mono);
-}
-.empty-description {
-  fill: var(--muted);
-  font: 12px sans-serif;
-}
-.visual-legend {
-  padding: 12px 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  font-size: 9px;
-  color: var(--muted);
-  border-top: 1px solid var(--line);
-}
-.visual-legend span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.visual-legend > .muted {
-  margin-left: auto;
-}
-.legend-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  display: inline-block;
-}
-.indigo {
-  background: var(--indigo);
-}
-.blue-bg {
-  background: var(--blue);
-}
-.result-box {
-  display: flex;
-  gap: 14px;
-  padding: 13px 22px;
-  background: #1b2840;
-  align-items: center;
-}
-.result-box code {
-  color: var(--blue);
-  font-size: 12px;
-  overflow-wrap: anywhere;
-}
-.operation-form {
-  padding: 18px 22px;
-  border-top: 1px solid var(--line);
-}
-.operation-form > .mini-label {
-  display: flex;
-  justify-content: space-between;
-}
-.data-type {
-  letter-spacing: 0;
-  font-family: var(--mono);
-  font-weight: 400;
-}
-.operation-form form {
-  display: flex;
-  gap: 12px;
-  align-items: flex-end;
-  margin-top: 14px;
-  flex-wrap: wrap;
-}
-.operation-form label {
-  flex: 1;
-  min-width: 80px;
-  display: flex;
-  flex-direction: column;
-  font: 10px var(--mono);
-  gap: 6px;
-  color: var(--muted);
-}
-.operation-form input {
-  width: 100%;
-  min-width: 0;
-  height: 35px;
-  border: 1px solid #35405c;
-  background: #0d1422;
-  color: var(--text);
-  padding: 8px 10px;
-  font-size: 12px;
-}
-.run-button {
-  background: var(--indigo-deep);
-  border: 1px solid #756cef;
-  height: 35px;
-  padding: 0 17px;
-  font-size: 11px;
-  font-weight: 600;
-  color: white;
-  flex-shrink: 0;
-}
-.run-button:hover {
-  background: #6259ec;
-}
-.operation-form form > .small {
-  flex: 1;
-  align-self: center;
-}
-.helper-note {
-  color: #6e829e;
-  font-size: 10px;
-  line-height: 1.7;
-  margin: 13px 0 0;
-}
-.form-message {
-  font-size: 11px;
-  line-height: 1.6;
-  color: var(--blue);
-  margin: 12px 0 0;
-}
-.error {
-  color: #ffb2b8;
-}
-.playback {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 15px 20px;
-  border-top: 1px solid var(--line);
-  background: #141b2b;
-  flex-wrap: wrap;
-}
-.playback-buttons {
-  display: flex;
-  gap: 7px;
-  align-items: center;
-}
-.playback-buttons button {
-  width: 29px;
-  height: 29px;
-  font-size: 12px;
-  color: var(--muted);
-}
-.playback-buttons button:hover:enabled {
-  background: #27324b;
-  color: var(--text);
-}
-.playback-buttons .play-button {
-  background: var(--indigo-deep);
-  color: white;
-  width: 35px;
-}
-.speed-label {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 9px;
-  color: var(--muted);
-}
-.speed-label input {
-  width: 72px;
-  accent-color: var(--blue);
-}
-.speed-label span {
-  color: var(--blue);
-  width: 27px;
-}
-.workspace-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  font-size: 10px;
-  color: #5e6f8b;
-  padding: 19px 0;
-  line-height: 1.6;
-}
-/* Dar ekranlarda aynı paneller okunabilir şekilde alt alta geçer. */
-@media (min-width: 1600px) {
-  .workbench {
-    padding: 38px 44px;
-  }
-  .panels {
-    gap: 24px;
-  }
-  .code-line {
-    font-size: 12px;
-  }
-  .code-scroll {
-    max-height: 750px;
-  }
-  .explanation p {
-    font-size: 13px;
-  }
-}
-@media (max-width: 1150px) {
-  .workspace {
-    grid-template-columns: 212px minmax(0, 1fr);
-  }
-  .workbench {
-    padding: 24px 18px;
-  }
-  .panels {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .code-scroll {
-    min-height: 220px;
-    max-height: 370px;
-  }
-  .visual-panel {
-    min-height: 0;
-  }
-}
-@media (max-width: 640px) {
-  .topbar {
-    padding: 0 16px;
-  }
-  .topbar-right {
-    display: none;
-  }
-  .workspace {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  app-sidebar {
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-  app-sidebar nav {
-    max-height: 210px;
-    overflow: auto;
-  }
-  .sidebar-note {
-    display: none;
-  }
-  .workbench {
-    padding: 20px 12px;
-  }
-  .workbench-heading h1 {
-    font-size: 24px;
-  }
-  .workspace-footer {
-    flex-direction: column;
-    gap: 4px;
-  }
-  .panels {
-    gap: 14px;
-  }
-  .code-line {
-    font-size: 10px;
-  }
-  .operation-form {
-    padding: 16px;
-  }
-  .explanation {
-    padding: 18px;
-  }
-  .speed-label input {
-    width: 80px;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --motion: 0ms;
-  }
-  * {
-    scroll-behavior: auto !important;
-  }
-}
-
-.source-download {
-  display: block;
-  color: var(--blue);
-  font-size: 10px;
-  margin-top: 12px;
-}
-.source-download:hover {
-  text-decoration: underline;
-}
-
-/* Viewport'a sığan çalışma alanı: büyüyen içerikler sayfayı değil paneli kaydırır.
-   min-height: 0, flex/grid çocuklarının içerik boyutuyla ekranı büyütmesini önler. */
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-}
-app-root {
-  height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.topbar {
-  height: 54px;
-  flex: 0 0 54px;
-}
-.workspace {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
+/* Sidebar açıkken Explorer içeriği kendi yükseklik alanına sığar. */
 app-sidebar {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
+  background: var(--primary);
+  color: var(--text);
 }
-app-sidebar nav {
-  min-height: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
+/* Kapalı Sidebar state'i DOM'da korur; gizli kontroller etkileşim alamaz. */
+app-sidebar.closed {
+  visibility: hidden;
+  pointer-events: none;
 }
+/* Panel başlığı bütün sütunlarda ortak küçük hiyerarşiyi kullanır. */
 .panel-heading {
   height: 44px;
   flex: 0 0 44px;
-  padding: 12px 18px;
-}
-.sidebar-note {
-  flex: 0 0 auto;
-  margin: 12px 16px;
-}
-.workbench {
+  padding: 12px 16px;
   display: flex;
-  flex-direction: column;
-  min-height: 0;
-  padding: 18px 22px 0;
-  overflow: hidden;
-}
-.workbench-heading {
-  flex: 0 0 auto;
-  margin-bottom: 15px;
-}
-.workbench-heading h1 {
-  font-size: 25px;
-  margin: 6px 0;
-}
-.panels {
-  flex: 1;
-  min-height: 0;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-}
-.editor-column,
-.visual-panel {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel);
-}
-app-codebar {
-  flex: 1;
-  min-height: 0;
-  border: 0;
-  border-radius: 0;
-}
-.editor-tab {
-  height: 42px;
-  flex: 0 0 42px;
-  padding: 0 16px;
-}
-.editor-toolbar {
-  flex: 0 0 auto;
-  padding: 10px 16px;
-}
-.breadcrumb {
-  margin-bottom: 8px;
-}
-.code-scroll {
-  flex: 1;
-  min-height: 0;
-  max-height: none;
-  padding: 15px 0;
-  overscroll-behavior: contain;
-}
-.code-footer {
-  flex: 0 0 auto;
-  padding: 8px 16px;
-}
-.operation-form {
-  flex: 0 0 auto;
-  max-height: 42%;
-  overflow: auto;
-  padding: 13px 16px;
-}
-.signature-form {
-  align-items: center !important;
-  gap: 8px !important;
-  flex-wrap: nowrap !important;
-  margin-top: 11px !important;
-}
-.function-signature {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  min-width: 0;
-  flex: 1;
-  flex-wrap: wrap;
-  font: 12px var(--mono);
-  color: var(--blue);
-  line-height: 1.8;
-}
-.signature-prefix {
-  color: var(--indigo);
-  overflow-wrap: anywhere;
-}
-.function-signature input {
-  width: 95px;
-  min-width: 45px;
-  flex: 1 1 65px;
-  max-width: 180px;
-  height: 30px;
-  font: 12px var(--mono);
-  padding: 4px 7px;
-  border: 0;
-  border-bottom: 1px solid var(--blue);
-  border-radius: 3px;
-  background: #1d2c40;
-  color: var(--text);
-}
-.function-signature .index-argument {
-  max-width: 60px;
-  flex: 0 1 50px;
-}
-.operation-meta {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
+  align-items: center;
   font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.3px;
   color: var(--muted);
-}
-.operation-meta .source-download {
-  margin: 0;
-}
-app-visualization {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
-}
-.explanation {
-  flex: 0 0 auto;
-  min-height: 0;
-  max-height: 28%;
-  overflow: auto;
-  padding: 15px 18px;
-}
-.explanation p {
-  margin-top: 8px;
-  line-height: 1.6;
-}
-.variables-panel {
-  flex: 0 0 auto;
-  min-height: 0;
-  max-height: 25%;
-  overflow: auto;
-  padding: 12px 18px;
-}
-.variable-chips {
-  margin-top: 9px;
-}
-.canvas-scroll {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  align-items: flex-start;
-  overscroll-behavior: contain;
-}
-.canvas-scroll svg {
-  flex-shrink: 0;
-}
-.visual-legend {
-  flex: 0 0 auto;
-  padding: 10px 18px;
-}
-.result-box {
-  flex: 0 0 auto;
-  max-height: 18%;
-  overflow: auto;
-  padding: 10px 18px;
-}
-.result-box.failed {
-  border-left: 2px solid #ffb2b8;
-}
-.playback {
-  flex: 0 0 auto;
-  padding: 12px 18px;
-}
-.workspace-footer {
-  flex: 0 0 auto;
-  padding: 10px 0;
-}
-@media (max-width: 1150px) {
-  .workspace {
-    grid-template-columns: 195px minmax(0, 1fr);
-  }
-  .workbench {
-    padding: 15px 15px 0;
-  }
-  .panels {
-    gap: 12px;
-  }
-}
-@media (max-width: 850px) {
-  .workspace {
-    grid-template-columns: 155px minmax(0, 1fr);
-  }
-  .file {
-    font-size: 10px;
-    padding-left: 15px;
-  }
-  .folder {
-    font-size: 10px;
-    padding-left: 5px;
-  }
-  .signature-form {
-    flex-wrap: wrap !important;
-  }
-  .function-signature {
-    flex-basis: 100%;
-  }
-  .operation-form .run-button {
-    margin-left: auto;
-  }
-  .explanation {
-    padding: 10px 12px;
-  }
-  .variables-panel {
-    padding: 10px 12px;
-  }
-  .workbench-heading p,
-  .workspace-footer {
-    display: none;
-  }
-  .workbench {
-    padding-bottom: 12px;
-  }
-}
-@media (max-width: 640px) {
-  .workspace {
-    grid-template-columns: 120px minmax(0, 1fr);
-  }
-  app-sidebar {
-    border-right: 1px solid var(--line);
-    border-bottom: 0;
-  }
-  app-sidebar nav {
-    max-height: none;
-    padding: 10px 4px;
-  }
-  .tree-root {
-    font-size: 8px;
-    padding: 5px 4px 12px;
-  }
-  .file {
-    overflow: hidden;
-    padding: 6px;
-    font-size: 9px;
-    gap: 4px;
-  }
-  .folder {
-    white-space: normal;
-    gap: 3px;
-  }
-  .tree-group {
-    padding-left: 8px;
-  }
-  .file-tag {
-    display: none;
-  }
-  .panels {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 8px;
-  }
-  .workbench-heading {
-    margin-bottom: 8px;
-  }
-  .workbench-heading h1 {
-    font-size: 18px;
-  }
-  .workbench {
-    padding: 8px;
-  }
-  .editor-tab {
-    height: 30px;
-    flex-basis: 30px;
-    font-size: 10px;
-  }
-  .editor-toolbar {
-    padding: 4px 8px;
-  }
-  .breadcrumb,
-  .code-footer {
-    display: none;
-  }
-  .language-tabs button {
-    padding: 4px 8px;
-  }
-  .operation-form {
-    padding: 7px 8px;
-    max-height: 45%;
-  }
-  .operation-form > .mini-label,
-  .operation-meta {
-    display: none;
-  }
-  .signature-form {
-    margin-top: 0 !important;
-    gap: 4px !important;
-  }
-  .function-signature {
-    font-size: 10px;
-    line-height: 1.5;
-  }
-  .function-signature input {
-    height: 23px;
-    font-size: 10px;
-  }
-  .run-button {
-    height: 25px;
-    padding: 0 10px;
-  }
-  .panel-heading {
-    height: 29px;
-    flex-basis: 29px;
-    font-size: 8px;
-    padding: 8px;
-  }
-  .explanation {
-    padding: 7px 9px;
-  }
-  .explanation p {
-    font-size: 10px;
-    margin-top: 4px;
-  }
-  .variables-panel {
-    padding: 6px 9px;
-  }
-  .variable-chip {
-    padding: 3px 5px;
-    font-size: 8px;
-  }
-  .variable-chips {
-    margin-top: 4px;
-  }
-  .visual-legend {
-    display: none;
-  }
-  .playback {
-    padding: 6px 8px;
-    gap: 5px;
-  }
-  .playback-buttons {
-    gap: 1px;
-  }
-  .speed-label input {
-    width: 45px;
-  }
-  .result-box {
-    padding: 5px 9px;
-  }
-}
-@media (max-height: 650px) and (min-width: 641px) {
-  .workbench-heading p,
-  .workspace-footer {
-    display: none;
-  }
-  .workbench {
-    padding: 10px 16px;
-  }
-  .workbench-heading {
-    margin-bottom: 8px;
-  }
-  .explanation {
-    padding: 10px 15px;
-  }
-  .variables-panel {
-    padding: 9px 15px;
-  }
-  .operation-form {
-    padding: 10px 14px;
-  }
-}
-
-/* Hareket geometrisini ve okların eğrilerini aynı süre/easing ile ilerletiriz.
-   Yeni öğe fade ile belirir; silinen öğe Angular animate.leave ile yavaşça kaybolur. */
-.node-shape,
-.reference-label,
-.null-indicator {
-  transition:
-    transform var(--motion) cubic-bezier(0.4, 0, 0.2, 1),
-    opacity var(--motion) ease;
-}
-.pointer-path,
-.reference-label path {
-  transition:
-    d var(--motion) cubic-bezier(0.4, 0, 0.2, 1),
-    opacity var(--motion) ease;
-}
-.node-enter {
-  animation: visual-appear var(--motion) ease both;
-}
-.node-leave {
-  animation: visual-disappear var(--motion) ease both;
-  pointer-events: none;
-}
-.pointer-enter {
-  animation: visual-appear calc(var(--motion) * 0.65) ease both;
-}
-.pointer-leave {
-  animation: visual-disappear calc(var(--motion) * 0.65) ease both;
-  pointer-events: none;
-}
-@keyframes visual-appear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes visual-disappear {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-.node-value {
-  font-size: 15px;
-}
-.next-value {
-  font-size: 10px;
-}
-.zoom-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 0 0 auto;
-  padding: 7px 16px;
   border-bottom: 1px solid var(--line);
-  background: #121a2a;
 }
-.zoom-toolbar > div {
+/* Search alanı ilk projenin Explorer arama yüzeyini tekrar kullanır. */
+.sidebar-search {
+  margin: 12px 12px 8px;
   display: flex;
   align-items: center;
   gap: 7px;
-  color: var(--blue);
-  font: 10px var(--mono);
+  padding: 0 9px;
+  height: 32px;
+  flex-shrink: 0;
+  background: var(--hover-dark);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--muted);
 }
-.zoom-toolbar button {
-  width: 25px;
+/* Arama odağı Sidebar içinde anlaşılır bir sınır oluşturur. */
+.sidebar-search:focus-within {
+  border-color: var(--blue-strong);
+}
+/* Arama girdisi kapsayıcının kalan genişliğini kullanır. */
+.sidebar-search input {
+  width: 100%;
+  min-width: 0;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  outline: none;
+  font-size: 12px;
+}
+/* Placeholder kullanıcıya filtre eylemini gösterir. */
+.sidebar-search input::placeholder {
+  color: var(--muted);
+}
+/* Tarayıcının ek clear ikonu yerine tek yerel clear button gösterilir. */
+.sidebar-search input::-webkit-search-cancel-button {
+  appearance: none;
+}
+/* Arama temizleme butonu küçük ama tıklanabilir bir alana sahiptir. */
+.sidebar-search button {
+  display: grid;
+  place-items: center;
+  width: 22px;
   height: 24px;
-  background: #25314a;
-  font-size: 15px;
+  padding: 2px;
 }
-.zoom-toolbar .fit-button {
-  width: 33px;
+/* Uzun fonksiyon ağacı Sidebar içinde kayar; footer sabit kalır. */
+app-sidebar nav {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 4px 8px 12px;
+  overscroll-behavior: contain;
+}
+/* Ağaç kökü ders kapsamını küçük bir üst etiket olarak gösterir. */
+.tree-root {
+  display: flex;
+  gap: 7px;
+  padding: 8px 8px 12px;
   font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--muted);
 }
-.canvas-scroll svg {
-  transition:
-    width var(--motion) ease,
-    height var(--motion) ease;
+/* Folder satırları aç/kapat durumunu gösteren yatay alanlardır. */
+.folder {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 8px;
+  text-align: left;
+  font-size: 12px;
+  border-radius: 6px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .node-enter,
-  .node-leave,
-  .pointer-enter,
-  .pointer-leave {
-    animation-duration: 0ms;
-  }
+/* Folder ikonu İngilizce yapı adını destekler. */
+.folder-icon {
+  color: var(--blue);
 }
-@media (max-width: 640px) {
-  .zoom-toolbar {
-    padding: 3px 8px;
-  }
-  .zoom-toolbar .mini-label {
-    display: none;
-  }
+/* Fonksiyonlar 28px dosya satırlarıyla kompakt bir IDE ağacı oluşturur. */
+.file {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 28px;
+  padding: 5px 8px 5px 26px;
+  text-align: left;
+  font-size: 12px;
+  border-radius: 6px;
 }
-
-/* Zoom, viewBox oranını aniden değiştirmek yerine bütün sahneyi eşit ölçekler. */
+/* Bağımsız Node sınıfı ana yapı klasörleriyle aynı girintiden başlar. */
+.node-file {
+  padding-left: 8px;
+  margin-bottom: 8px;
+}
+/* Dosya türü ikonu her satırda aynı genişliği tutar. */
+.file-icon {
+  color: var(--blue);
+}
+/* Class ve yakında etiketleri satırın sonunda düşük vurgu taşır. */
+.file-tag {
+  margin-left: auto;
+  font: 9px var(--mono);
+  color: var(--muted);
+}
+/* Hover kullanıcıya hangi satırın seçileceğini gösterir. */
+.file:hover,
+button.folder:hover {
+  background: var(--hover-dark);
+}
+/* Seçili fonksiyon bebek mavisi dolgu ve sol şerit ile görünür kalır. */
+.file.selected {
+  background: var(--selected-dark);
+  color: var(--blue);
+  box-shadow: inset 3px 0 0 var(--blue);
+  font-weight: 600;
+}
+/* İşlem grupları dosyalardan önce küçük başlıklarla ayrılır. */
+.tree-group {
+  padding: 14px 8px 5px 26px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* Henüz uygulanmamış yapı, tıklanabilir fonksiyon gibi davranmaz. */
+.future {
+  opacity: 0.6;
+  margin-top: 12px;
+}
+/* Boş filtre sonucu kullanıcıya kısa Türkçe geri bildirim verir. */
+.search-empty {
+  font-size: 12px;
+  padding: 8px;
+  color: var(--muted);
+}
+/* Sidebar alt bilgisi ağacın scroll alanının dışında kalır. */
+.sidebar-note {
+  flex-shrink: 0;
+  padding: 14px;
+  border-top: 1px solid var(--hover-dark);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+/* Kapalı Sidebar masaüstünde referans tasarımdaki 48px ikon şeridine dönüşür. */
+.sidebar-rail {
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 1;
+  background: var(--primary);
+  padding: 10px 6px;
+}
+/* Explorer rail butonu tek açık eylemi gösterir. */
+.sidebar-rail button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--blue);
+}
+/* Rail hover durumu açık Sidebar ile tutarlıdır. */
+.sidebar-rail button:hover {
+  background: var(--hover-dark);
+}
+/* Ayraçlar pointer capture ile sürüklenebilir; mobil scroll ile karışmaz. */
+.panel-divider {
+  position: relative;
+  touch-action: none;
+  cursor: col-resize;
+  outline-offset: -2px;
+}
+/* Sidebar ayıracı grid içinde daima ikinci sütunu kullanır. */
+.sidebar-divider {
+  grid-column: 2;
+  grid-row: 1;
+}
+/* İnce handle panellerin dışındaki açık zeminde görünürdür. */
+.panel-divider::after {
+  content: '';
+  position: absolute;
+  width: 3px;
+  top: 36%;
+  bottom: 36%;
+  left: 3px;
+  border-radius: 4px;
+  background: #a4adba;
+  transition: background 0.15s ease;
+}
+/* Handle hover ve klavye odağı aynı vurgu rengini kullanır. */
+.panel-divider:hover::after,
+.panel-divider:focus-visible::after {
+  background: var(--arrow);
+}
+/* Workbench boşluğu 12px'tir; büyük ders başlığına yer ayrılmaz. */
+.workbench {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px 0 2px;
+  overflow: hidden;
+  background: var(--bg);
+}
+/* Kod ve çizim minimum genişlikleri koruyarak kalan alanı paylaşır. */
+.panels {
+  display: grid;
+  grid-template-columns: minmax(320px, var(--code-width, 1fr)) 10px minmax(360px, 1.2fr);
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+/* Kod sütununun dışı beyazdır; IDE ve controls birbirinden bağımsız kartlardır. */
+.editor-column {
+  min-width: 320px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+/* IDE kartı sütunun kalan yüksekliğini kullanır. */
+app-codebar {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  color-scheme: dark;
+}
+/* Dosya sekmesi referanstaki bebek mavisi üst çizgiyi taşır. */
+.editor-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  flex: 0 0 42px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-top: 2px solid var(--blue);
+  border-bottom: 1px solid var(--line);
+  font: 12.5px var(--mono);
+}
+/* Sekmenin kapanma işareti yalnız dekoratiftir; son konuma hizalanır. */
+.tab-close {
+  margin-left: auto;
+}
+/* Dil seçici kod alanının üstünde küçük bir toolbar içinde durur. */
+.editor-toolbar {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+/* Dil seçenekleri tek segmented control olarak gruplanır. */
+.language-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+/* Dil butonları aynı ölçü ve yardımcı metin rengini kullanır. */
+.language-tabs button {
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--muted);
+  border-radius: 4px;
+}
+/* Seçili dil bebek mavisi dolgu ile IDE'den ayırt edilir. */
+.language-tabs button.active {
+  background: var(--blue);
+  color: var(--primary);
+  font-weight: 600;
+}
+/* Dil hover durumu seçili olmayan seçeneklerin okunurluğunu artırır. */
+.language-tabs button:not(.active):hover {
+  color: var(--text);
+  background: var(--hover-dark);
+}
+/* Kod uzunluğu ve satır genişliği sayfa yerine IDE içinde kaydırılır. */
+.code-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px 0;
+  overscroll-behavior: contain;
+}
+/* Kod satırları kaynak girintilerini korur; yatay scroll için içeriğe göre genişler. */
+.code-line {
+  display: flex;
+  min-width: max-content;
+  min-height: 24px;
+  line-height: 24px;
+  font: 13.5px/24px var(--mono);
+  white-space: pre;
+  border-left: 3px solid transparent;
+}
+/* Satır numarası sabit gutter genişliğiyle kodu hizalar. */
+.line-number {
+  flex-shrink: 0;
+  width: 45px;
+  padding-right: 14px;
+  text-align: right;
+  color: var(--muted);
+  opacity: 0.65;
+  user-select: none;
+}
+/* Kod satırının sonuna metin taşmasını rahat okuyacak boşluk bırakılır. */
+.code-line code {
+  padding-right: 24px;
+}
+/* Aktif satır bebek mavisi şerit ve transparan dolgu ile animasyona eşlik eder. */
+.code-line.highlighted {
+  background: var(--active-code);
+  border-left-color: var(--blue);
+}
+/* Aktif satır numarası da satır vurgusunu destekler. */
+.code-line.highlighted .line-number {
+  opacity: 1;
+  color: var(--blue);
+}
+/* Java/C/pseudocode keywordleri mor-lila ile ayırt edilir. */
+.syntax-keyword {
+  color: #c4b5fd;
+}
+/* String literal ayrı ve okunur bir yeşil ton taşır. */
+.syntax-string {
+  color: #b8d7b0;
+}
+/* Sayı literal'leri sıcak renk ile değişken adlarından ayrılır. */
+.syntax-number {
+  color: #e8b89a;
+}
+/* Yorumlar koyu IDE üzerinde okunabilecek yardımcı renk kullanır. */
+.syntax-comment {
+  color: var(--muted);
+}
+/* Kod footer'ı küçük durum ve encoding bilgisini gösterir. */
+.code-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 12px;
+  font-size: 9px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+/* Method ve playback, ilk projedeki gibi aynı controls kartında gruplanır. */
+.operation-form {
+  flex: 0 0 auto;
+  min-height: 0;
+  max-height: 46%;
+  overflow: auto;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  color-scheme: dark;
+}
+/* Kartın küçük etiketi veri türü bilgisini sağa hizalar. */
+.operation-form > .mini-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+/* Veri türü teknik bir ayrıntı olarak monospace ile gösterilir. */
+.data-type {
+  font: 10px var(--mono);
+  letter-spacing: 0;
+}
+/* Method çağrısı ve Run butonu aynı satırda çalıştırma eylemini oluşturur. */
+.signature-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+/* İmza alanı IDE renginde ayrı bir kod ifadesi gibi görünür. */
+.function-signature {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  font: 12px var(--mono);
+}
+/* Fonksiyon adı bebek mavisi ile parametrelerden ayrılır. */
+.signature-prefix {
+  color: var(--blue);
+  overflow-wrap: anywhere;
+}
+/* Parametre alanları referanstaki kesik alt çizgiyi kullanır; native text input olarak kalır. */
+.function-signature input {
+  width: 7ch;
+  max-width: 100%;
+  min-width: 4ch;
+  padding: 2px 4px;
+  border: 0;
+  border-bottom: 1px dashed var(--muted);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: center;
+  font: 12px var(--mono);
+}
+/* Index girdisi kısa tam sayı değerleri için daha dar tutulur. */
+.function-signature .index-argument {
+  width: 5ch;
+}
+/* Run bebek mavisi ana eylem butonudur. */
+.run-button {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  background: var(--blue);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+/* Run hover, referanstaki güçlü mavi rengi kullanır. */
+.run-button:hover {
+  background: var(--blue-strong);
+}
+/* Hata ve iptal açıklamaları controls kartının içinde kalır. */
+.form-message {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--blue);
+}
+/* Hata rengi koyu yüzeyde okunur pembe-kırmızıdır. */
+.form-message.error {
+  color: var(--error-dark);
+}
+/* İnce ilerleme çizgisi method ve playback satırlarını ayırır. */
+.operation-progress {
+  height: 2px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+/* İlerleme dolgusu adım oranını gösterir; motorun geometrisine müdahale etmez. */
+.operation-progress span {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+  transition: width 0.2s ease;
+}
+/* Playback ve hız alanı aynı transport satırında bulunur. */
+.playback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+}
+/* Adım butonları bir görsel grup oluşturur. */
+.playback-buttons {
+  display: flex;
+  gap: 5px;
+}
+/* Transport eylemleri aynı ikon kutusu ölçüsünü kullanır. */
+.playback-buttons button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+/* Play/Pause transport grubunun ana eylemidir. */
+.playback-buttons .play-button {
+  color: var(--blue);
+  border-color: var(--blue-strong);
+}
+/* Transport hover eylemin tıklanabilir olduğunu gösterir. */
+.playback-buttons button:enabled:hover {
+  color: var(--blue);
+  background: var(--hover-dark);
+}
+/* Aktif adım sayacı playback kontrollerinin yanında teknik bağlamı korur. */
+.transport-step {
+  color: var(--muted);
+  font: 10px var(--mono);
+  white-space: nowrap;
+}
+/* Hız kontrolü sağa yaslanır, dar kartta sonraki satıra geçebilir. */
+.speed-label {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--muted);
+}
+/* Native range sürükleme ve klavye ile hız ayarını korur. */
+.speed-label input {
+  width: 65px;
+  accent-color: var(--blue);
+}
+/* Hız değeri sayısal değişimde kolon genişliğini oynatmaz. */
+.speed-label span {
+  min-width: 3ch;
+  font-family: var(--mono);
+}
+/* Yardımcı metin ve kaynak indir bağlantısı controls kartının sonunda görünür. */
+.operation-meta {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 9px;
+  color: var(--muted);
+}
+/* Kaynak linki Run butonuyla yarışmadan aynı marka rengini taşır. */
+.source-download {
+  color: var(--blue);
+  white-space: nowrap;
+}
+/* Açık Visualization paneli referansın ders/slayt yüzeyini kullanır. */
+.visual-panel {
+  min-width: 360px;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: white;
+  color: var(--text-light);
+}
+/* Açık panel başlığı için ayrı border ve metin renkleri kullanılır. */
+.visual-panel .panel-heading {
+  color: var(--muted-light);
+  border-color: var(--border-light);
+}
+/* Canlı durum metni açık zeminde daha koyu maviyle okunur kalır. */
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--arrow);
+}
+/* Durum noktası Visualization zeminiyle yeterli kontrast oluşturur. */
+.visual-panel .status-dot {
+  background: var(--arrow);
+}
+/* Visualization içeriği değişken kartları ve çizime kalan yüksekliği paylaştırır. */
+app-visualization {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+/* Değişkenler solda, açıklama sağda: en son kullanıcı kararındaki 1:3 oranı korunur. */
+.execution-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+  gap: 8px;
+  padding: 12px;
+  flex: 0 0 auto;
+  max-height: 36%;
+  min-height: 0;
+  overflow: hidden;
+}
+/* Her bilgi kartı içerik uzarsa kendi içinde kayar. */
+.execution-summary > div {
+  min-width: 0;
+  min-height: 0;
+  padding: 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  overflow: auto;
+}
+/* Değişken kartı referanstaki bookkeeping yüzeyini kullanır. */
+.variables-panel {
+  background: var(--bookkeeping);
+}
+/* Adım açıklaması bebek mavisi callout ve sol vurgu şeridiyle ayrılır. */
+.execution-summary .explanation {
+  background: var(--callout);
+  border-left: 3px solid var(--blue-strong);
+}
+/* Açık yüzeyde küçük başlıkların rengi koyu yardımcı metindir. */
+.execution-summary .mini-label,
+.execution-summary .eyebrow {
+  color: var(--muted-light);
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  overflow-wrap: anywhere;
+}
+/* Adım sayısı açıklama başlığının sonunda görünür. */
+.explanation .eyebrow {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+/* Türkçe açıklama satırları kartı gereksiz büyütmeden okunur kalır. */
+.explanation p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 8px 0 0;
+}
+/* Dar değişken kartında değerler alt alta gösterilir. */
+.variable-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+}
+/* Değişken etiketi ve değeri aynı küçük satırda karşılaştırılır. */
+.variable-chip {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 5px;
+  flex-wrap: wrap;
+  font-size: 10px;
+  padding: 4px 5px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  overflow-wrap: anywhere;
+}
+/* Değişken adı yardımcı koyu metin rengini kullanır. */
+.variable-chip span {
+  color: var(--muted-light);
+}
+/* Gerçek değer, uzun metinlerde kart içinde kırılabilir. */
+.variable-chip code {
+  min-width: 0;
+  color: var(--text-light);
+  overflow-wrap: anywhere;
+}
+/* Son adımda değişen değer açık mavi dolgu alır. */
+.variable-chip.changed {
+  background: var(--blue);
+  border-color: var(--blue-strong);
+}
+/* Bekleyen işlem metni açık Visualization yüzeyine uyarlanır. */
+.visual-panel .muted {
+  color: var(--muted-light);
+}
+/* Zoom toolbar'ı çizimle birlikte açık zeminde kalır. */
+.zoom-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 7px 12px;
+  background: white;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+/* Memory View etiketi açık zeminde okunur yardımcı renktir. */
+.zoom-toolbar .mini-label {
+  color: var(--muted-light);
+}
+/* Zoom eylemleri ve yüzde değeri tek kontrol grubu oluşturur. */
+.zoom-toolbar > div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: 10px var(--mono);
+  color: var(--muted-light);
+}
+/* Zoom button'ları küçük, çerçeveli ve tutarlı ikon kutularıdır. */
+.zoom-toolbar button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border-light);
+  color: var(--text-light);
+}
+/* Fit metni ikon butonlarıyla aynı yüksekliği taşır. */
+.zoom-toolbar .fit-button {
+  width: 34px;
+  font: 10px var(--sans);
+}
+/* Zoom hover açık mavi yüzey ile etkileşim durumunu gösterir. */
+.zoom-toolbar button:enabled:hover {
+  background: var(--callout);
+  border-color: var(--blue-strong);
+}
+/* Çizim zemini düz açık renktir; referans tasarımındaki gibi dekoratif dot grid yoktur. */
+.canvas-scroll {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  background: var(--canvas);
+  overscroll-behavior: contain;
+}
+/* SVG kamerasının host boyutu Zoom ile birlikte büyür; manuel Zoom'da içerik kaydırılabilir. */
 .scene-viewport {
   position: relative;
   flex-shrink: 0;
@@ -1310,86 +979,536 @@ app-visualization {
     width var(--motion) ease,
     height var(--motion) ease;
 }
+/* Zoom bütün sahneyi tek ölçekle taşır; node geometrisine ayrı CSS animasyonu uygulanmaz. */
 .canvas-scroll svg {
+  display: block;
   position: absolute;
   top: 0;
   left: 0;
   transform-origin: 0 0;
-  transition: transform var(--motion) cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--motion) cubic-bezier(0.33, 1, 0.68, 1);
+}
+/* Data hücresi referanstaki koyu mor-indigo rengi kullanır. */
+.node-box {
+  fill: var(--primary);
+  stroke: var(--primary);
+  stroke-width: 1.5;
+}
+/* Next hücresi data'dan farklı bir bebek mavisi dolguyla gösterilir. */
+.node-next-cell {
+  fill: var(--blue);
+}
+/* Hücreler arasındaki ince çizgi data ve next ayrımını destekler. */
+.node-divider {
+  stroke: var(--primary);
+  stroke-width: 1;
+}
+/* Data alan adı koyu hücre üzerinde açık okunur metindir. */
+.field-label {
+  fill: var(--text);
+  font: 10px var(--mono);
+}
+/* Next alan adı açık hücre üzerinde indigo metindir. */
+.next-field {
+  fill: var(--primary);
+}
+/* Görsel kimlik küçük yardımcı bilgi olarak node'un altında görünür. */
+.node-id {
+  fill: var(--muted-light);
+  font: 10px var(--mono);
+}
+/* Node'un verisi ilk projedeki gibi belirgin, beyaz monospace ile gösterilir. */
+.node-value {
+  color: white;
+  font: 600 15px var(--mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Next hedef kimliği açık hücre üzerinde koyu görünür. */
+.next-value {
+  fill: var(--primary);
+  font: 10px var(--mono);
+}
+/* Listeye henüz bağlı olmayan node kesikli sınırla anlaşılır hale gelir. */
+.detached .node-box {
+  stroke: var(--arrow);
+  stroke-dasharray: 5 3;
+}
+/* next okları açık zeminde görünür koyu mavi ve ince çizgiyle gösterilir. */
+.pointer-path {
+  fill: none;
+  stroke: var(--arrow);
+  stroke-width: 2.25;
+}
+/* Ok ucunun rengi okun gövdesiyle aynıdır. */
+.arrow-head {
+  fill: var(--arrow);
+}
+/* null etiketi bağlantının bittiğini teknik metinle açıklar. */
+.null-label {
+  fill: var(--muted-light);
+  font: 12px var(--mono);
+}
+/* Referans etiketleri küçük açık mavi kutular olarak korunur. */
+.reference-label rect {
+  fill: var(--callout);
+  stroke: var(--blue-strong);
+  stroke-width: 0.8;
+}
+/* head/current/previous metinleri açık zeminde indigo ile okunur. */
+.reference-label text {
+  fill: var(--primary);
+  font: 10px var(--mono);
+}
+/* Referans oku Node'un data alanına yönelir. */
+.reference-label path {
+  fill: none;
+  stroke: var(--arrow);
+  stroke-width: 1.3;
+}
+/* Boş liste durumunda head → null ana diyagram mesajıdır. */
+.empty-title {
+  fill: var(--primary);
+  font: 20px var(--mono);
+}
+/* Boş liste açıklaması ilk ekleme eylemini Türkçe tarif eder. */
+.empty-description {
+  fill: var(--muted-light);
+  font: 12px var(--sans);
+}
+/* Alt legend hücre renkleri ve gerçek liste boyutunu açıklar. */
+.visual-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  flex-shrink: 0;
+  font-size: 9px;
+  color: var(--muted-light);
+  border-top: 1px solid var(--border-light);
+}
+/* Her legend maddesi kendi renk işaretiyle aynı satırda kalır. */
+.visual-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+/* Liste boyutu legend'in sonuna hizalanır. */
+.visual-legend > .muted {
+  margin-left: auto;
+}
+/* Küçük legend noktaları yüzey renklerini gösterir. */
+.legend-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+/* Data legend noktası node data hücresiyle aynı rengi taşır. */
+.indigo {
+  background: var(--primary);
+}
+/* Next legend noktası node next hücresiyle aynı rengi taşır. */
+.blue-bg {
+  background: var(--blue);
+}
+/* Return değeri yalnız işlem sonucu bulunduğunda ayrı kısa şeritte görünür. */
+.result-box {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+  max-height: 20%;
+  overflow: auto;
+  padding: 10px 12px;
+  background: var(--callout);
+  border-top: 1px solid var(--border-light);
+}
+/* Return başlığı açık panelin yardımcı renk sistemini kullanır. */
+.result-box .mini-label {
+  color: var(--muted-light);
+}
+/* Gerçek return değeri sarılabilir monospace metindir. */
+.result-box code {
+  color: var(--primary);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+/* Geçersiz işlem sonucu açık kırmızı bir vurgu şeridi alır. */
+.result-box.failed {
+  border-left: 3px solid var(--error-light);
+}
+/* Footer, beyaz dış zemin üzerinde küçük ve ikincil bilgi olarak görünür. */
+.workspace-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 8px 0;
+  color: var(--muted-light);
+  font-size: 9px;
+}
+/* Hareketli geometrinin tek sahibi RAF motorudur; ikinci bir CSS interpolasyonu çalışmaz. */
+.motion-scene .node-shape,
+.motion-scene .reference-label,
+.motion-scene .pointer-path,
+.motion-scene .reference-label path,
+.motion-scene .null-indicator {
+  transition: none;
+  animation: none;
+}
+/* Orta genişlikte Explorer, kod minimumlarını daraltmak yerine rail'in üzerinde açılır. */
+.sidebar-overlay app-sidebar:not(.closed) {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 228px;
+  z-index: 8;
+  box-shadow: 8px 0 20px rgb(38 27 62 / 15%);
+}
+/* Dar ekranda iki çalışma paneli tam genişlikte üst üste gelir. */
+.compact-layout {
+  grid-template-columns: 0 0 minmax(0, 1fr);
+}
+/* Kompakt görünümde Sidebar ayıracı alan tüketmez. */
+.compact-layout .sidebar-divider {
+  display: none;
+}
+/* Açık telefon Sidebar'ı çalışma alanının üstünde kontrollü bir katmandır. */
+.compact-layout app-sidebar:not(.closed) {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 228px;
+  z-index: 8;
+  box-shadow: 8px 0 20px rgb(38 27 62 / 15%);
+}
+/* Kompakt workbench bütün ekran genişliğini kullanır. */
+.compact-layout .workbench {
+  padding: 8px;
+}
+/* Kod ve görsel, telefon yüksekliğini yaklaşık eşit paylaşır. */
+.panels.compact-panels {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 8px;
+}
+/* Üst üste paneller arasında yatay genişlik ayıracı gösterilmez. */
+.compact-panels .code-divider {
+  display: none;
+}
+/* Kompakt panel genişlikleri masaüstü minimumundan bağımsızdır. */
+.compact-panels .editor-column,
+.compact-panels .visual-panel {
+  min-width: 0;
+}
+/* Küçük ekranlarda kontroller gizlenmez; daha küçük boşluklar ve yazılar kullanılır. */
+@media (max-width: 640px) {
+  /* Üst bar dosya yolunu korurken durum süsleri için alan harcamaz. */
+  .topbar {
+    padding: 0 10px;
+    gap: 8px;
+  }
+  /* Breadcrumb telefon genişliğinde de okunabilecek tek satırda kalır. */
+  .brand {
+    font-size: 11px;
+    gap: 8px;
+  }
+  /* İkincil üst bar bilgileri çalışma ekranına alan kazandırır. */
+  .topbar-right {
+    display: none;
+  }
+  /* Kartlar arasında kompakt fakat görünür boşluk korunur. */
+  .editor-column {
+    gap: 8px;
+  }
+  /* Telefon controls kartı IDE'nin çoğunu kaplamaz; gerektiğinde kendi içinde kayar. */
+  .operation-form {
+    padding: 8px;
+    max-height: 48%;
+  }
+  /* Method üst etiketi mobilde düşük öncelikli olduğu için gizlenir. */
+  .operation-form > .mini-label {
+    display: none;
+  }
+  /* Method ve Run tek satıra sığacak kadar kompakt tutulur. */
+  .signature-form {
+    gap: 6px;
+    margin-top: 0;
+  }
+  /* Uzun method imzası gerektiğinde kendi içinde satıra bölünür. */
+  .function-signature {
+    font-size: 10px;
+    padding: 5px 7px;
+    min-height: 30px;
+  }
+  /* Parametre yazısı imzanın geri kalanıyla aynı büyüklüktedir. */
+  .function-signature input {
+    font-size: 10px;
+  }
+  /* Run dokunulabilir kalırken büyük yatay alan tüketmez. */
+  .run-button {
+    min-height: 30px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+  /* Transport butonları kısa ekranlarda playback'i erişilebilir tutar. */
+  .playback-buttons button {
+    width: 28px;
+    height: 28px;
+  }
+  /* Adım sayacı Visualization'da zaten bulunduğu için telefonda tekrar edilmez. */
+  .transport-step {
+    display: none;
+  }
+  /* Hız kaydırıcısı dar controls kartına sığar. */
+  .speed-label input {
+    width: 50px;
+  }
+  /* Yardımcı meta yerine çalıştırma ve playback alanları önceliklidir. */
+  .operation-meta,
+  .code-footer,
+  .workspace-footer {
+    display: none;
+  }
+  /* IDE sekmesi alan kazandırmak için daha kısadır. */
+  .editor-tab {
+    height: 32px;
+    flex-basis: 32px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+  /* Dil seçici bütün dilleri koruyarak kompakt hale gelir. */
+  .editor-toolbar {
+    padding: 5px 8px;
+  }
+  /* Kod satırları küçük ekranda da rahat okunur kalır. */
+  .code-line {
+    font-size: 11px;
+    line-height: 21px;
+    min-height: 21px;
+  }
+  /* Mobil gutter alanı kod için yatay yer açar. */
+  .line-number {
+    width: 32px;
+    padding-right: 9px;
+  }
+  /* Visualization başlığı çalışma alanından az yükseklik tüketir. */
+  .panel-heading {
+    height: 32px;
+    flex-basis: 32px;
+    padding: 9px 10px;
+    font-size: 9px;
+  }
+  /* Bilgi kartları 1:3 oranıyla ve küçük boşluklarla sığdırılır. */
+  .execution-summary {
+    padding: 7px;
+    gap: 6px;
+    max-height: 38%;
+  }
+  /* Kart iç padding'i uzun açıklamalara yer açar. */
+  .execution-summary > div {
+    padding: 7px;
+  }
+  /* Açıklama kısa ekranlarda daha az yükseklik kaplar. */
+  .explanation p {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  /* Değişken satırları isim ve gerçek değeri koruyarak küçültülür. */
+  .variable-chip {
+    padding: 2px;
+    font-size: 9px;
+  }
+  /* Mobil legend kısa etiketlerle bir satırda kalır. */
+  .visual-legend {
+    padding: 7px;
+    gap: 8px;
+    font-size: 8px;
+  }
+}
+/* Kısa masaüstü penceresinde controls ve bilgi kartları çizim alanını tamamen tüketmez. */
+@media (max-height: 650px) and (min-width: 641px) {
+  /* Küçük padding ile controls kartı daha az yer kaplar. */
+  .operation-form {
+    padding: 8px 12px;
+  }
+  /* Footer ikincil olduğu için sınırlı yükseklikte gizlenir. */
+  .workspace-footer {
+    display: none;
+  }
+  /* Bilgi kartı uzun açıklamalarda kendi içinde kayar. */
+  .execution-summary {
+    max-height: 40%;
+    padding: 8px;
+  }
+}
+/* Hareket azaltma tercihi kamera ve ilerleme dekorasyonunda da uygulanır. */
+@media (prefers-reduced-motion: reduce) {
+  /* RAF animasyonu component token'ıyla kapatılır; kalan CSS geçişleri de anlık olur. */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0ms !important;
+    animation-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-.sidebar-toggle { color: var(--blue); width: 32px; height: 32px; margin-right: 12px; border: 1px solid #34425e; flex: 0 0 auto; }
-.topbar .brand { margin-right: auto; }
-.workspace { grid-template-columns: var(--sidebar-width,228px) 10px minmax(0,1fr); }
-app-sidebar.closed { visibility: hidden; pointer-events: none; }
-.workbench { padding-left: 12px; }
-.panels { grid-template-columns: minmax(320px,var(--code-width,1fr)) 10px minmax(360px,1.15fr); gap: 0; }
-.editor-column { min-width: 320px; }
-.visual-panel { min-width: 360px; }
-.panel-divider { touch-action: none; cursor: col-resize; position: relative; z-index: 3; outline-offset: -2px; }
-.panel-divider::after { content: ''; position: absolute; width: 3px; top: 35%; bottom: 35%; left: 3px; border-radius: 8px; background: #536683; transition: background .2s; }
-.panel-divider:hover::after, .panel-divider:focus-visible::after { background: var(--blue); }
-.workspace.sidebar-closed { grid-template-columns: 0 10px minmax(0,1fr); }
-.sidebar-closed .sidebar-divider { cursor: e-resize; }
-.compact-layout { grid-template-columns: 0 0 minmax(0,1fr); }
-.compact-layout app-sidebar:not(.closed) { position: absolute; left: 0; top: 54px; bottom: 0; width: 228px; z-index: 9; box-shadow: 12px 0 30px #0006; }
-.compact-layout .sidebar-divider { display: none; }
-.panels.compact-panels { grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(0,1fr) minmax(0,1fr); gap: 8px; }
-.compact-panels .code-divider { display: none; }
-.compact-panels .editor-column,.compact-panels .visual-panel { min-width: 0; }
-/* RAF bütün ara pozları hesaplar; CSS'in ikinci bir interpolasyon saati kullanmasını engelle. */
-.motion-scene .node-shape,.motion-scene .reference-label,.motion-scene .pointer-path,.motion-scene .reference-label path,.motion-scene .null-indicator { transition: none; animation: none; }
-@media(max-width:640px) { .editor-column { padding: 7px; } .editor-column .operation-form { padding-top: 7px; } }
+/* Fit kamerayı güncel sınırına anında uyarlar; eski CSS boyutu hareketli okları kırpamaz. */
+.canvas-scroll.auto-fit .scene-viewport,
+.canvas-scroll.auto-fit svg {
+  transition: none;
+}
 
-/* Boş çalışma zemini beyazdır; anlam taşıyan paneller koyu indigo yüzeylerdir. */
-:root { --bg: #ffffff; --panel: #1e2046; --surface: #2d305b; --line: #42466e; --muted: #b4bedb; }
-/* Gezinti üst barı ve Sidebar aynı indigo yüzey ailesini kullanır. */
-.topbar, app-sidebar { background: var(--panel); }
-/* Kaldırılan başlığın yüksekliği doğrudan kod ve görsel panellere verilir. */
-.workbench { min-width: 0; padding: 12px 16px 0 2px; }
-/* Kod sütununda beyaz dolgu bulunmaz; IDE ve çalıştırma kartı ayrı yüzeylerdir. */
-.editor-column { background: var(--panel); padding: 0; border-color: var(--line); gap: 10px; border: 0; border-radius: 0; }
-/* IDE kartı sütunun kalan yüksekliğini doldurur ve kendi içinde kayar. */
-app-codebar { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-/* Method parametreleri daha açık indigo, çerçeveli ve yuvarlatılmış kartta girilir. */
-.editor-column .operation-form { margin: 0; padding: 14px; color: var(--text); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-/* Formun etiketleri, kod imzası ve bağlantıları koyu zeminde okunur kalır. */
-.editor-column .mini-label, .editor-column .operation-meta { color: var(--muted); }
-.editor-column .function-signature { color: var(--text); }
-.editor-column .signature-prefix, .editor-column .source-download { color: var(--blue); }
-/* Parametre alanı method kartının parçası olarak açık indigo görünür. */
-.editor-column .function-signature input { background: #3b3f70; color: var(--text); border-color: #7680b5; }
-/* Geri bildirim renkleri koyu zeminde yeterli kontrast taşır. */
-.editor-column .form-message { color: var(--blue); }
-.editor-column .error { color: #ffb3c4; }
-/* Seçili dosya yolu dar alanda taşmadan aynı üst barda görünür. */
-.brand { min-width: 0; }
-.breadcrumb { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.breadcrumb-current { color: var(--blue); }
-/* Visualization başlığının altındaki kartların kullanılabilir genişliği 1:3 paylaşılır. */
-.execution-summary { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,3fr); gap: 8px; padding: 10px; flex: 0 0 auto; max-height: 38%; min-height: 0; overflow: hidden; }
-/* Her bilgi kartı aynı açık indigo yüzey ve küçük başlık sistemini kullanır. */
-.execution-summary .variables-panel, .execution-summary .explanation { padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); max-height: none; min-width: 0; overflow: auto; }
-/* Başlıklar küçük kalır; uzun keywordler dar sütunda satıra bölünebilir. */
-.execution-summary .mini-label, .execution-summary .eyebrow { font-size: 9px; letter-spacing: .5px; overflow-wrap: anywhere; }
-/* Açıklama metni kartta gereksiz boşluk bırakmadan okunabilir satır yüksekliği kullanır. */
-.execution-summary .explanation p { font-size: 12px; line-height: 1.5; margin: 8px 0 0; }
-/* Değişkenler dar kartın sınırlarını aşmadan alt alta yerleşir. */
-.execution-summary .variable-chips { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
-.execution-summary .variable-chip { min-width: 0; overflow-wrap: anywhere; }
-/* Footer çalışma zemininin üzerinde okunur, ikincil bilgi olarak kalır. */
-.workspace-footer { color: #555e83; }
-/* Kapalı Sidebar'ın gizli ayırıcısı dar ekranda ana paneli yanlış sütuna itmez. */
-.compact-layout, .workspace.compact-layout.sidebar-closed { grid-template-columns: 0 0 minmax(0,1fr); }
-.compact-layout .workbench { grid-column: 3; padding: 8px; }
-/* Telefon genişliğinde kart oranı korunur; kompakt yazı ve boşluklar alan kazandırır. */
-@media(max-width:640px) { .execution-summary { padding: 6px; gap: 6px; } .execution-summary .variables-panel, .execution-summary .explanation { padding: 7px; } .editor-column { padding: 0; } .editor-column .operation-form { padding: 8px; } .topbar .brand { font-size: 12px; gap: 8px; } .brand-symbol { flex-shrink: 0; } }
+/* Sabit sol şerit header'ın yerini alır; logo üstte, Sidebar eylemi hemen altındadır. */
+app-root {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+}
+/* Marka şeridi tüm viewport yüksekliğini kaplar ve içerik panellerinden bağımsız kalır. */
+.activity-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 6px;
+  background: var(--primary);
+}
+/* Şerit içindeki logo yerel marka ölçüsünü korur. */
+.activity-rail .brand-symbol {
+  width: 32px;
+  height: 32px;
+}
+/* Çalışma alanı header olmadan bütün yüksekliği kullanır. */
+.workspace {
+  height: 100%;
+}
+/* Pointer adları daha büyük kutularda daha okunur gösterilir. */
+.reference-label text {
+  font: 12px var(--mono);
+}
+/* Kart başlıkları korunur; gerçek değişken isim ve değerleri daha belirgindir. */
+.variable-chip {
+  font-size: 13px;
+  padding: 6px;
+}
+/* Değişken isimleri yardımcı metin olmaktan çıkıp koyu ve belirgin görünür. */
+.variable-chip span {
+  color: var(--primary);
+  font-weight: 600;
+}
+/* Gerçek değerler aynı ağırlıkla isimlerin yanında görünür. */
+.variable-chip code {
+  font-weight: 600;
+}
+/* Adım açıklamasının punto artışı öğretici metni daha rahat okunur yapar. */
+.explanation p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+/* Overlay Explorer da masaüstü genişlik üst sınırını aşmaz. */
+.sidebar-overlay app-sidebar:not(.closed),
+.compact-layout app-sidebar:not(.closed) {
+  width: 200px;
+  max-width: 240px;
+}
+/* Telefonda büyütülen içerik korunur; kartlar gerektiğinde kendi içinde kayar. */
+@media (max-width: 640px) {
+  .variable-chip {
+    font-size: 11px;
+    padding: 4px;
+  }
+  .explanation p {
+    font-size: 13px;
+  }
+}
 
-/* Üst bardaki dosya yolu telefon görünümünde de gösterilir. */
-.topbar .breadcrumb { display: block; }
-/* Kod ve görselin alt yüzeyleri de ortak indigo rengini sürdürür. */
-.editor-tab, .editor-toolbar, .zoom-toolbar, .playback { background: var(--panel); }
-/* Çizim zemini indigo kalır; ince noktalar bağlantı alanını okumaya yardımcı olur. */
-.canvas-scroll { background-color: var(--panel); background-image: radial-gradient(#42466e .7px, transparent .7px); }
-/* Kısa ekranlarda çizim sahnesi yüksekliğe de sığacak şekilde ölçeklenebilir. */
-@media(max-width:640px) { .topbar .breadcrumb { font-size: 11px; } }
+/* Açık Sidebar'ın solunda ayrı boş şerit bulunmaz. */
+app-root {
+  display: flex;
+  flex-direction: row;
+}
+/* Workspace, Sidebar dahil tüm genişliği paylaşır. */
+.workspace {
+  flex: 1;
+  min-width: 0;
+}
+/* Kapalı Sidebar'a geri dönmek için küçük kontrol şeridi korunur. */
+.closed-rail {
+  width: 48px;
+  flex-shrink: 0;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 6px;
+}
+/* Logo ve Data Structures etiketi aynı başlık satırına yerleşir. */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+}
+/* Başlığın sağındaki menü işareti kalan boşluğa yaslanır. */
+.sidebar-brand > .muted {
+  margin-left: auto;
+}
+/* Menü ve search yan yana, aynı satırda gösterilir. */
+.sidebar-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px 10px;
+}
+/* Search kapsayıcıya sığar; sol menü için alan bırakır. */
+.sidebar-tools .sidebar-search {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+}
+/* Dar Sidebar'da search placeholder taşmadan küçülür. */
+.sidebar-tools .sidebar-search input {
+  font-size: 11px;
+}
+
+/* Sabit sol şerit Sidebar durumundan bağımsız aynı koordinatları korur. */
+.closed-rail .sidebar-toggle {
+  flex-shrink: 0;
+  color: var(--blue);
+}
+/* Başlık yüksekliği soldaki logo satırıyla eşleşir. */
+.sidebar-brand {
+  min-height: 56px;
+}
+/* Değişkenler kompakt satırlarda okunur; kartın gereksiz yüksekliği azalır. */
+.variable-chips {
+  gap: 2px;
+  margin-top: 6px;
+}
+/* Satır içi boşluk azaltılır; isim ve değerlerin belirginliği korunur. */
+.variable-chip {
+  padding: 3px 5px;
+  line-height: 1.3;
+}
+/* Öğretici açıklama büyür ve koyu, orta kalınlıkta gösterilir. */
+.explanation p {
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 500;
+  color: var(--primary);
+}
+/* Küçük ekranda açıklama okunur kalırken kart içinde daha çok metin sığar. */
+@media (max-width: 640px) {
+  .variable-chip {
+    padding: 3px 5px;
+  }
+  .explanation p {
+    font-size: 14px;
+  }
+}
