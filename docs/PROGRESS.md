@@ -70,3 +70,5 @@
 - 2026-10-13: Kullanıcı görünüm kararı: Core concept başlık/açıklama alanı kaldırıldı; üst barda Data Structures / SinglyLinkedList / AddFirst biçiminde seçili dosya yolu gösterilir. Kod ve Visualization üstten genişletildi. Method çalıştırma kartı açık indigo, çerçeveli ve radiuslu; IDE arkasında beyaz dolgu yok. Visualization başlığının hemen altında Variables & References solda, Execution Step sağda 1:3 oranında küçük başlıklı açık indigo kartlardır. Sidebar, üst bar, IDE ve Visualization indigo; paneller dışında kalan zemin beyazdır.
 
 - 2026-10-13: Kullanıcı Git kurulumu ve kendi adına push istedi. Mevcut klasörde Git repo bulunmadığı için main dalıyla yerel repo başlatıldı; hedef remote kullanıcıdan bekleniyor. Git sistemde zaten kurulu.
+
+- 2026-10-13: Kullanıcının verdiği https://github.com/zeynepsalan/DS_Animation_V2.git origin olarak eklendi. Uzak repo başlangıçta boştu; main dalı başarıyla pushlandı ve origin/main takibi kuruldu. Mevcut Git kimlik doğrulaması yeterli olduğundan ek GitHub CLI girişi gerekmedi.

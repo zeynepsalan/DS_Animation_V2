@@ -224,3 +224,5 @@ Fonksiyon değişimi tamamlanmamış işlemi iptal eder; tamamlanan işlemin lis
 - 2026-10-13: UI yerleşimi gözden geçirildi: App üst barı seçili dosyanın breadcrumb’ını gösterir; ayrı workbench-heading kaldırılmıştır. Codebar yalnız dil seçimi ve IDE’yi sunar; method kartı App içinde aşağıdadır. Visualization içindeki execution-summary, değişken ve açıklama kartlarını 1:3 yan yana gruplar. Mevcut component ilişkileri değişmedi.
 
 - 2026-10-13: Git başlangıcı sırasında UML gözden geçirildi; sürüm kontrolü uygulama sınıflarını veya ilişkilerini değiştirmedi.
+
+- 2026-10-13: GitHub remote ve push kurulumu sonrasında UML kontrol edildi; uygulama sınıfları ve ilişkileri değişmedi.
