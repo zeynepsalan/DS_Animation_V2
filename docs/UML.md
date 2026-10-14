@@ -282,3 +282,90 @@ Fonksiyon değişimi tamamlanmamış işlemi iptal eder; tamamlanan işlemin lis
 - 2026-10-13: Kalıcı sol şerit App template’indedir; Sidebar.toggle output kaldırıldı. Tek kontrol doğrudan PanelLayout.toggleSidebar() çağırır; aria-expanded durumla eşleşir. Sidebar yalnız başlık, search ve fonksiyon ağacını taşır. Model ve animasyon sınıf ilişkileri değişmedi.
 
 - 2026-10-13: App kapalı Sidebar için conditional rail render eder; açık Sidebar.toggle output yeniden App→PanelLayout.toggleSidebar ilişkisini kullanır. PanelLayout açık durumda rail genişliğini düşmez. Veri modeli/animasyon ilişkileri değişmedi.
+
+- 2026-10-13: App.playbackShortcut(KeyboardEvent), document keydown olayını dinler; editable/disabled guard sonrası mevcut playback button click yoluna yönlendirir. PlaybackService ve veri yapısı sınıfları değişmedi.
+
+## Doubly Linkedlist genişletmesi — taslak (2026-10-14)
+
+DNode sınıfı kaynak koda eklendi; kullanıcı constructor sırasını data, prev, next olarak seçti. DoublyLinkedlist ilk fonksiyon grubuyla uygulandı (isEmpty/size/addFirst). Reverse Traversal kapsamı kullanıcı yanıtını bekler.
+
+```mermaid
+classDiagram
+    class DoublyLinkedlist {
+        head
+        tail
+        size()
+        snapshot()
+    }
+    class DNode {
+        id: string
+        data: T
+        prev: DNode~T~
+        next: DNode~T~
+        constructor(data, prev, next, id?)
+    }
+    DoublyLinkedlist o-- DNode : taslak
+    DNode --> DNode : next / prev
+```
+
+Ortak playback ve RAF hareket motoru kullanılabilir. Snapshot, model, kod satırı kaynakları ve ok geometrisi prev/tail desteği gerektirir. Her prev/next ataması ayrı öğretici adım olmalı; ara adımlarda henüz karşılıklı bağlanmamış pointer durumları görünür kalmalı. Final durumda head.prev=null, tail.next=null ve komşuların next/prev bağlantıları karşılıklı olmalı. Veri yapısı seçimi fonksiyon seçiminden ayrı tutulmalı; iki listenin durumu birbirine karışmamalı.
+
+## DNode arayüz entegrasyonu (uygulandı, 2026-10-14)
+
+```mermaid
+classDiagram
+    class DNodeVisualization {
+        step: InputSignal
+        center: ComputedSignal
+        neighbors: ComputedSignal
+        variables: ComputedSignal
+        neighborX(id)
+    }
+    class DNodeTraceFactory {
+        dnodeTrace(data, hasPrev, hasNext) Trace
+    }
+    App --> DNodeVisualization : constructor sahnesi
+    PlaybackService --> DNodeTraceFactory : startDNode
+    DNodeTraceFactory --> DNode : gerçek alan atamaları
+    DNodeVisualization --> ExecutionStep : immutable görüntü
+    Codebar --> CodeDocuments : DNode ayrı satır ve key
+```
+
+DNodeTraceFactory işlev grubunu ifade eder; kaynakta sınıf değil dnodeTrace fonksiyonudur. Trace.operation dnode değerini de alır. NodeSnapshot.prev isteğe bağlıdır; Singly snapshot’larında kullanılmaz. Playback.seek/reset/cancelPending DNode trace’i kalıcı listeye yazmaz. DNode sınıfı ve sahnesi uygulandı; DoublyLinkedlist ilk grubu da uygulandı; kalan fonksiyonlar planlıdır.
+
+## Doubly ilk fonksiyon grubu (uygulandı)
+
+```mermaid
+classDiagram
+    class DoublyLinkedlist~T~ {
+        head: DNode
+        tail: DNode
+        count: int
+        pending: DNode
+        snapshot() ListSnapshot
+        fromSnapshot(snapshot, observer)
+        isEmpty() boolean
+        size() int
+        addFirst(value) void
+    }
+    class DoublyVisualization {
+        snapshot: InputSignal
+        step: InputSignal
+        target: ComputedSignal
+        references: ComputedSignal
+        viewport: Signal
+        autoFit: Signal
+        moving: OutputEmitterRef
+        path(node, direction)
+        changeZoom(delta)
+    }
+    App --> DoublyVisualization
+    PlaybackService --> DoublyLinkedlist : doublyTrace factory
+    PlaybackService --> ListSnapshot : doublyList signal
+    DoublyLinkedlist o-- DNode : head / tail / pending
+    DoublyVisualization --> SceneMotion : tek RAF
+    DoublyVisualization --> DoublyGeometry : positions / ports
+    Codebar --> DoublyCode : dil satırları ve step key
+```
+
+DoublyGeometry ve DoublyCode kaynakta saf fonksiyon gruplarıdır. Trace.operation üç Doubly seçim kimliğini destekler; ListSnapshot.tail ve NodeSnapshot.prev eklenir. Playback.restore aktif trace ailesine göre doğru liste signal’ını günceller. Snapshot ziyaretleri iteratif ve kimlik bazlıdır; iki yönlü bağlantılarda döngüye girmez.

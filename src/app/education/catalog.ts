@@ -138,5 +138,14 @@ export const LANGUAGES: { id: Language; label: string; extension: string }[] = [
   { id: 'pseudo', label: 'Pseudocode', extension: 'pseudo' },
 ];
 export function infoFor(selection: Selection): FunctionInfo | undefined {
-  return FUNCTIONS.find((f) => f.id === selection);
+  // Doubly fonksiyonları aynı parametre sözleşmesini kullanır.
+  const id =
+    selection === 'doublyAddFirst'
+      ? 'addFirst'
+      : selection === 'doublyIsEmpty'
+        ? 'isEmpty'
+        : selection === 'doublySize'
+          ? 'size'
+          : selection;
+  return FUNCTIONS.find((f) => f.id === id);
 }

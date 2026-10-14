@@ -32,6 +32,98 @@ describe('Çalışma ekranı', () => {
     );
     fixture.destroy();
   });
+  it('oynatma kısayolları adımları yönetir ve parametre yazımını korur', async () => {
+    // Gerçek butonların guard kurallarıyla aynı klavye yolunu çalıştırırız.
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    app.select('addFirst');
+    app.value = 'A';
+    app.run();
+    app.player.pause();
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    // Sağ ok bir sonraki adıma, sol ok önceki adıma döner.
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await fixture.whenStable();
+    expect(app.player.cursor()).toBe(1);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    await fixture.whenStable();
+    expect(app.player.cursor()).toBe(0);
+    // Input üzerinde yazılan R ve ok tuşları liste oynatmasını etkilemez.
+    const input = root.querySelector('input')!;
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(app.player.cursor()).toBe(0);
+    // Space duraklatma/oynatma durumunu değiştirir; R başlangıca döner.
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    await fixture.whenStable();
+    expect(app.player.playing()).toBe(true);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    await fixture.whenStable();
+    expect(app.player.playing()).toBe(false);
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await fixture.whenStable();
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'r', bubbles: true }));
+    await fixture.whenStable();
+    expect(app.player.cursor()).toBe(0);
+    expect(root.querySelector('[aria-label="Next Step"]')?.getAttribute('title')).toContain('→');
+    fixture.destroy();
+  });
+  it('DNode constructor atamalarını ayrı kod satırlarında ve ayrı sahnede gösterir', async () => {
+    // Constructor kullanıcı parametrelerinden hazırlanır; ortak player adımları yönetir.
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    app.select('dnode');
+    app.nodeValue = 'X';
+    app.dnodePrev = 'previous';
+    app.dnodeNext = 'next';
+    app.run();
+    app.player.pause();
+    // prev atamasında next henüz null olmalı ve yalnız prev satırı highlight edilmelidir.
+    for (let i = 0; i < 3; i++) app.player.next();
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('.highlighted')?.textContent).toContain('this.prev = prev;');
+    expect(root.querySelectorAll('.highlighted')).toHaveLength(1);
+    expect(root.querySelectorAll('app-dnode-visualization .node-shape')).toHaveLength(3);
+    expect(root.querySelector('[data-dnode="center"]')?.textContent).toContain('∅');
+    // Sonraki adım next satırına geçerken eski Singly liste korunur.
+    app.player.next();
+    await fixture.whenStable();
+    expect(root.querySelector('.highlighted')?.textContent).toContain('this.next = next;');
+    expect(app.player.list().size).toBe(0);
+    fixture.destroy();
+  });
+  it('Doubly addFirst gerçek formdan çalışır ve head.prev satırına eşleşir', async () => {
+    // Her listede kendi kalıcı state ve sahne bulunmalıdır.
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    app.select('doublyAddFirst');
+    app.value = 'A';
+    app.run();
+    app.player.pause();
+    while (!app.player.atEnd()) app.player.next();
+    app.value = 'B';
+    app.run();
+    app.player.pause();
+    for (let i = 0; i < 4; i++) app.player.next();
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('.highlighted')?.textContent).toContain('head.prev = node;');
+    expect(root.querySelectorAll('.highlighted')).toHaveLength(1);
+    expect(root.querySelectorAll('app-doubly-visualization .node-shape')).toHaveLength(2);
+    expect(
+      root.querySelector('app-doubly-visualization .canvas-scroll')?.classList.contains('auto-fit'),
+    ).toBe(true);
+    expect(root.querySelector('.signature-prefix')?.textContent).toContain('public void addFirst');
+    expect(root.querySelector('.source-download')?.getAttribute('href')).toContain(
+      'DoublyLinkedlist.java',
+    );
+    app.player.reset();
+    await fixture.whenStable();
+    expect(app.player.doublyList().size).toBe(1);
+    expect(app.player.list().size).toBe(0);
+    fixture.destroy();
+  });
   it('Node açılışını ve parametre doğrulamasını gerçek template ile gösterir', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();

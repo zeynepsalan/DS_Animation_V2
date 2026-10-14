@@ -1,3 +1,4 @@
+import { doublyCode, isDoubly } from './doubly-code';
 import type { Language, Operation, Selection } from '../core/execution.types';
 
 export interface CodeLine {
@@ -456,17 +457,48 @@ const NODE: Row[] = [
   row(undefined, '}', '}', 'END CLASS'),
 ];
 
+// Her atama ayrı key ve ayrı satır taşır; constructor parametre sırası data/prev/next’tir.
+const DNODE: Row[] = [
+  note('Bağımsız DNode: iki bağlantıyı saklar; komşuların alanlarını otomatik değiştirmez.'),
+  row(undefined, 'public class DNode<T> {', 'typedef struct DNode {', 'CLASS DNode<T>:'),
+  row(undefined, '  T data;', '  const char *data;', '  data: T'),
+  row(undefined, '  DNode<T> prev;', '  struct DNode *prev;', '  prev: DNode<T> OR null'),
+  row(undefined, '  DNode<T> next;', '  struct DNode *next;', '  next: DNode<T> OR null'),
+  row(undefined, '', '} DNode;', ''),
+  note('Önce nesne oluşturulur; ardından her alan ayrı adımda atanır.'),
+  row(
+    'constructor',
+    '  public DNode(T data, DNode<T> prev, DNode<T> next) {',
+    'DNode *newDNode(const char *data, DNode *prev, DNode *next) {',
+    '  CONSTRUCTOR(data, prev, next):',
+  ),
+  row(undefined, '', '  DNode *node = malloc(sizeof *node);', ''),
+  row('guard', '', '  if (node == NULL) return NULL;', ''),
+  note('data parametresini nesnenin veri alanına kaydet.'),
+  row('data', '    this.data = data;', '  node->data = data;', '    this.data ← data'),
+  note('prev önceki nesneye referans veya null olabilir.'),
+  row('prev', '    this.prev = prev;', '  node->prev = prev;', '    this.prev ← prev'),
+  note('next sonraki nesneye referans veya null olabilir.'),
+  row('next', '    this.next = next;', '  node->next = next;', '    this.next ← next'),
+  row('return', '  }', '  return node;', '  END CONSTRUCTOR'),
+  row(undefined, '}', '}', 'END CLASS'),
+];
+
 export function codeFor(selection: Selection, language: Language): CodeLine[] {
+  // Ayrı yapı kendi algoritma satırlarını sağlar.
+  if (isDoubly(selection)) return doublyCode(selection, language);
   const rows =
-    selection === 'node'
-      ? [...NODE]
-      : [
-          note('Geçersiz işlemler if kontrolleriyle listeyi değiştirmeden sonlandırılır.'),
-          header(selection),
-          ...body(selection),
-          row(undefined, '}', '}', 'END FUNCTION'),
-        ];
-  if (selection === 'node' && language === 'c')
+    selection === 'dnode'
+      ? [...DNODE]
+      : selection === 'node'
+        ? [...NODE]
+        : [
+            note('Geçersiz işlemler if kontrolleriyle listeyi değiştirmeden sonlandırılır.'),
+            header(selection),
+            ...body(selection),
+            row(undefined, '}', '}', 'END FUNCTION'),
+          ];
+  if ((selection === 'node' || selection === 'dnode') && language === 'c')
     rows.unshift(row(undefined, '', '#include <stdlib.h>', ''));
   const column = language === 'java' ? 1 : language === 'c' ? 2 : 3;
   return rows.flatMap((r) =>

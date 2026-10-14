@@ -151,6 +151,45 @@
         "height": 4292542531
       },
       "bytes": 109804
+    },
+    {
+      "id": "doubly-add-first-prev",
+      "path": "docs/screenshots/doubly-add-first-prev.png",
+      "source": "Yerel V2 Chrome doğrulama ekranı",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Doubly ilk fonksiyon grubu browser QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 78006,
+      "alt": "Doubly Linkedlist ayrı prev/next bağlantıları ve kod adımları"
+    },
+    {
+      "id": "doubly-completed-list",
+      "path": "docs/screenshots/doubly-completed-list.png",
+      "source": "Yerel V2 Chrome doğrulama ekranı",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Doubly ilk fonksiyon grubu browser QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 104848,
+      "alt": "Doubly Linkedlist ayrı prev/next bağlantıları ve kod adımları"
+    },
+    {
+      "id": "doubly-mobile",
+      "path": "docs/screenshots/doubly-mobile.png",
+      "source": "Yerel V2 Chrome doğrulama ekranı",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Doubly ilk fonksiyon grubu browser QA kanıtı",
+      "dimensions": {
+        "width": 65536,
+        "height": 4292542531
+      },
+      "bytes": 43700,
+      "alt": "Doubly Linkedlist ayrı prev/next bağlantıları ve kod adımları"
     }
   ]
 }

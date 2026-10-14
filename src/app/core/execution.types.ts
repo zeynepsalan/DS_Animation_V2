@@ -20,14 +20,20 @@ export type Operation =
   | 'remove'
   | 'traversal';
 export type Language = 'java' | 'c' | 'pseudo';
-export type Selection = Operation | 'node';
+// İlk Doubly sürümü, tamamlanan fonksiyonları açıkça ayrı seçer.
+export type DoublyOperation = 'doublyIsEmpty' | 'doublySize' | 'doublyAddFirst';
+export type Selection = Operation | DoublyOperation | 'node' | 'dnode';
 export interface NodeSnapshot<T> {
   id: string;
   data: T;
   next: string | null;
+  // DNode snapshot’ında geri bağlantı da ayrı tutulur.
+  prev?: string | null;
 }
 export interface ListSnapshot<T> {
   head: string | null;
+  // Doubly listede son nesneye doğrudan erişim bulunur.
+  tail?: string | null;
   nodes: NodeSnapshot<T>[];
   size: number;
 }
@@ -48,7 +54,7 @@ export interface Parameters {
   index?: number;
 }
 export interface Trace<T> {
-  operation: Operation;
+  operation: Operation | DoublyOperation | 'dnode';
   baseline: ListSnapshot<T>;
   steps: ExecutionStep<T>[];
   returnValue: unknown;

@@ -1,0 +1,26 @@
+FUNCTION isEmpty():
+  empty ← head == null
+  RETURN empty
+END FUNCTION
+
+FUNCTION size():
+  count ← size
+  RETURN count
+END FUNCTION
+
+// Her bağlantı ayrı adımda kurulur.
+FUNCTION addFirst(value):
+  node ← NEW DNode(value, null, null)
+
+  // İleri bağlantıyı eski head’e kur.
+  node.next ← head
+  IF head != null:
+    // Eski head’in geri bağlantısı ayrı güncellenir.
+    head.prev ← node
+  ELSE:
+    tail ← node
+  END IF
+  head ← node
+  size ← size + 1
+  RETURN
+END FUNCTION

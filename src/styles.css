@@ -1512,3 +1512,42 @@ app-root {
     font-size: 14px;
   }
 }
+/* DNode sahnesi panel içinde tüm ok ve etiketleri kapsayarak ölçeklenir. */
+app-dnode-visualization {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+/* Constructor imzasındaki referans seçimleri koyu method kartına uyum sağlar. */
+.signature-form select {
+  background: var(--panel);
+  color: var(--blue);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 4px;
+  max-width: 90px;
+}
+/* Çizim bölgesi boşluğu paylaşır; SVG panel dışına taşmaz. */
+.dnode-canvas {
+  flex: 1;
+  min-height: 0;
+  background: var(--canvas);
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+}
+/* Sabit viewBox koordinatlarında ayrı Node slotları cihaz genişliğine birlikte sığar. */
+.dnode-canvas svg {
+  width: 100%;
+  max-height: 100%;
+}
+/* Doubly sahnesi de diğer yapılar gibi panel içindeki boşluğu paylaşır. */
+app-doubly-visualization {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}

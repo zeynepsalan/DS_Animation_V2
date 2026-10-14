@@ -109,3 +109,52 @@ writeFileSync(
 );
 rmSync(scratch, { recursive: true, force: true });
 console.log('Java ve C kaynakları examples/ içine güncellendi.');
+
+// Bağımsız DNode örnekleri de doğrudan ekrandaki aynı satırlardan üretilir.
+for (const [language, extension, directory] of [
+  ['java', 'java', 'java'],
+  ['c', 'c', 'c'],
+  ['pseudo', 'pseudo', ''],
+]) {
+  const source =
+    codeFor('dnode', language)
+      .map((line) => line.text)
+      .join('\n') + '\n';
+  writeFileSync(`examples/${directory ? directory + '/' : ''}DNode.${extension}`, source);
+  writeFileSync(`public/examples/DNode.${extension}`, source);
+}
+
+// İlk Doubly method grubu aynı satır kaynağından derlenebilir sınıflara dönüştürülür.
+const doublyOperations = ['doublyIsEmpty', 'doublySize', 'doublyAddFirst'];
+const doublyMethods = (language) =>
+  doublyOperations
+    .map((operation) =>
+      codeFor(operation, language)
+        .map((line) => line.text)
+        .join('\n'),
+    )
+    .join('\n\n');
+const doublyJava = `public class DoublyLinkedlist<T> {
+  DNode<T> head;
+  DNode<T> tail;
+  private int size;
+${doublyMethods('java')}
+}
+`;
+writeFileSync('examples/java/DoublyLinkedlist.java', doublyJava);
+writeFileSync(
+  'public/examples/DoublyLinkedlist.java',
+  readFileSync('examples/java/DNode.java', 'utf8').replace('public class DNode', 'class DNode') +
+    '\n' +
+    doublyJava,
+);
+const doublyC =
+  '#include <stdbool.h>\n' +
+  readFileSync('examples/c/DNode.c', 'utf8') +
+  '\ntypedef struct { DNode *head; DNode *tail; int size; } DoublyLinkedlist;\n' +
+  doublyMethods('c') +
+  '\n';
+writeFileSync('examples/c/doubly_linkedlist.c', doublyC);
+writeFileSync('public/examples/doubly_linkedlist.c', doublyC);
+writeFileSync('examples/DoublyLinkedlist.pseudo', doublyMethods('pseudo') + '\n');
+writeFileSync('public/examples/DoublyLinkedlist.pseudo', doublyMethods('pseudo') + '\n');

@@ -1,13 +1,28 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { STEP_MS } from './scene-motion';
+import { doublyTrace } from './doubly-linkedlist';
+import { dnodeTrace } from './dnode-trace';
 import { TraceEngine } from './trace-engine';
-import type { ListSnapshot, Operation, Parameters, Trace } from './execution.types';
+import type {
+  ListSnapshot,
+  Operation,
+  Parameters,
+  Trace,
+  DoublyOperation,
+} from './execution.types';
 
 /** signal değer değişince Angular görünümü günceller; computed türetilmiş değer üretir. */
 @Injectable({ providedIn: 'root' })
 export class PlaybackService {
   private readonly engine = new TraceEngine();
   readonly list = signal<ListSnapshot<string>>({ head: null, size: 0, nodes: [] });
+  // İki veri yapısının tamamlanmış durumları birbirine karışmaz.
+  readonly doublyList = signal<ListSnapshot<string>>({
+    head: null,
+    tail: null,
+    size: 0,
+    nodes: [],
+  });
   readonly trace = signal<Trace<string> | null>(null);
   readonly cursor = signal(0);
   readonly playing = signal(false);
@@ -23,6 +38,27 @@ export class PlaybackService {
     // Tamamlanmamış bir işlem yeniden başlatılırsa yalnızca o işlemin etkileri iptal edilir.
     this.cancelPending();
     this.trace.set(this.engine.execute(this.list(), operation, params));
+    this.cursor.set(0);
+  }
+
+  // Doubly işlemi kendi kalıcı listesinden trace üretir.
+  startDoubly(operation: DoublyOperation, params: Parameters) {
+    this.cancelPending();
+    this.trace.set(doublyTrace(this.doublyList(), operation, params));
+    this.cursor.set(0);
+  }
+  private restore(snapshot: ListSnapshot<string>) {
+    // Constructor trace liste değildir; Doubly ve Singly kendi state’ine yazılır.
+    const operation = this.trace()?.operation;
+    if (operation === 'dnode') return;
+    if (operation?.startsWith('doubly')) this.doublyList.set(snapshot);
+    else this.list.set(snapshot);
+  }
+
+  // Bağımsız constructor önizlemesi liste durumuna dokunmadan ortak player’ı kullanır.
+  startDNode(data: string, prev: boolean, next: boolean) {
+    this.cancelPending();
+    this.trace.set(dnodeTrace(data, prev, next));
     this.cursor.set(0);
   }
 
@@ -45,20 +81,21 @@ export class PlaybackService {
     const trace = this.trace();
     if (!trace || index < 0 || index >= trace.steps.length) return;
     this.cursor.set(index);
-    this.list.set(trace.steps[index].snapshot);
+    // Constructor sahnesi Singly Linkedlist’in kalıcı listesi değildir.
+    this.restore(trace.steps[index].snapshot);
   }
 
   reset() {
     this.pause();
     if (this.trace()) {
-      this.list.set(this.trace()!.baseline);
+      this.restore(this.trace()!.baseline);
       this.cursor.set(0);
     }
   }
 
   cancelPending() {
     this.pause();
-    if (this.trace() && !this.atEnd()) this.list.set(this.trace()!.baseline);
+    if (this.trace() && !this.atEnd()) this.restore(this.trace()!.baseline);
     this.trace.set(null);
     this.cursor.set(0);
   }

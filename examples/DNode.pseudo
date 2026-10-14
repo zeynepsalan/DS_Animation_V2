@@ -1,0 +1,18 @@
+  // Bağımsız DNode: iki bağlantıyı saklar; komşuların alanlarını otomatik değiştirmez.
+CLASS DNode<T>:
+  data: T
+  prev: DNode<T> OR null
+  next: DNode<T> OR null
+
+  // Önce nesne oluşturulur; ardından her alan ayrı adımda atanır.
+  CONSTRUCTOR(data, prev, next):
+
+
+  // data parametresini nesnenin veri alanına kaydet.
+    this.data ← data
+  // prev önceki nesneye referans veya null olabilir.
+    this.prev ← prev
+  // next sonraki nesneye referans veya null olabilir.
+    this.next ← next
+  END CONSTRUCTOR
+END CLASS

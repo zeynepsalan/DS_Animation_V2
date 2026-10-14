@@ -11,8 +11,45 @@ try {
       '-d',
       temp,
       'examples/java/Node.java',
+      'examples/java/DNode.java',
       'examples/java/SinglyLinkedlist.java',
       'examples/java/Demo.java',
+    ],
+    { stdio: 'inherit' },
+  );
+  // Bağımsız indirilebilir DNode Java/C kaynaklarının derlenebilirliğini kontrol et.
+  execFileSync('javac', ['-d', join(temp, 'dnode'), 'public/examples/DNode.java'], {
+    stdio: 'inherit',
+  });
+  execFileSync(
+    'clang',
+    [
+      '-std=c11',
+      '-Wall',
+      '-Wextra',
+      '-Werror',
+      '-c',
+      'examples/c/DNode.c',
+      '-o',
+      join(temp, 'dnode.o'),
+    ],
+    { stdio: 'inherit' },
+  );
+  // İndirilebilir Doubly kaynakları Java/C derleyicileriyle doğrulanır.
+  execFileSync('javac', ['-d', join(temp, 'doubly'), 'public/examples/DoublyLinkedlist.java'], {
+    stdio: 'inherit',
+  });
+  execFileSync(
+    'clang',
+    [
+      '-std=c11',
+      '-Wall',
+      '-Wextra',
+      '-Werror',
+      '-c',
+      'examples/c/doubly_linkedlist.c',
+      '-o',
+      join(temp, 'doubly.o'),
     ],
     { stdio: 'inherit' },
   );

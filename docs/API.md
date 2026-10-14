@@ -37,3 +37,17 @@ Reset işlem başlangıç listesini geri getirir; clear ayrı bir algoritmadır.
 [Oracle Java SE 25 LinkedList API](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedList.html) incelendi (2026-10-12). Java sınıfı doubly linked list kullanır; bizim singly yapımızda dolaşma yönü ve bazı işlemlerin maliyeti farklı olacaktır.
 
 Bu dosya kaynak API’nin tamamını yeniden üretmez. Collection/Deque yardımcıları, toplu işlemler, iterator ailesi ve Stack/Queue takma işlemleri ilk kapsamda değildir. Ekleme, silme, okuma, güncelleme ve aramanın temel öğretim işlemleri seçilmiştir.
+
+## DNode (2026-10-14)
+
+Bağımsız `DNode<T>` sınıfı eklendi. Constructor `DNode(data, prev, next)` sırasını kullanır; üç parametre zorunludur. `prev` ve `next` aynı türdeki nesnelere referans veya `null` taşır. Constructor komşuların bağlantılarını otomatik değiştirmez; karşılıklı bağlantıları liste algoritması ayrı adımlarla kuracaktır. İsteğe bağlı dördüncü `id` görsel snapshot geri yükleme içindir. Doubly Linkedlist henüz arayüze entegre edilmedi.
+
+- 2026-10-14: DNode siteye eklendi: Sidebar sınıf dosyası, Java/C/Pseudocode constructor kaynağı, imzada data/prev/next parametreleri, bağımsız komşu veya null seçimi. Her data/prev/next ataması ayrı kod satırı ve ayrı trace adımıdır. Ortak playback ve klavye kısayolları kullanılır; DNode trace Singly listesini değiştirmez. Constructor yalnız kendi alanlarını atar, komşuların ters bağlantıları null kalır. Sahne merkez/sol/sağ slotları ve aşağı ayrılan null yollarıyla çakışmayı önler. Doubly Linkedlist fonksiyonları henüz entegre edilmedi.
+
+## Doubly Linkedlist — ilk fonksiyon grubu
+
+- `boolean isEmpty()`: head null kontrolü; listeyi değiştirmez.
+- `int size()`: eleman sayacını okur; listeyi değiştirmez.
+- `void addFirst(T value)`: yeni DNode(value, null, null) oluşturur. Önce node.next=head; dolu listede head.prev=node, boş listede tail=node; ardından head=node ve size++ ayrı adımlarda çalışır.
+
+Final koşulları: boş listede head=tail=null; tek elemanda head=tail, prev=next=null. Dolu listede head.prev=null, tail.next=null; komşuların next/prev bağlantıları karşılıklıdır. Tekrarlı ekleme ve aynı değer tekrarları desteklenir. UI eksik/boş value değerinde mevcut listeye dokunmadan Türkçe hata verir. API kaynakları examples/java/DoublyLinkedlist.java ve examples/c/doubly_linkedlist.c; indirilebilir sürümler public/examples altında. Diğer Doubly fonksiyonları henüz uygulanmadı.

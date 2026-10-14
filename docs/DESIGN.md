@@ -33,3 +33,19 @@ Node ekranı yalnız bu token/geometri sözleşmesiyle uygulandı; ardından ayn
 - 2026-10-13: Son kullanıcı revizyonu önceki koşullu sol şerit kararını değiştirir: ds↗ logo ve altındaki tek Sidebar kontrolü kalıcı 48px şerittedir. Açma/kapatmada kontrol yeniden oluşturulmaz ve konumu değişmez. Sidebar içinde logo/menu tekrarı kaldırıldı. Variable satır aralığı 2px, satır padding 3px; Execution açıklaması masaüstünde 16px/500, küçük ekranda 14px. Kart başlıkları korunur.
 
 - 2026-10-13: Son kullanıcı düzeltmesi: açık Sidebar yanında ayrı sol sütun kaldırıldı; logo başlıkta, menu logo altında search yanında. Yalnız kapalı durumda 48px logo/menu şeridi görünür. Açık panel genişlik hesabından rail çıkarılmaz. Önceki kalıcı şerit kararı bu kararla değiştirildi; kompakt variable ve büyük execution metni korunur.
+
+- 2026-10-13: Oynatma klavye kısayolları: Space Play/Pause, ArrowRight Next Step, ArrowLeft Previous Step, R Reset. Native hover tooltip ve aria-keyshortcuts eklenir. Input/textarea/select/contenteditable, slider ve separator üzerinde, IME sırasında, modifier veya tuş tekrarıyla tetiklenmez. Disabled butonların kuralları klavyede de geçerlidir; odaklı buton/link üzerinde Space yerleşik aktivasyonunu korur.
+
+## Doubly Linkedlist hazırlığı (2026-10-14, taslak)
+
+MVP görünümü korunur; Sidebar’a yeni veri yapısı klasörü eklenmesi planlanır. Node’da data, prev ve next ayrı alanlar olarak gösterilir; ileri/geri oklar farklı yüksekliklerden geçerek ayrıştırılır. Yeni bağlantılar mevcut RAF motoruyla taşınır; her atama kod highlight ve Türkçe açıklamayla birlikte ilerler. Head/tail referansları ve null uçları Fit sınırlarına dahil edilir. Ayrı Node sınıfı ve Reverse Traversal kullanıcı yanıtına bağlıdır; henüz uygulanmadı.
+
+- 2026-10-14: DNode siteye eklendi: Sidebar sınıf dosyası, Java/C/Pseudocode constructor kaynağı, imzada data/prev/next parametreleri, bağımsız komşu veya null seçimi. Her data/prev/next ataması ayrı kod satırı ve ayrı trace adımıdır. Ortak playback ve klavye kısayolları kullanılır; DNode trace Singly listesini değiştirmez. Constructor yalnız kendi alanlarını atar, komşuların ters bağlantıları null kalır. Sahne merkez/sol/sağ slotları ve aşağı ayrılan null yollarıyla çakışmayı önler. Doubly Linkedlist fonksiyonları henüz entegre edilmedi.
+
+## Doubly ilk grup hareket sözleşmesi
+
+Mevcut MVP panel düzeni korunur. Sidebar’da Doubly Linkedlist klasörü altında yalnız çalışan üç fonksiyon bulunur. Method dosyası DoublyLinkedlist / addFirst.java gibi yapı adıyla ayırt edilir. Eklemede yeni nesne üstte slot 0, eski liste altta slot 1 ve sonrası olarak hazırlanır; işlem tamamlanınca eski nesneler aynı x konumundan üst sıraya taşınır. Tek SceneMotion RAF motoru Node ve okları birlikte günceller; yeni alan bağlantıları aynı saatte belirir. Next/Previous hareket tamamlanmadan yeni adım başlatmaz, Reset ara hareketi başlangıca yönlendirebilir. Reduced motion statik hedefi gösterir.
+
+next portu y+24, prev portu y+48; dikey geçişler ayrı radiuslu koridorlar kullanır. head/tail/node etiketleri 64px genişlikte üst portlara ayrılır; üç ortak referansta üçüncü etiket ortadaki boş dikey koridoru kullanır. Null uçlar Node dışındadır. Fit tüm işlem boyunca sabit sahne sınırı kullanır; ResizeObserver ölçek değişiminde CSS gecikmesi olmadan bütün sahneyi sığdırır. Manual zoom paneller içinde kaydırılabilir. Liste büyümesine keyfi sınır koyulmaz; çok uzun listelerde Fit küçülür ve manual zoom kullanılabilir.
+
+- Son kare yerleştiğinde hazırlık alanının 440px yüksekliği 240px dinlenme alanına iner; hareket sürerken küçülmez. Mobil final Fit okların tamamını koruyarak metin/kutuları daha okunur büyütür.

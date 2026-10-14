@@ -65,7 +65,7 @@
             <div class="function-signature">
               <span class="signature-prefix">{{ signature() }}</span
               ><span>(</span>
-              @if (selection() === 'node') {
+              @if (selection() === 'node' || selection() === 'dnode') {
                 <input
                   name="nodeValue"
                   aria-label="data"
@@ -73,6 +73,19 @@
                   placeholder="data"
                   autocomplete="off"
                 />
+              }
+              <!-- Constructor’da her referans kendi parametre alanından seçilir. -->
+              @if (selection() === 'dnode') {
+                <span>,</span
+                ><select name="dnodePrev" aria-label="prev" [(ngModel)]="dnodePrev">
+                  <option value="null">null</option>
+                  <option value="previous">previous</option>
+                </select>
+                <span>,</span
+                ><select name="dnodeNext" aria-label="next" [(ngModel)]="dnodeNext">
+                  <option value="null">null</option>
+                  <option value="next">following</option>
+                </select>
               }
               @if (info()?.index) {
                 <input
@@ -124,7 +137,8 @@
           <div class="playback" aria-label="Animasyon kontrolleri">
             <div class="playback-buttons">
               <button
-                title="Reset"
+                title="Reset (R)"
+                aria-keyshortcuts="R"
                 aria-label="Reset"
                 (click)="player.reset()"
                 [disabled]="!player.trace() || selection() === 'node'"
@@ -132,7 +146,8 @@
                 <app-icon name="reset" />
               </button>
               <button
-                title="Previous Step"
+                title="Previous Step (←)"
+                aria-keyshortcuts="ArrowLeft"
                 aria-label="Previous Step"
                 (click)="player.previous()"
                 [disabled]="visualBusy() || player.cursor() === 0 || selection() === 'node'"
@@ -142,7 +157,8 @@
               <button
                 class="play-button"
                 [attr.aria-label]="player.playing() ? 'Pause' : 'Play'"
-                [title]="player.playing() ? 'Pause' : 'Play'"
+                [title]="player.playing() ? 'Pause (Space)' : 'Play (Space)'"
+                aria-keyshortcuts="Space"
                 (click)="player.toggle()"
                 [disabled]="
                   (!player.playing() && visualBusy()) ||
@@ -154,7 +170,8 @@
                 <app-icon [name]="player.playing() ? 'pause' : 'play'" />
               </button>
               <button
-                title="Next Step"
+                title="Next Step (→)"
+                aria-keyshortcuts="ArrowRight"
                 aria-label="Next Step"
                 (click)="next()"
                 [disabled]="
@@ -183,20 +200,13 @@
             >
           </div>
           <div class="operation-meta">
-            @if (selection() === 'node') {
+            @if (selection() === 'node' || selection() === 'dnode') {
               <span>Bağımsız Node; listeyi değiştirmez.</span>
             } @else {
               <span>Parametreleri imzanın içine gir.</span>
             }
             @if (language() !== 'pseudo') {
-              <a
-                class="source-download"
-                [href]="
-                  language() === 'java'
-                    ? '/examples/SinglyLinkedlist.java'
-                    : '/examples/singly_linkedlist.c'
-                "
-                download
+              <a class="source-download" [href]="sourceFile()" download
                 >↓ {{ language() === 'java' ? 'Java' : 'C' }} source</a
               >
             }
@@ -223,21 +233,41 @@
             ><span class="status-dot"></span>{{ player.playing() ? 'Running' : 'Ready' }}</span
           >
         </div>
-        <app-visualization
-          [snapshot]="selection() === 'node' ? nodeSnapshot() : player.list()"
-          [step]="selection() === 'node' ? null : player.step()"
-          [previousStep]="previousStep()"
-          [speed]="player.speed()"
-          (moving)="visualBusy.set($event)"
-          [trace]="selection() === 'node' ? null : player.trace()"
-          [operation]="selection()"
-          [standalone]="selection() === 'node'"
-          [stepNumber]="
-            player.trace() && selection() !== 'node'
-              ? player.cursor() + 1 + ' / ' + player.trace()!.steps.length
-              : ''
-          "
-        />
+        @if (doublySelected()) {
+          <app-doubly-visualization
+            [snapshot]="player.doublyList()"
+            [step]="player.step()"
+            [trace]="player.trace()"
+            [speed]="player.speed()"
+            (moving)="visualBusy.set($event)"
+            [stepNumber]="
+              player.trace() ? player.cursor() + 1 + ' / ' + player.trace()!.steps.length : ''
+            "
+          />
+        } @else if (selection() === 'dnode') {
+          <app-dnode-visualization
+            [step]="player.step()"
+            [stepNumber]="
+              player.trace() ? player.cursor() + 1 + ' / ' + player.trace()!.steps.length : ''
+            "
+          />
+        } @else {
+          <app-visualization
+            [snapshot]="selection() === 'node' ? nodeSnapshot() : player.list()"
+            [step]="selection() === 'node' ? null : player.step()"
+            [previousStep]="previousStep()"
+            [speed]="player.speed()"
+            (moving)="visualBusy.set($event)"
+            [trace]="selection() === 'node' ? null : player.trace()"
+            [operation]="selection()"
+            [standalone]="selection() === 'node'"
+            [stepNumber]="
+              player.trace() && selection() !== 'node'
+                ? player.cursor() + 1 + ' / ' + player.trace()!.steps.length
+                : ''
+            "
+          />
+        }
       </section>
     </div>
     <footer class="workspace-footer">

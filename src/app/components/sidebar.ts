@@ -42,6 +42,17 @@ import type { Selection } from '../core/execution.types';
       </div>
     </div>
     <nav aria-label="Veri yapıları ve fonksiyonlar">
+      <!-- DNode bağımsız sınıf olarak aynı Explorer ağacından seçilir. -->
+      @if (!normalizedQuery() || 'dnode'.includes(normalizedQuery())) {
+        <button
+          class="file node-file"
+          [class.selected]="selected() === 'dnode'"
+          (click)="functionSelected.emit('dnode')"
+        >
+          <app-icon class="file-icon blue" name="code" /><span>DNode</span
+          ><span class="file-tag">class</span>
+        </button>
+      }
       @if (showNode()) {
         <button
           class="file node-file"
@@ -75,8 +86,37 @@ import type { Selection } from '../core/execution.types';
           }
         }
       }
-      @if (query() && !groups().length && !showNode()) {
+      @if (
+        query() &&
+        !groups().length &&
+        !showNode() &&
+        !'dnode'.includes(normalizedQuery()) &&
+        !doublyFunctions.some(matchesDoubly)
+      ) {
         <p class="search-empty">Eşleşen fonksiyon yok.</p>
+      }
+      <!-- Yalnız uygulanan Doubly fonksiyonları aktif dosya olarak sunulur. -->
+      <button
+        class="folder"
+        [attr.aria-expanded]="doublyExpanded() || !!query()"
+        (click)="doublyExpanded.update(toggleExpanded)"
+      >
+        <span>{{ doublyExpanded() || query() ? '⌄' : '›' }}</span
+        ><app-icon class="folder-icon" name="folder" />Doubly Linkedlist
+      </button>
+      @if (doublyExpanded() || query()) {
+        @for (fn of doublyFunctions; track fn.id) {
+          @if (!normalizedQuery() || fn.label.toLowerCase().includes(normalizedQuery())) {
+            <button
+              class="file"
+              [class.selected]="selected() === fn.id"
+              [attr.aria-label]="'Doubly ' + fn.label"
+              (click)="functionSelected.emit(fn.id)"
+            >
+              <app-icon class="file-icon" name="file" /><span>{{ fn.label }}</span>
+            </button>
+          }
+        }
       }
       <div class="folder future">
         <span>›</span><app-icon class="folder-icon" name="folder" />Array<span class="file-tag"
@@ -96,6 +136,17 @@ export class Sidebar {
   readonly selected = input.required<Selection>();
   // select native input olayıyla çakışır; metin seçimi fonksiyon değişikliği sayılmamalıdır.
   readonly functionSelected = output<Selection>();
+  // Her veri yapısının klasörü bağımsız açılıp kapanır.
+  readonly doublyExpanded = signal(true);
+  readonly toggleExpanded = (value: boolean) => !value;
+  readonly doublyFunctions = [
+    { id: 'doublyIsEmpty' as const, label: 'isEmpty()' },
+    { id: 'doublySize' as const, label: 'size()' },
+    { id: 'doublyAddFirst' as const, label: 'addFirst(value)' },
+  ];
+  // Eşleşen Doubly dosyası varsa boş arama sonucu mesajı gösterilmez.
+  readonly matchesDoubly = (fn: { label: string }) =>
+    fn.label.toLowerCase().includes(this.normalizedQuery());
   readonly expanded = signal(true);
   // Filtre metni UI state'idir; algoritma state'inden bağımsızdır.
   readonly query = signal('');

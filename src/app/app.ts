@@ -8,11 +8,15 @@ import {
   ElementRef,
   afterNextRender,
   viewChild,
+  HostListener,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UiIcon } from './components/ui-icon';
 import { Sidebar } from './components/sidebar';
 import { Codebar } from './components/codebar';
+import { DoublyVisualization } from './components/doubly-visualization';
+import { isDoubly, doublyName } from './education/doubly-code';
+import { DNodeVisualization } from './components/dnode-visualization';
 import { Visualization } from './components/visualization';
 import { Node } from './core/node';
 import { PlaybackService } from './core/playback.service';
@@ -24,7 +28,15 @@ import { returnTypeFor } from './education/code-documents';
 /** Root component panelleri birleştirir; algoritma ve oynatma mantığı ayrı sınıflardadır. */
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, Sidebar, Codebar, Visualization, UiIcon],
+  imports: [
+    FormsModule,
+    Sidebar,
+    Codebar,
+    Visualization,
+    DNodeVisualization,
+    DoublyVisualization,
+    UiIcon,
+  ],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -83,6 +95,16 @@ export class App implements OnDestroy {
       );
   }
   readonly selection = signal<Selection>('node');
+  // Template, doğru sahneyi kalıcı seçimden türetir.
+  readonly doublySelected = computed(() => isDoubly(this.selection()));
+  // İndirilen kaynak her zaman seçili yapıya ve dile aittir.
+  readonly sourceFile = computed(() => {
+    const java = this.language() === 'java';
+    if (this.doublySelected())
+      return java ? '/examples/DoublyLinkedlist.java' : '/examples/doubly_linkedlist.c';
+    if (this.selection() === 'dnode') return java ? '/examples/DNode.java' : '/examples/DNode.c';
+    return java ? '/examples/SinglyLinkedlist.java' : '/examples/singly_linkedlist.c';
+  });
   readonly language = signal<Language>('java');
   readonly info = computed(() => infoFor(this.selection()));
   readonly message = signal('');
@@ -98,6 +120,28 @@ export class App implements OnDestroy {
   );
   readonly signature = computed(() => {
     const selected = this.selection();
+    if (isDoubly(selected)) {
+      const name = doublyName(selected);
+      const type =
+        selected === 'doublyAddFirst'
+          ? 'void'
+          : selected === 'doublySize'
+            ? 'int'
+            : this.language() === 'c'
+              ? 'bool'
+              : 'boolean';
+      return this.language() === 'pseudo'
+        ? name
+        : this.language() === 'java'
+          ? `public ${type} ${name}`
+          : `${type} dll_${name}`;
+    }
+    if (selected === 'dnode')
+      return this.language() === 'c'
+        ? 'DNode *newDNode'
+        : this.language() === 'pseudo'
+          ? 'NEW DNode'
+          : 'new DNode<String>';
     if (selected === 'node')
       return this.language() === 'c'
         ? 'Node *newNode'
@@ -111,11 +155,16 @@ export class App implements OnDestroy {
   value = '';
   index = '';
   nodeValue = '42';
+  // Null veya hazır komşu seçimi, constructor’a gerçek referans verilmesini öğretir.
+  dnodePrev = 'null';
+  dnodeNext = 'null';
 
   select(selection: Selection) {
     if (selection === this.selection()) return;
     const pending = !!this.player.trace() && !this.player.atEnd();
     this.player.cancelPending();
+    // Yeni sahne önceki component’in hareket kilidini devralmaz.
+    this.visualBusy.set(false);
     this.selection.set(selection);
     this.message.set('');
     this.notice.set(
@@ -127,6 +176,16 @@ export class App implements OnDestroy {
     this.message.set('');
     this.notice.set('');
     const selection = this.selection();
+    if (selection === 'dnode') {
+      // Boş data beklenen kullanıcı hatasıdır; sahne değiştirilmez.
+      if (!this.nodeValue.trim()) {
+        this.message.set('DNode için bir data değeri gir.');
+        return;
+      }
+      this.player.startDNode(this.nodeValue, this.dnodePrev !== 'null', this.dnodeNext !== 'null');
+      this.player.play();
+      return;
+    }
     if (selection === 'node') {
       if (!this.nodeValue.trim()) {
         this.message.set('Node için bir data değeri gir.');
@@ -148,11 +207,67 @@ export class App implements OnDestroy {
       this.message.set('index için 0 veya daha büyük bir tam sayı gir.');
       return;
     }
+    if (isDoubly(selection)) {
+      // Mevcut form doğrulamasından sonra yalnız Doubly listesi çalıştırılır.
+      this.player.startDoubly(selection, { value: this.value });
+      this.player.play();
+      return;
+    }
     this.player.start(selection, {
       ...(info.value ? { value: this.value } : {}),
       ...(info.index ? { index: Number(this.index) } : {}),
     });
     this.player.play();
+  }
+
+  // Root içindeki gerçek butonlar, klavye için de aynı disabled kurallarını uygular.
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+
+  @HostListener('document:keydown', ['$event'])
+  playbackShortcut(event: KeyboardEvent) {
+    // Yazı girişi, IME, basılı tuş tekrarı ve sistem kısayolları oynatmayı değiştirmez.
+    if (
+      event.defaultPrevented ||
+      event.isComposing ||
+      event.repeat ||
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey ||
+      event.shiftKey
+    )
+      return;
+    // Input, slider, düzenlenebilir alan ve panel ayraçları kendi klavye davranışını korur.
+    const target = event.target instanceof Element ? event.target : null;
+    if (
+      target?.closest(
+        'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="separator"], [role="slider"]',
+      )
+    )
+      return;
+    // Odaklanmış buton veya linkte Space'in yerleşik aktivasyonu çift çağrı üretmesin.
+    if (event.key === ' ' && target?.closest('button, a')) return;
+    // İngilizce tuş adları, kullanıcıya gösterilen tooltip ile aynı eylemlere eşleşir.
+    const label =
+      event.key === ' '
+        ? this.player.playing()
+          ? 'Pause'
+          : 'Play'
+        : event.key === 'ArrowRight'
+          ? 'Next Step'
+          : event.key === 'ArrowLeft'
+            ? 'Previous Step'
+            : event.key.toLowerCase() === 'r'
+              ? 'Reset'
+              : null;
+    if (!label) return;
+    // Devre dışı eylem klavyeden de çalışmaz; animasyonun ara adımları korunur.
+    const button = this.host.nativeElement.querySelector<HTMLButtonElement>(
+      `.playback button[aria-label="${label}"]`,
+    );
+    if (!button || button.disabled) return;
+    // Geçerli kısayolda sayfa kaydırmasını önleyip mevcut click işleyicisini kullanırız.
+    event.preventDefault();
+    button.click();
   }
 
   next() {

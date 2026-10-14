@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { UiIcon } from './ui-icon';
 import { LANGUAGES } from '../education/catalog';
+import { isDoubly, doublyName } from '../education/doubly-code';
 import { codeFor } from '../education/code-documents';
 import type { Language, Selection } from '../core/execution.types';
 
@@ -69,10 +70,18 @@ export class Codebar {
   readonly languageChange = output<Language>();
   readonly languages = LANGUAGES;
   readonly lines = computed(() => codeFor(this.selection(), this.language()));
-  readonly filename = computed(
-    () =>
-      `${this.selection() === 'node' ? 'Node' : this.selection()}.${LANGUAGES.find((l) => l.id === this.language())!.extension}`,
-  );
+  readonly filename = computed(() => {
+    // Veri yapısı adı, aynı method adını kullanan iki dosyayı ayırt eder.
+    const selection = this.selection();
+    const name = isDoubly(selection)
+      ? `DoublyLinkedlist / ${doublyName(selection)}`
+      : selection === 'node'
+        ? 'Node'
+        : selection === 'dnode'
+          ? 'DNode'
+          : selection;
+    return `${name}.${LANGUAGES.find((language) => language.id === this.language())!.extension}`;
+  });
   readonly scroller = viewChild<ElementRef<HTMLElement>>('scroller');
   constructor() {
     // Highlight görünür alandan çıkınca yalnızca editörün iç kaydırmasını değiştiririz.
