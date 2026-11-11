@@ -1551,3 +1551,50 @@ app-doubly-visualization {
   min-height: 0;
   overflow: hidden;
 }
+
+/* Doubly’de geri ve ileri yönler markayla uyumlu iki ayrı renk kullanır. */
+app-doubly-visualization {
+  --doubly-prev: #e8c6ae;
+  --doubly-next: #397ba5;
+}
+/* prev bağlantı çizgisi ve tail referans çizgisi aynı indigo renktedir. */
+app-doubly-visualization .pointer-path.prev-pointer,
+app-doubly-visualization .reference-label.prev-pointer path {
+  stroke: var(--doubly-prev);
+}
+/* next ve head ileri yön rengini paylaşır. */
+app-doubly-visualization .pointer-path.next-pointer,
+app-doubly-visualization .reference-label.next-pointer path {
+  stroke: var(--doubly-next);
+}
+/* Ayrı SVG marker’ları ok uçlarına da çizgilerle aynı rengi verir. */
+app-doubly-visualization #doubly-arrow-prev .arrow-head {
+  fill: var(--doubly-prev);
+}
+app-doubly-visualization #doubly-arrow-next .arrow-head {
+  fill: var(--doubly-next);
+}
+/* tail etiketi geri bağlantı rengiyle okunur; açık dolgu koyu metni destekler. */
+app-doubly-visualization .reference-label.prev-pointer rect {
+  fill: var(--primary);
+  stroke: var(--doubly-prev);
+}
+app-doubly-visualization .reference-label.prev-pointer text {
+  fill: var(--doubly-prev);
+}
+/* Legend, okları renk kadar yön ve isimle de ayırt ettirir. */
+app-doubly-visualization .prev-legend {
+  color: var(--doubly-prev);
+  font-weight: 600;
+}
+app-doubly-visualization .next-legend {
+  color: var(--doubly-next);
+  font-weight: 600;
+}
+
+/* Açık şeftali rengi legend’de koyu zeminde okunur kalır. */
+app-doubly-visualization .prev-legend {
+  background: var(--primary);
+  padding: 2px 6px;
+  border-radius: 4px;
+}

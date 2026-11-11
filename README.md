@@ -57,7 +57,7 @@ addFirst('A') → addLast('C') → insertAt(1, 'B') çalıştır. Liste A → B 
 
 ## Mevcut sınırlar ve sonraki kapsam
 
-Array temel proje kapsamındadır ancak henüz geliştirilmedi; Sidebar'da Yakında olarak işaretlidir. Stack gibi yapılar daha sonra bu temeller üzerine kurulacak.
+Circular Linkedlist tek yönlü ve yalnız tail tutan modelle eklendi; Sidebar’da Singly ve Doubly’nin hemen altındadır. Sıradaki yapı sabit kapasiteli Array’dir; Array henüz uygulanmadı. Array dolduğunda kendiliğinden büyümeyecek. Stack gibi sonraki yapıların Array ve Linked List tabanlı implementasyonları bu temeller üzerine kurulacak.
 
 Uygulama tarayıcı belleğinde çalışır; sayfa yenilendiğinde liste sıfırlanır. Backend ve hesap sistemi kurulmadı. Java/C örnekleri tarayıcıda derlenmez; TypeScript algoritmalarının eşleşen mantıksal adımları oynatılır. C bellek ayırma/serbest bırakma ve Java GC iç işlemleri ayrıntılı simüle edilmez.
 
@@ -88,3 +88,15 @@ Keyfi eleman sınırı yok; uzun listeler yatay kaydırılır. Her adım snapsho
 - 2026-10-14: DNode siteye eklendi: Sidebar sınıf dosyası, Java/C/Pseudocode constructor kaynağı, imzada data/prev/next parametreleri, bağımsız komşu veya null seçimi. Her data/prev/next ataması ayrı kod satırı ve ayrı trace adımıdır. Ortak playback ve klavye kısayolları kullanılır; DNode trace Singly listesini değiştirmez. Constructor yalnız kendi alanlarını atar, komşuların ters bağlantıları null kalır. Sahne merkez/sol/sağ slotları ve aşağı ayrılan null yollarıyla çakışmayı önler. Doubly Linkedlist fonksiyonları henüz entegre edilmedi.
 
 - 2026-10-14: Doubly Linkedlist ilk fonksiyon grubu uygulandı: isEmpty(), size(), addFirst(value). Her prev/next/head/tail/count güncellemesi ayrı kod satırı ve ayrı trace adımıdır. Singly/Doubly kalıcı listeleri ayrıdır; yapı veya fonksiyon değiştirilince tamamlanmamış işlem kendi başlangıcına döner. Model generic DNode(data, prev, next) kullanır. İleri ve geri oklar farklı yüksekliklerde/koridorlarda; head/tail/node etiketleri Node üstündeki ayrı portlarda. Tek RAF, hareket kilidi, Previous/Next/Reset, hız, klavye ve Zoom/Fit desteklenir. Kalan Doubly fonksiyonları sonraki gruplardadır; Reverse Traversal kararı hâlâ açık.
+
+## Güncel Doubly Linkedlist kapsamı
+
+isEmpty(), size(), clear(), addFirst(value), insertAt(index, value), addLast(value), removeAt(index), removeFirst(), removeLast(), indexOf(value), get(index), getFirst(), getLast(), set(index, value), contains(value), lastIndexOf(value), remove(value), Traversal.
+
+İşlemler Java/C/Pseudocode ile eş zamanlıdır. Singly ve Doubly listeleri ayrı korunur; Reset işlem öncesindeki listeye döner. Java ekranı yorum içermez; uygulamanın öğretici kaynak yorumları korunur.
+
+## Circular Linkedlist
+
+`src/app/core/circular-linkedlist.ts` Angular’dan bağımsız generic Node<T> kullanır ve yalnız `tail` ile `size` tutar. İlk Node `tail.next` üzerinden bulunur; tek eleman kendisine döner. Mevcut 18 işlem Java/C/Pseudocode, adım açıklamaları ve aynı playback/klavye/Zoom/Fit kontrolleriyle çalışır. Diğer listelerden ayrı kalıcı state kullanır. Her dolaşma bir turla sınırlıdır; arama ve Traversal null beklemez. `Reset` işlem öncesindeki halkayı geri getirir; `clear()` halkayı açıp boşaltır. Kod paneli method çağrılarını aşağıda açar; iç çağrıların satırları benzersiz trace anahtarlarıyla vurgulanır.
+
+Yerel Angular LMDB cache’i native çökme üretirse, bağımlılık değiştirmeden `NG_BUILD_CACHE_STORE=sqlite npm run build` kullanılabilir. Bu görevde production build bu komutla doğrulandı.

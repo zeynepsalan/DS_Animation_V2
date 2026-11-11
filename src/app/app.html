@@ -9,6 +9,7 @@
       [attr.aria-expanded]="layout.sidebarOpen()"
       (click)="layout.toggleSidebar()"
     >
+      <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
       <app-icon name="menu" />
     </button>
   </aside>
@@ -20,6 +21,7 @@
   [class.sidebar-overlay]="layout.overlay()"
   [style.--sidebar-width]="layout.effectiveSidebarWidth() + 'px'"
 >
+  <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
   <app-sidebar
     [class.closed]="!layout.sidebarOpen()"
     [attr.inert]="layout.sidebarOpen() ? null : ''"
@@ -52,6 +54,7 @@
       [style.--motion]="900 / player.speed() + 'ms'"
     >
       <section class="editor-column" aria-label="Codebar ve fonksiyon çalıştırma">
+        <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
         <app-codebar
           [selection]="selection()"
           [language]="language()"
@@ -65,7 +68,9 @@
             <div class="function-signature">
               <span class="signature-prefix">{{ signature() }}</span
               ><span>(</span>
+              <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
               @if (selection() === 'node' || selection() === 'dnode') {
+                <!-- Bu kontrol kullanıcı girdisini bileşen state’ine bağlar; ngModel çift yönlü bağ, input olayı tek yönlü değişim bildirir. -->
                 <input
                   name="nodeValue"
                   aria-label="data"
@@ -87,7 +92,9 @@
                   <option value="next">following</option>
                 </select>
               }
+              <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
               @if (info()?.index) {
+                <!-- Bu kontrol kullanıcı girdisini bileşen state’ine bağlar; ngModel çift yönlü bağ, input olayı tek yönlü değişim bildirir. -->
                 <input
                   class="index-argument"
                   name="index"
@@ -98,10 +105,13 @@
                   autocomplete="off"
                 />
               }
+              <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
               @if (info()?.index && info()?.value) {
                 <span>,</span>
               }
+              <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
               @if (info()?.value) {
+                <!-- Bu kontrol kullanıcı girdisini bileşen state’ine bağlar; ngModel çift yönlü bağ, input olayı tek yönlü değişim bildirir. -->
                 <input
                   name="value"
                   aria-label="value"
@@ -112,15 +122,19 @@
               }
               <span>)</span>
             </div>
+            <!-- Click olayı ilgili işleyiciyi çağırır; disabled bağı koşula göre kullanıcı ve klavye eylemini engeller. -->
             <button class="run-button" type="submit">
+              <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
               <app-icon [name]="selection() === 'node' ? 'code' : 'play'" />{{
                 selection() === 'node' ? 'Preview' : 'Run'
               }}
             </button>
           </form>
+          <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
           @if (message()) {
             <p class="form-message error" role="alert">{{ message() }}</p>
           }
+          <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
           @if (notice()) {
             <p class="form-message" role="status">{{ notice() }}</p>
           }
@@ -136,6 +150,7 @@
           </div>
           <div class="playback" aria-label="Animasyon kontrolleri">
             <div class="playback-buttons">
+              <!-- Click olayı ilgili işleyiciyi çağırır; disabled bağı koşula göre kullanıcı ve klavye eylemini engeller. -->
               <button
                 title="Reset (R)"
                 aria-keyshortcuts="R"
@@ -143,8 +158,10 @@
                 (click)="player.reset()"
                 [disabled]="!player.trace() || selection() === 'node'"
               >
+                <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
                 <app-icon name="reset" />
               </button>
+              <!-- Click olayı ilgili işleyiciyi çağırır; disabled bağı koşula göre kullanıcı ve klavye eylemini engeller. -->
               <button
                 title="Previous Step (←)"
                 aria-keyshortcuts="ArrowLeft"
@@ -152,8 +169,10 @@
                 (click)="player.previous()"
                 [disabled]="visualBusy() || player.cursor() === 0 || selection() === 'node'"
               >
+                <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
                 <app-icon name="previous" />
               </button>
+              <!-- Click olayı ilgili işleyiciyi çağırır; disabled bağı koşula göre kullanıcı ve klavye eylemini engeller. -->
               <button
                 class="play-button"
                 [attr.aria-label]="player.playing() ? 'Pause' : 'Play'"
@@ -167,8 +186,10 @@
                   selection() === 'node'
                 "
               >
+                <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
                 <app-icon [name]="player.playing() ? 'pause' : 'play'" />
               </button>
+              <!-- Click olayı ilgili işleyiciyi çağırır; disabled bağı koşula göre kullanıcı ve klavye eylemini engeller. -->
               <button
                 title="Next Step (→)"
                 aria-keyshortcuts="ArrowRight"
@@ -178,6 +199,7 @@
                   visualBusy() || !player.trace() || player.atEnd() || selection() === 'node'
                 "
               >
+                <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
                 <app-icon name="next" />
               </button>
             </div>
@@ -188,6 +210,7 @@
             }}</span>
             <label class="speed-label"
               >Speed
+              <!-- Bu kontrol kullanıcı girdisini bileşen state’ine bağlar; ngModel çift yönlü bağ, input olayı tek yönlü değişim bildirir. -->
               <input
                 type="range"
                 min="0.25"
@@ -200,11 +223,13 @@
             >
           </div>
           <div class="operation-meta">
+            <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
             @if (selection() === 'node' || selection() === 'dnode') {
               <span>Bağımsız Node; listeyi değiştirmez.</span>
             } @else {
               <span>Parametreleri imzanın içine gir.</span>
             }
+            <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
             @if (language() !== 'pseudo') {
               <a class="source-download" [href]="sourceFile()" download
                 >↓ {{ language() === 'java' ? 'Java' : 'C' }} source</a
@@ -233,7 +258,9 @@
             ><span class="status-dot"></span>{{ player.playing() ? 'Running' : 'Ready' }}</span
           >
         </div>
+        <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
         @if (doublySelected()) {
+          <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
           <app-doubly-visualization
             [snapshot]="player.doublyList()"
             [step]="player.step()"
@@ -245,6 +272,7 @@
             "
           />
         } @else if (selection() === 'dnode') {
+          <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
           <app-dnode-visualization
             [step]="player.step()"
             [stepNumber]="
@@ -252,8 +280,10 @@
             "
           />
         } @else {
+          <!-- Alt bileşen köşeli parantezle giriş alır, normal parantezle olay bildirir; ortak state üst bileşende kalır. -->
           <app-visualization
-            [snapshot]="selection() === 'node' ? nodeSnapshot() : player.list()"
+            [snapshot]="selection() === 'node' ? nodeSnapshot() : circularSelected() ? player.circularList() : player.list()"
+            [circular]="circularSelected()"
             [step]="selection() === 'node' ? null : player.step()"
             [previousStep]="previousStep()"
             [speed]="player.speed()"

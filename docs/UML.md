@@ -78,11 +78,13 @@ classDiagram
     }
     class PlaybackService {
         list: Signal
+        circularList: Signal
         trace: Signal
         cursor: Signal
         playing: Signal
         speed: Signal
         start(operation, params)
+        startCircular(operation, params)
         next()
         previous()
         reset()
@@ -91,6 +93,34 @@ classDiagram
         pause()
         setSpeed(value)
     }
+    class CircularLinkedlist~T~ {
+        tail: Node~T~
+        count: number
+        observer: StepObserver
+        snapshot() ListSnapshot
+        fromSnapshot(snapshot) CircularLinkedlist
+        isEmpty() boolean
+        size() number
+        addFirst(value) void
+        addLast(value) void
+        insertAt(index, value) void
+        removeFirst() T
+        removeLast() T
+        removeAt(index) T
+        get(index) T
+        getFirst() T
+        getLast() T
+        set(index, value) T
+        indexOf(value) number
+        lastIndexOf(value) number
+        contains(value) boolean
+        remove(value) boolean
+        traversal() List~T~
+        clear() void
+    }
+    CircularLinkedlist --> Node : tail / next halka
+    PlaybackService --> CircularLinkedlist : circularTrace
+    Visualization --> CircularLinkedlist : snapshot projeksiyonu
     class TraceEngine {
         execute(baseline, operation, params) Trace
     }
@@ -347,6 +377,23 @@ classDiagram
         isEmpty() boolean
         size() int
         addFirst(value) void
+        addLast(value) void
+        insertAt(index, value) void
+        clear() void
+        removeAt(index) T
+        removeFirst() T
+        removeLast() T
+        remove(value) boolean
+        get(index) T
+        getFirst() T
+        getLast() T
+        set(index, value) T
+        indexOf(value) int
+        lastIndexOf(value) int
+        contains(value) boolean
+        traversal() List
+        locate(index) DNode
+        unlink(current) T
     }
     class DoublyVisualization {
         snapshot: InputSignal
@@ -368,4 +415,22 @@ classDiagram
     Codebar --> DoublyCode : dil satırları ve step key
 ```
 
-DoublyGeometry ve DoublyCode kaynakta saf fonksiyon gruplarıdır. Trace.operation üç Doubly seçim kimliğini destekler; ListSnapshot.tail ve NodeSnapshot.prev eklenir. Playback.restore aktif trace ailesine göre doğru liste signal’ını günceller. Snapshot ziyaretleri iteratif ve kimlik bazlıdır; iki yönlü bağlantılarda döngüye girmez.
+DoublyGeometry ve DoublyCode kaynakta saf fonksiyon gruplarıdır. Trace.operation 18 Doubly seçim kimliğini destekler; ListSnapshot.tail ve NodeSnapshot.prev eklenir. Playback.restore aktif trace ailesine göre doğru liste signal’ını günceller. Snapshot ziyaretleri iteratif ve kimlik bazlıdır; iki yönlü bağlantılarda döngüye girmez.
+
+- 2026-10-14: DoublyVisualization prev/next marker’larını ayrı üretir; tail prev-pointer görünüm sınıfını paylaşır. Yalnız sunum rengi değişti; model, geometri ve sınıf ilişkileri gözden geçirildi, değişmedi.
+
+- 2026-10-14: Prev/tail şeftali token revizyonu: sunum rengi değişti; marker paylaşımı, algoritmalar ve UML ilişkileri gözden geçirildi, değişmedi.
+
+## 2026-10-15 — UML güncellik kaydı
+
+DoublyLinkedlist artık katalogdaki 18 işlemi uygular; önceki üç fonksiyonlu aşama tamamlandı. SceneMotion.moveTo hedef Node, binding, süre ve isteğe bağlı layoutHints alır; aynı hedefin port değişimi de fade üretir. DoublyGeometry ara adım slotlarını ve ayrı giriş portlarını hesaplar. Java yorum filtresi yalnız Codebar satır sunumunu etkiler, model ilişkilerini değiştirmez.
+
+## 2026-11-10 — Kapsam kontrolü
+
+Bu değişiklik yalnız yol haritasını günceller; çalışan sınıf ilişkileri değişmedi. Circular Linkedlist ve sabit kapasiteli Array henüz uygulanmamış kapsamdır; Circular Node/DNode ilişkisi kullanıcı yön seçimine bağlıdır.
+
+## 2026-11-11 — Circular gerçek sınıf ilişkileri
+
+CircularLinkedlist<T> Node<T> kullanır; head veya prev tutmaz. Snapshot.head tail.next’ten türetilmiş renderer projeksiyonudur. PlaybackService.circularList ayrı kalıcı halka, startCircular/circularTrace ayrı çalışma kopyasıdır. Visualization.circular aynı SceneMotion RAF motorunu circularPositions/circularPath/circularBounds ile kullanır. Codebar circularCode üzerinden iç method çağrılarını kapsam prefix’iyle açar; export aynı satır kaynağını tekrar tanım üretmeden alır. Array hâlâ uygulanmamıştır.
+
+- 2026-11-11 checkpoint kontrolü: GitHub push hazırlığında UML gerçek Circular/Doubly kaynaklarıyla gözden geçirildi; sınıf ilişkilerini değiştiren yeni kod bulunmuyor.

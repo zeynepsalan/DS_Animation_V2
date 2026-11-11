@@ -1,0 +1,233 @@
+FUNCTION isEmpty():
+  RETURN tail == null
+END FUNCTION
+
+FUNCTION size():
+  RETURN size
+END FUNCTION
+
+FUNCTION clear():
+// Önce halka açılır; ardından current null olana kadar temizlenir.
+  IF tail == null:
+  RETURN
+  END
+  current ← tail.next
+  tail.next ← null
+  tail ← null
+  WHILE current != null:
+    following ← current.next
+  current.next ← null
+    size ← size - 1
+    current ← following
+  END
+  RETURN
+END FUNCTION
+
+FUNCTION addFirst(value):
+  node ← NEW Node(value, null)
+  IF tail == null:
+    node.next ← node
+    tail ← node
+  ELSE
+    node.next ← tail.next
+    tail.next ← node
+  END
+  size ← size + 1
+  RETURN
+END FUNCTION
+
+FUNCTION insertAt(index, value):
+  IF index < 0 OR index > size:
+  RETURN
+  END
+  IF index == 0:
+    addFirst(value)
+  RETURN
+  END
+  IF index == size:
+    addLast(value)
+  RETURN
+  END
+  previous ← tail.next
+  i ← 0
+  WHILE i < index - 1:
+    previous ← previous.next
+    i ← i + 1
+  END
+  node ← NEW Node(value, null)
+  node.next ← previous.next
+  previous.next ← node
+  size ← size + 1
+  RETURN
+END FUNCTION
+
+FUNCTION addLast(value):
+  node ← NEW Node(value, null)
+  IF tail == null:
+    node.next ← node
+  ELSE
+    node.next ← tail.next
+    tail.next ← node
+  END
+  tail ← node
+  size ← size + 1
+  RETURN
+END FUNCTION
+
+FUNCTION removeAt(index):
+  IF index < 0 OR index >= size:
+  RETURN null
+  END
+  IF index == 0:
+    RETURN removeFirst()
+  END
+  IF index == size - 1:
+    RETURN removeLast()
+  END
+  previous ← tail.next
+  i ← 0
+  WHILE i < index - 1:
+    previous ← previous.next
+    i ← i + 1
+  END
+  current ← previous.next
+  value ← current.data
+  previous.next ← current.next
+  current.next ← null
+  size ← size - 1
+  RETURN value
+END FUNCTION
+
+FUNCTION removeFirst():
+  IF tail == null:
+  RETURN null
+  END
+  current ← tail.next
+  value ← current.data
+  IF current == tail:
+    tail ← null
+  ELSE
+    tail.next ← current.next
+  END
+  current.next ← null
+  size ← size - 1
+  RETURN value
+END FUNCTION
+
+FUNCTION removeLast():
+  IF tail == null:
+  RETURN null
+  END
+  IF tail.next == tail:
+    RETURN removeFirst()
+  END
+  previous ← tail.next
+  WHILE previous.next != tail:
+    previous ← previous.next
+  END
+  current ← tail
+  value ← current.data
+  previous.next ← current.next
+  tail ← previous
+  current.next ← null
+  size ← size - 1
+  RETURN value
+END FUNCTION
+
+FUNCTION indexOf(value):
+// Halka null ile bitmez; size adım bir turdur.
+  current ← IF tail == null THEN null ELSE tail.next
+  i ← 0
+  WHILE i < size:
+    IF current.data == value:
+  RETURN i
+  END
+    current ← current.next
+    i ← i + 1
+  END
+  RETURN -1
+END FUNCTION
+
+FUNCTION get(index):
+  IF index < 0 OR index >= size:
+  RETURN null
+  END
+  current ← tail.next
+  i ← 0
+  WHILE i < index:
+    current ← current.next
+    i ← i + 1
+  END
+  RETURN current.data
+END FUNCTION
+
+FUNCTION getFirst():
+  IF tail == null:
+  RETURN null
+  END
+  RETURN tail.next.data
+END FUNCTION
+
+FUNCTION getLast():
+  IF tail == null:
+  RETURN null
+  END
+  RETURN tail.data
+END FUNCTION
+
+FUNCTION set(index, value):
+  IF index < 0 OR index >= size:
+  RETURN null
+  END
+  current ← tail.next
+  i ← 0
+  WHILE i < index:
+    current ← current.next
+    i ← i + 1
+  END
+  oldValue ← current.data
+  current.data ← value
+  RETURN oldValue
+END FUNCTION
+
+FUNCTION contains(value):
+  index ← indexOf(value)
+  RETURN index != -1
+END FUNCTION
+
+FUNCTION lastIndexOf(value):
+// Halka null ile bitmez; size adım bir turdur.
+  current ← IF tail == null THEN null ELSE tail.next
+  i ← 0
+  found ← -1
+  WHILE i < size:
+    IF current.data == value:
+      found ← i
+  END
+    current ← current.next
+    i ← i + 1
+  END
+  RETURN found
+END FUNCTION
+
+FUNCTION remove(value):
+  index ← indexOf(value)
+  IF index == -1:
+  RETURN false
+  END
+  removeAt(index)
+  RETURN true
+END FUNCTION
+
+FUNCTION traversal():
+// Yalnız bir tam tur dolaşılır; ikinci tura girilmez.
+  values ← []
+  current ← IF tail == null THEN null ELSE tail.next
+  i ← 0
+  WHILE i < size:
+    APPEND current.data TO values
+    current ← current.next
+    i ← i + 1
+  END
+  RETURN values
+END FUNCTION

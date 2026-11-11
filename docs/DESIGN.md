@@ -49,3 +49,27 @@ Mevcut MVP panel düzeni korunur. Sidebar’da Doubly Linkedlist klasörü altı
 next portu y+24, prev portu y+48; dikey geçişler ayrı radiuslu koridorlar kullanır. head/tail/node etiketleri 64px genişlikte üst portlara ayrılır; üç ortak referansta üçüncü etiket ortadaki boş dikey koridoru kullanır. Null uçlar Node dışındadır. Fit tüm işlem boyunca sabit sahne sınırı kullanır; ResizeObserver ölçek değişiminde CSS gecikmesi olmadan bütün sahneyi sığdırır. Manual zoom paneller içinde kaydırılabilir. Liste büyümesine keyfi sınır koyulmaz; çok uzun listelerde Fit küçülür ve manual zoom kullanılabilir.
 
 - Son kare yerleştiğinde hazırlık alanının 440px yüksekliği 240px dinlenme alanına iner; hareket sürerken küçülmez. Mobil final Fit okların tamamını koruyarak metin/kutuları daha okunur büyütür.
+
+- 2026-10-14: Kullanıcı renk revizyonundan önce mevcut sürümün pushlanmasını istedi; checkpoint e74c8e1 main branch’ine başarıyla pushlandı. Sonraki yerel renk revizyonunda Doubly prev okları ve tail referansı #6554ad indigo; next/head #397ba5 mavi kullanır. Her yönde çizgi ve SVG marker ucu aynı renktedir. Tail etiketi ve legend yön/renk eşlemesini gösterir.
+
+- 2026-10-14: Kullanıcı ekran örneğine göre Doubly prev ve tail rengi #e8c6ae şeftali olarak değiştirildi (görselin sRGB baskın metin rengi örneklendi). next/head mavisi korunur. Tail etiketi ve prev legend koyu zeminle açık rengin okunurluğunu korur. Önceki indigo prev kararı bu kullanıcı seçimiyle değiştirildi.
+
+## Doubly ara adım geometrisi
+
+Ekleme/silme sırasında seçili Node üst sırada, mevcut Node’lar alt sıradaki kararlı slotlarda gösterilir. Aynı hedefe gelen bağlantılar 14px aralıklı girişlere ayrılır; marker 8px ve userSpaceOnUse kullanır. Dönüşler en fazla 24px yumuşatılır. Named reference etiketleri 72px genişlikte ayrı portlara yerleşir. prev/tail #e8c6ae, next/head #397ba5 kullanır. Tek RAF Node ve bağlantıları birlikte taşır; hedef/port değişiminde bağlantı sönüp belirir. Kamera işlem boyunca tüm adımların sınırlarını kapsar. Java görünümü yorumsuzdur; satır highlight eşleşmeleri semantik key üzerinden korunur.
+
+## 2026-11-10 — Circular hazırlığı (uygulanmamış tasarım)
+
+Kapsam component/işlem entegrasyonudur; mevcut üç panel ve renk token’ları korunur. Üç yerleşim değerlendirildi: çember çevresinde Node’lar (uzun metin ve çok elemanda okunurluk düşer), iki satırlı halka (index sırasını izlemek zorlaşır), yatay Node sırası ve dış dönüş koridoru (seçilen yön). Kullanıcı mevcut liste düzenini bilir; dış dönüş oku son elemandan başlangıca dönüşü açıkça gösterecek. Tek/çift yön kararı hâlâ bekleniyor.
+
+Plan: mevcut 18 liste işlemi, ayrı kalıcı Circular state, Java/C/Pseudocode satır eşleşmesi, null’a değil halka sınırına göre sonlanan dolaşma, boş/tek Node ve head/tail değişimleri, kesintiye uğrayan işlemin başlangıcına dönen Reset/iptal. Ara atamalarda halkanın geçici olarak açılması gerçek kodla birlikte gösterilecek. Kamera self-loop ve bütün dönüş koridorunu kapsayacak.
+
+Mevcut kaynakta büyük yerel değişiklikler var; bu görevin öncesi /tmp/ds-circular-checkpoint-20261110-233757 altında binary patch ve untracked arşiviyle korundu. Yeni bağımlılık, görsel varlık veya ayrı animasyon motoru planlanmıyor. Performans/FPS henüz ölçülmedi. Başlangıç doğrulaması: 56 test ve Java/C 138 Doubly senaryosu başarılı.
+
+## 2026-11-11 — Circular uygulanan görünüm ve hareket
+
+Circular klasörü Singly ve Doubly’nin hemen altındadır; aynı 18 dosya ve bağımsız klasör açma/arama kullanılır. Yalnız tail reference etiketi vardır; ilk Node tail.next üzerinden anlaşılır. Yatay Node sırası, indigo data ve mavi next/reference renkleri, 210px pitch, 144×64px Node ve 24px dönüş radius’u korunur. Ekleme/silmede işlenen nesne üst hazırlık satırında, eski sıra alt satırdaki kararlı slotlarda durur. İleri oklar iki kutu arasındaki koridordan, halka dönüşü bütün kutular/kimlikler altındaki koridordan geçer. Self-loop aynı dış yolu kullanır.
+
+Her hedefe gelen next okları ayrı giriş portlarına bölünür. Hareketin ara karelerinde hedefle aynı yüksekliğe yaklaşan ileri oklar da kutular arasındaki dikey koridoru kullanır; hedef kutusunu yatay kesmez. Tail dönüşünün çıkış/giriş dönüşleri kendi Node’larının yanındadır; başka bir Node’un içinden geçmez. Aynı SVG kimlikleri ve SceneMotion RAF motoru kullanılır; Next/Previous hareket kilidi ve reduced-motion davranışı korunur. Fit her trace kaydını ayrı ölçer ve ara/final dönüş koridorunu kapsar; manuel zoom kendi scroll alanını kullanır. Yeni resim/ikon/bağımlılık eklenmedi.
+
+Codebar alt method çağrılarını aşağıda açar; first./last./search./removal. gibi iç anahtarlar kullanıcı kodunda gösterilmez, yalnız doğru satırın vurgulanmasını sağlar. Java sunumu yorumsuz, C/Pseudocode açıklamalıdır. 1440×900 ve 390×844 tarayıcı gözlemleri tamamlandı; gerçek cihaz ve kullanıcı öğrenme kabulü ayrıca yapılmış sayılmaz. FPS/INP ölçülmedi. Claude Code incelemesi AUTH_REQUIRED nedeniyle çalışmadı; kaynak, test ve browser doğrulamasını Codex yaptı.

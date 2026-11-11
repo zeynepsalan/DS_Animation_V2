@@ -190,6 +190,62 @@
       },
       "bytes": 43700,
       "alt": "Doubly Linkedlist ayrı prev/next bağlantıları ve kod adımları"
+    },
+    {
+      "id": "circular-insert-step",
+      "path": "docs/screenshots/circular-insert-step.png",
+      "source": "Yerel Circular Linkedlist Chrome browser QA ekran görüntüsü",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Circular tail ve halka geometrisi doğrulama kanıtı",
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 160854,
+      "alt": "Tek yönlü Circular Linkedlist; tail ve dairesel next bağlantıları",
+      "fallback": "Çalışan Angular görünümü; ürün görsel varlığı değildir"
+    },
+    {
+      "id": "circular-completed-list",
+      "path": "docs/screenshots/circular-completed-list.png",
+      "source": "Yerel Circular Linkedlist Chrome browser QA ekran görüntüsü",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Circular tail ve halka geometrisi doğrulama kanıtı",
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 156182,
+      "alt": "Tek yönlü Circular Linkedlist; tail ve dairesel next bağlantıları",
+      "fallback": "Çalışan Angular görünümü; ürün görsel varlığı değildir"
+    },
+    {
+      "id": "circular-remove-step",
+      "path": "docs/screenshots/circular-remove-step.png",
+      "source": "Yerel Circular Linkedlist Chrome browser QA ekran görüntüsü",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Circular tail ve halka geometrisi doğrulama kanıtı",
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 158136,
+      "alt": "Tek yönlü Circular Linkedlist; tail ve dairesel next bağlantıları",
+      "fallback": "Çalışan Angular görünümü; ürün görsel varlığı değildir"
+    },
+    {
+      "id": "circular-mobile",
+      "path": "docs/screenshots/circular-mobile.png",
+      "source": "Yerel Circular Linkedlist Chrome browser QA ekran görüntüsü",
+      "rights": "Kullanıcının proje ekranı",
+      "purpose": "Circular tail ve halka geometrisi doğrulama kanıtı",
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "bytes": 54096,
+      "alt": "Tek yönlü Circular Linkedlist; tail ve dairesel next bağlantıları",
+      "fallback": "Çalışan Angular görünümü; ürün görsel varlığı değildir"
     }
   ]
 }

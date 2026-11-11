@@ -1,26 +1,568 @@
 FUNCTION isEmpty():
   empty ← head == null
+  // İşlemi bitir ve doğrudan sonucu döndür.
   RETURN empty
 END FUNCTION
 
 FUNCTION size():
   count ← size
+  // İşlemi bitir ve doğrudan sonucu döndür.
   RETURN count
 END FUNCTION
 
-// Her bağlantı ayrı adımda kurulur.
+FUNCTION clear():
+  // Dolaşma için geçici current referansını başlat.
+  current ← head
+  // Liste başlangıç referansını güncelle.
+  head ← null
+  // Liste bitiş referansını güncelle.
+  tail ← null
+  // Sonraki nesneyi tutacak geçici referansı null ile başlat.
+  following ← null
+  // Null’a ulaşana kadar koşulu her dönüşte yeniden kontrol et.
+  WHILE current != null:
+    // Sonraki komşuyu koparmadan önce sakla.
+    following ← current.next
+    // Temizlenen nesnenin prev alanını null yap.
+    current.prev ← null
+    // Temizlenen nesnenin next alanını null yap.
+    current.next ← null
+
+    // Saklanan sonraki nesneyle devam et.
+    current ← following
+  END WHILE
+  // Eleman sayacını bağlantılardan ayrı güncelle.
+  size ← 0
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN
+END FUNCTION
+
 FUNCTION addFirst(value):
+  // Bağımsız DNode oluştur; komşular daha sonra ayrı bağlanacak.
   node ← NEW DNode(value, null, null)
 
-  // İleri bağlantıyı eski head’e kur.
+
+
+  // İleri bağlantıyı bu adımda güncelle.
   node.next ← head
+  // Boş ve dolu liste için farklı uç güncellemesini seç.
   IF head != null:
-    // Eski head’in geri bağlantısı ayrı güncellenir.
+    // Geri bağlantıyı bu adımda güncelle.
     head.prev ← node
   ELSE:
+    // Liste bitiş referansını güncelle.
     tail ← node
   END IF
+  // Liste başlangıç referansını güncelle.
   head ← node
+  // Eleman sayacını bağlantılardan ayrı güncelle.
   size ← size + 1
+  // İşlemi bitir ve doğrudan sonucu döndür.
   RETURN
+END FUNCTION
+
+FUNCTION insertAt(index, value):
+  // Geçersiz index veya boş listeyi değiştirmeden sonlandır.
+  IF index < 0 OR index > size:
+    // Geçersiz işlemde listeyi değiştirmeden güvenle dön.
+    RETURN
+  END IF
+  DECLARE current
+  // Size konumuna eklemede sonraki nesne bulunmaz.
+  IF index == size:
+    // Sona eklemenin sonraki komşusu null’dır.
+    current ← null
+  ELSE:
+    DECLARE i
+    // Hedefe yakın uçtan başlayarak dolaşma maliyetini azalt.
+    IF index < size / 2:
+      // Geçici referansı head ile başlat.
+      current ← head
+      // Head konumunun index’i sıfırdır.
+      i ← 0
+    ELSE:
+      // Geçici referansı tail ile başlat.
+      current ← tail
+      // Tail konumunun index’i size - 1’dir.
+      i ← size - 1
+    END IF
+    // Hedef index’e ulaşana kadar koşulu yeniden kontrol et.
+    WHILE i != index:
+      // İndex farkına göre ileri veya geri ilerle.
+      IF i < index:
+        // Geçici referansı next hedefe taşı.
+        current ← current.next
+        // İndex sayacını ayrı adımda artır.
+        i ← i + 1
+      ELSE:
+        // Geçici referansı prev hedefe taşı.
+        current ← current.prev
+        // İndex sayacını ayrı adımda azalt.
+        i ← i - 1
+      END IF
+    END WHILE
+  END IF
+  // Önceki komşuyu geçici referansta sakla.
+  previous ← IF current != null THEN current.prev ELSE tail
+  // Bağımsız DNode oluştur; komşular daha sonra ayrı bağlanacak.
+  node ← NEW DNode(value, null, null)
+
+
+
+  // Yeni nesnenin geri bağlantısını kur.
+  node.prev ← previous
+  // Yeni nesnenin ileri bağlantısını kur.
+  node.next ← current
+  // Önceki komşu yoksa head güncellenmelidir.
+  IF previous != null:
+    // Önceki komşunun ileri bağlantısını yeni nesneye taşı.
+    previous.next ← node
+  ELSE:
+    // Liste başlangıç referansını güncelle.
+    head ← node
+  END IF
+  // Sonraki komşu yoksa tail güncellenmelidir.
+  IF current != null:
+    // Sonraki komşunun geri bağlantısını yeni nesneye taşı.
+    current.prev ← node
+  ELSE:
+    // Liste bitiş referansını güncelle.
+    tail ← node
+  END IF
+  // Eleman sayacını bağlantılardan ayrı güncelle.
+  size ← size + 1
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN
+END FUNCTION
+
+FUNCTION addLast(value):
+  // Bağımsız DNode oluştur; komşular daha sonra ayrı bağlanacak.
+  node ← NEW DNode(value, null, null)
+
+
+
+  // Geri bağlantıyı bu adımda güncelle.
+  node.prev ← tail
+  // Boş ve dolu liste için farklı uç güncellemesini seç.
+  IF tail != null:
+    // İleri bağlantıyı bu adımda güncelle.
+    tail.next ← node
+  ELSE:
+    // Liste başlangıç referansını güncelle.
+    head ← node
+  END IF
+  // Liste bitiş referansını güncelle.
+  tail ← node
+  // Eleman sayacını bağlantılardan ayrı güncelle.
+  size ← size + 1
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN
+END FUNCTION
+
+FUNCTION removeAt(index):
+  // Geçersiz index veya boş listeyi değiştirmeden sonlandır.
+  IF index < 0 OR index >= size:
+    // Geçersiz işlemde listeyi değiştirmeden güvenle dön.
+    RETURN null
+  END IF
+  DECLARE current
+  DECLARE i
+  // Hedefe yakın uçtan başlayarak dolaşma maliyetini azalt.
+  IF index < size / 2:
+    // Geçici referansı head ile başlat.
+    current ← head
+    // Head konumunun index’i sıfırdır.
+    i ← 0
+  ELSE:
+    // Geçici referansı tail ile başlat.
+    current ← tail
+    // Tail konumunun index’i size - 1’dir.
+    i ← size - 1
+  END IF
+  // Hedef index’e ulaşana kadar koşulu yeniden kontrol et.
+  WHILE i != index:
+    // İndex farkına göre ileri veya geri ilerle.
+    IF i < index:
+      // Geçici referansı next hedefe taşı.
+      current ← current.next
+      // İndex sayacını ayrı adımda artır.
+      i ← i + 1
+    ELSE:
+      // Geçici referansı prev hedefe taşı.
+      current ← current.prev
+      // İndex sayacını ayrı adımda azalt.
+      i ← i - 1
+    END IF
+  END WHILE
+  // Eski veriyi değiştirmeden veya nesneyi silmeden önce sakla.
+  oldValue ← current.data
+  // Önceki komşuyu geçici referansta sakla.
+  previous ← current.prev
+  // Sonraki komşuyu koparmadan önce sakla.
+  following ← current.next
+  // Önceki komşu yoksa head güncellenmelidir.
+  IF previous != null:
+    // İleri zincirin silinen nesneyi atlamasını sağla.
+    previous.next ← following
+  ELSE:
+    // Liste başlangıç referansını güncelle.
+    head ← following
+  END IF
+  // Sonraki komşu yoksa tail güncellenir.
+  IF following != null:
+    // Geri zincirin silinen nesneyi atlamasını sağla.
+    following.prev ← previous
+  ELSE:
+    // Liste bitiş referansını güncelle.
+    tail ← previous
+  END IF
+  // Silinen nesnenin geri referansını temizle.
+  current.prev ← null
+  // Silinen nesnenin ileri referansını temizle.
+  current.next ← null
+
+  // Eleman sayacını bağlantılardan ayrı güncelle.
+  size ← size - 1
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN oldValue
+END FUNCTION
+
+FUNCTION removeFirst():
+  // Geçersiz index veya boş listeyi değiştirmeden sonlandır.
+  IF head == null:
+    // Geçersiz işlemde listeyi değiştirmeden güvenle dön.
+    RETURN null
+  END IF
+  // İşlem yapılacak nesneyi geçici referansla seç.
+  current ← head
+  // Eski veriyi değiştirmeden veya nesneyi silmeden önce sakla.
+  oldValue ← current.data
+  // Önceki komşuyu geçici referansta sakla.
+  previous ← current.prev
+  // Sonraki komşuyu koparmadan önce sakla.
+  following ← current.next
+  // Önceki komşu yoksa head güncellenmelidir.
+  IF previous != null:
+    // İleri zincirin silinen nesneyi atlamasını sağla.
+    previous.next ← following
+  ELSE:
+    // Liste başlangıç referansını güncelle.
+    head ← following
+  END IF
+  // Sonraki komşu yoksa tail güncellenir.
+  IF following != null:
+    // Geri zincirin silinen nesneyi atlamasını sağla.
+    following.prev ← previous
+  ELSE:
+    // Liste bitiş referansını güncelle.
+    tail ← previous
+  END IF
+  // Silinen nesnenin geri referansını temizle.
+  current.prev ← null
+  // Silinen nesnenin ileri referansını temizle.
+  current.next ← null
+
+  // Eleman sayacını bağlantılardan ayrı güncelle.
+  size ← size - 1
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN oldValue
+END FUNCTION
+
+FUNCTION removeLast():
+  // Geçersiz index veya boş listeyi değiştirmeden sonlandır.
+  IF tail == null:
+    // Geçersiz işlemde listeyi değiştirmeden güvenle dön.
+    RETURN null
+  END IF
+  // İşlem yapılacak nesneyi geçici referansla seç.
+  current ← tail
+  // Eski veriyi değiştirmeden veya nesneyi silmeden önce sakla.
+  oldValue ← current.data
+  // Önceki komşuyu geçici referansta sakla.
+  previous ← current.prev
+  // Sonraki komşuyu koparmadan önce sakla.
+  following ← current.next
+  // Önceki komşu yoksa head güncellenmelidir.
+  IF previous != null:
+    // İleri zincirin silinen nesneyi atlamasını sağla.
+    previous.next ← following
+  ELSE:
+    // Liste başlangıç referansını güncelle.
+    head ← following
+  END IF
+  // Sonraki komşu yoksa tail güncellenir.
+  IF following != null:
+    // Geri zincirin silinen nesneyi atlamasını sağla.
+    following.prev ← previous
+  ELSE:
+    // Liste bitiş referansını güncelle.
+    tail ← previous
+  END IF
+  // Silinen nesnenin geri referansını temizle.
+  current.prev ← null
+  // Silinen nesnenin ileri referansını temizle.
+  current.next ← null
+
+  // Eleman sayacını bağlantılardan ayrı güncelle.
+  size ← size - 1
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN oldValue
+END FUNCTION
+
+FUNCTION indexOf(value):
+  // Dolaşma için geçici current referansını başlat.
+  current ← head
+  // Dolaşmanın index sayacını başlat.
+  i ← 0
+  // Null’a ulaşana kadar koşulu her dönüşte yeniden kontrol et.
+  WHILE current != null:
+    // Veri eşitliğini kontrol et; henüz bağlantı değiştirme.
+    matched ← current.data == value
+    // Karşılaştırma true ise eşleşme koluna gir; sonucu ayrı satırda kullan.
+    IF matched:
+      // Bulunan index veya mantıksal sonucu ayrı değişkende sakla.
+      found ← i
+      // Bulunan sonucu döndür.
+      RETURN found
+    END IF
+    // Current referansını bir komşuya taşı.
+    current ← current.next
+    // Dolaşma sayacını ayrı adımda güncelle.
+    i ← i + 1
+  END WHILE
+  // Bulunamayan hedef için güvenli sonucu döndür.
+  RETURN -1
+END FUNCTION
+
+FUNCTION get(index):
+  // Geçersiz index veya boş listeyi değiştirmeden sonlandır.
+  IF index < 0 OR index >= size:
+    // Geçersiz işlemde listeyi değiştirmeden güvenle dön.
+    RETURN null
+  END IF
+  DECLARE current
+  DECLARE i
+  // Hedefe yakın uçtan başlayarak dolaşma maliyetini azalt.
+  IF index < size / 2:
+    // Geçici referansı head ile başlat.
+    current ← head
+    // Head konumunun index’i sıfırdır.
+    i ← 0
+  ELSE:
+    // Geçici referansı tail ile başlat.
+    current ← tail
+    // Tail konumunun index’i size - 1’dir.
+    i ← size - 1
+  END IF
+  // Hedef index’e ulaşana kadar koşulu yeniden kontrol et.
+  WHILE i != index:
+    // İndex farkına göre ileri veya geri ilerle.
+    IF i < index:
+      // Geçici referansı next hedefe taşı.
+      current ← current.next
+      // İndex sayacını ayrı adımda artır.
+      i ← i + 1
+    ELSE:
+      // Geçici referansı prev hedefe taşı.
+      current ← current.prev
+      // İndex sayacını ayrı adımda azalt.
+      i ← i - 1
+    END IF
+  END WHILE
+  // Nesnenin veri alanını bağlantıları değiştirmeden oku.
+  value ← current.data
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN value
+END FUNCTION
+
+FUNCTION getFirst():
+  // Geçersiz index veya boş listeyi değiştirmeden sonlandır.
+  IF head == null:
+    // Geçersiz işlemde listeyi değiştirmeden güvenle dön.
+    RETURN null
+  END IF
+  // İşlem yapılacak nesneyi geçici referansla seç.
+  current ← head
+  // Nesnenin veri alanını bağlantıları değiştirmeden oku.
+  value ← current.data
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN value
+END FUNCTION
+
+FUNCTION getLast():
+  // Geçersiz index veya boş listeyi değiştirmeden sonlandır.
+  IF tail == null:
+    // Geçersiz işlemde listeyi değiştirmeden güvenle dön.
+    RETURN null
+  END IF
+  // İşlem yapılacak nesneyi geçici referansla seç.
+  current ← tail
+  // Nesnenin veri alanını bağlantıları değiştirmeden oku.
+  value ← current.data
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN value
+END FUNCTION
+
+FUNCTION set(index, value):
+  // Geçersiz index veya boş listeyi değiştirmeden sonlandır.
+  IF index < 0 OR index >= size:
+    // Geçersiz işlemde listeyi değiştirmeden güvenle dön.
+    RETURN null
+  END IF
+  DECLARE current
+  DECLARE i
+  // Hedefe yakın uçtan başlayarak dolaşma maliyetini azalt.
+  IF index < size / 2:
+    // Geçici referansı head ile başlat.
+    current ← head
+    // Head konumunun index’i sıfırdır.
+    i ← 0
+  ELSE:
+    // Geçici referansı tail ile başlat.
+    current ← tail
+    // Tail konumunun index’i size - 1’dir.
+    i ← size - 1
+  END IF
+  // Hedef index’e ulaşana kadar koşulu yeniden kontrol et.
+  WHILE i != index:
+    // İndex farkına göre ileri veya geri ilerle.
+    IF i < index:
+      // Geçici referansı next hedefe taşı.
+      current ← current.next
+      // İndex sayacını ayrı adımda artır.
+      i ← i + 1
+    ELSE:
+      // Geçici referansı prev hedefe taşı.
+      current ← current.prev
+      // İndex sayacını ayrı adımda azalt.
+      i ← i - 1
+    END IF
+  END WHILE
+  // Eski veriyi değiştirmeden veya nesneyi silmeden önce sakla.
+  oldValue ← current.data
+  // Yalnız data değerini değiştir; bağlantıları koru.
+  current.data ← value
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN oldValue
+END FUNCTION
+
+FUNCTION contains(value):
+  // Dolaşma için geçici current referansını başlat.
+  current ← head
+  // Dolaşmanın index sayacını başlat.
+  i ← 0
+  // Null’a ulaşana kadar koşulu her dönüşte yeniden kontrol et.
+  WHILE current != null:
+    // Veri eşitliğini kontrol et; henüz bağlantı değiştirme.
+    matched ← current.data == value
+    // Karşılaştırma true ise eşleşme koluna gir; sonucu ayrı satırda kullan.
+    IF matched:
+      // Bulunan index veya mantıksal sonucu ayrı değişkende sakla.
+      found ← true
+      // Bulunan sonucu döndür.
+      RETURN found
+    END IF
+    // Current referansını bir komşuya taşı.
+    current ← current.next
+    // Dolaşma sayacını ayrı adımda güncelle.
+    i ← i + 1
+  END WHILE
+
+  // Bulunamayan hedef için güvenli sonucu döndür.
+  RETURN false
+END FUNCTION
+
+FUNCTION lastIndexOf(value):
+  // Dolaşma için geçici current referansını başlat.
+  current ← tail
+  // Dolaşmanın index sayacını başlat.
+  i ← size - 1
+  // Null’a ulaşana kadar koşulu her dönüşte yeniden kontrol et.
+  WHILE current != null:
+    // Veri eşitliğini kontrol et; henüz bağlantı değiştirme.
+    matched ← current.data == value
+    // Karşılaştırma true ise eşleşme koluna gir; sonucu ayrı satırda kullan.
+    IF matched:
+      // Bulunan index veya mantıksal sonucu ayrı değişkende sakla.
+      found ← i
+      // Bulunan sonucu döndür.
+      RETURN found
+    END IF
+    // Current referansını bir komşuya taşı.
+    current ← current.prev
+    // Dolaşma sayacını ayrı adımda güncelle.
+    i ← i - 1
+  END WHILE
+  // Bulunamayan hedef için güvenli sonucu döndür.
+  RETURN -1
+END FUNCTION
+
+FUNCTION remove(value):
+  // Dolaşma için geçici current referansını başlat.
+  current ← head
+  // Null’a ulaşana kadar koşulu her dönüşte yeniden kontrol et.
+  WHILE current != null:
+    // Veri eşitliğini kontrol et; henüz bağlantı değiştirme.
+    matched ← current.data == value
+    // Karşılaştırma true ise eşleşme koluna gir; sonucu ayrı satırda kullan.
+    IF matched:
+      // Eski veriyi değiştirmeden veya nesneyi silmeden önce sakla.
+      oldValue ← current.data
+
+      // Önceki komşuyu geçici referansta sakla.
+      previous ← current.prev
+      // Sonraki komşuyu koparmadan önce sakla.
+      following ← current.next
+      // Önceki komşu yoksa head güncellenmelidir.
+      IF previous != null:
+        // İleri zincirin silinen nesneyi atlamasını sağla.
+        previous.next ← following
+      ELSE:
+        // Liste başlangıç referansını güncelle.
+        head ← following
+      END IF
+      // Sonraki komşu yoksa tail güncellenir.
+      IF following != null:
+        // Geri zincirin silinen nesneyi atlamasını sağla.
+        following.prev ← previous
+      ELSE:
+        // Liste bitiş referansını güncelle.
+        tail ← previous
+      END IF
+      // Silinen nesnenin geri referansını temizle.
+      current.prev ← null
+      // Silinen nesnenin ileri referansını temizle.
+      current.next ← null
+
+      // Eleman sayacını bağlantılardan ayrı güncelle.
+      size ← size - 1
+      // İşlemi bitir ve doğrudan sonucu döndür.
+      RETURN true
+    END IF
+    // Current referansını bir komşuya taşı.
+    current ← current.next
+  END WHILE
+  // Bulunamayan hedef için güvenli sonucu döndür.
+  RETURN false
+END FUNCTION
+
+FUNCTION traversal():
+  // Dolaşma çıktısını hazırla.
+  output ← EMPTY LIST
+  // Dolaşma için geçici current referansını başlat.
+  current ← head
+  // Dolaşmanın index sayacını başlat.
+  i ← 0
+  // Null’a ulaşana kadar koşulu her dönüşte yeniden kontrol et.
+  WHILE current != null:
+    // Mevcut veriyi çıktıya ekle.
+    APPEND current.data TO output
+    // Current referansını bir komşuya taşı.
+    current ← current.next
+    // Dolaşma sayacını ayrı adımda güncelle.
+    i ← i + 1
+  END WHILE
+  // İşlemi bitir ve doğrudan sonucu döndür.
+  RETURN output
+
 END FUNCTION

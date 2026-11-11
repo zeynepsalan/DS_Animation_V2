@@ -106,3 +106,27 @@
 - 2026-10-14: Doubly Linkedlist ilk fonksiyon grubu uygulandı: isEmpty(), size(), addFirst(value). Her prev/next/head/tail/count güncellemesi ayrı kod satırı ve ayrı trace adımıdır. Singly/Doubly kalıcı listeleri ayrıdır; yapı veya fonksiyon değiştirilince tamamlanmamış işlem kendi başlangıcına döner. Model generic DNode(data, prev, next) kullanır. İleri ve geri oklar farklı yüksekliklerde/koridorlarda; head/tail/node etiketleri Node üstündeki ayrı portlarda. Tek RAF, hareket kilidi, Previous/Next/Reset, hız, klavye ve Zoom/Fit desteklenir. Kalan Doubly fonksiyonları sonraki gruplardadır; Reverse Traversal kararı hâlâ açık.
 
 - İlk grup tamamlandı ve canlıda doğrulandı: isEmpty/size/addFirst. Sonraki planlı grup addLast; sonra indexli ekleme, silme, arama/okuma ve dolaşma. Henüz uygulanmayan işlemler Sidebar’da aktif gösterilmez.
+
+- 2026-10-14: Kullanıcı renk revizyonundan önce mevcut sürümün pushlanmasını istedi; checkpoint e74c8e1 main branch’ine başarıyla pushlandı. Sonraki yerel renk revizyonunda Doubly prev okları ve tail referansı #6554ad indigo; next/head #397ba5 mavi kullanır. Her yönde çizgi ve SVG marker ucu aynı renktedir. Tail etiketi ve legend yön/renk eşlemesini gösterir.
+
+- 2026-10-14: Kullanıcı ekran örneğine göre Doubly prev ve tail rengi #e8c6ae şeftali olarak değiştirildi (görselin sRGB baskın metin rengi örneklendi). next/head mavisi korunur. Tail etiketi ve prev legend koyu zeminle açık rengin okunurluğunu korur. Önceki indigo prev kararı bu kullanıcı seçimiyle değiştirildi.
+
+## 2026-10-15 — Doubly fonksiyonlarının tamamlanması
+
+18 fonksiyonun model, trace, üç dilde kod, Sidebar ve parametre alanı entegrasyonu tamamlandı. Koşul/atama/sayaç değişimleri ayrı adımlardır. Ekleme ve silmede seçili Node üst sıraya ayrılır; ortak hedefli oklar farklı girişler kullanır. prev/tail şeftali, next/head mavidir. Kaynak öğretici yorumları genişletildi; son kullanıcı isteğine göre Java ekranındaki yorumlar kaldırıldı. 56 test, Java/C 138 Doubly senaryosu ve production build geçti. Bu değişiklik grubu henüz pushlanmadı.
+
+## 2026-11-10 — Yeni geliştirme sırası
+
+Mevcut Doubly sürümü yeniden doğrulandı: 56 uygulama testi ve Java/C 138 Doubly davranış senaryosu başarılı. Kullanıcı önce Circular Linkedlist istedi; Array sonraya alındı ve sabit kapasite kararı kesinleşti. Circular yön seçimi bekleniyor. Yerel değişiklikler commit/push yapılmadan korunuyor.
+
+## 2026-11-11 — Circular Linkedlist tamamlandı
+
+Tek yönlü, yalnız tail tutan CircularLinkedlist<T> ve mevcut 18 işlem uygulandı. Node<T> yeniden kullanıldı; ilk nesne tail.next, tek Node self-loop, dolu halka son next ile ilk nesneye döner. Java/C/Pseudocode ve indirilebilir kaynaklar aynı satır tanımından üretildi. İç çağrıların kodu benzersiz kapsam anahtarlarıyla açıldı. Sidebar sırası Singly → Doubly → Circular → Array; her yapı kendi kalıcı listesinde devam eder. Ortak playback, klavye, Reset/iptal ve Zoom/Fit korunur.
+
+Son doğrulama: 9 dosyada 79 test; 500 karışık Circular işlem; üç dilde tek satır eşleşmesi; ileri/geri ara karelerde Node/ok ve kamera sınırları; gerçek Angular template entegrasyonu başarılı. Java/C 138 Circular senaryosu ve tail.next invariantı, mevcut 138 Doubly ve Singly kontrolleri geçti. C ASan/UBSan kullanıldı. Production build 355.73 kB raw / 87.32 kB tahmini transfer ile başarılı. Yerel LMDB native cache çökmesi nedeniyle son build NG_BUILD_CACHE_STORE=sqlite ile çalıştırıldı; bağımlılık veya proje build ayarı değiştirilmedi.
+
+Tarayıcıda self-loop, A→B→C→A, araya ekleme, ortadan silme, Previous/Next, Reset, Clear, geçersiz get(99), üç dilde highlight ve mobil Fit gözlendi. Kayıtlar docs/screenshots/circular-*.png. Son kontroller yerel production önizlemesinde 127.0.0.1:4300 üzerinde yapıldı; public yayın değildir. Commit/push yapılmadı. Sıradaki kapsam sabit kapasiteli Array’dir; Array henüz uygulanmadı.
+
+## 2026-11-11 — GitHub checkpoint
+
+Kullanıcı mevcut sürümün pushlanmasını istedi. Checkpoint kapsamı: tamamlanmış 18 Doubly işlemi, tek yönlü tail tabanlı Circular ve 18 işlemi, Java/C/Pseudocode export’ları, kaynak yorumları/Java sade görünümü, testler, proje notları ve ekran kanıtları. Son kaynak doğrulaması 79 test, Java/C 138 Circular + 138 Doubly senaryosu ve SQLite cache ile production build başarılıdır. Bu push isteğinde uygulama kodu değiştirilmedi; doğrulamayı yeniden çalıştırmayı gerektiren değişiklik yoktur.

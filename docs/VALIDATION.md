@@ -85,3 +85,25 @@ Kanıt: pointer-straight-list.png, pointer-separate-ports.png, pointer-staged-vi
 - 2026-10-14: Doubly ilk grup: 31 test ve production build başarılı. Testler boş/tek/çok Node, tekrarlı değer, karşılıklı next/prev invariant, snapshot restore, iki liste izolasyonu, Reset/iptal, her adımın üç dilde tek satıra eşleşmesi ve gerçek template highlight kontrolünü kapsar. İleri/geri step dizilerinde sampleNodes ara pozları 0/0.25/0.5/0.75/1 örneklenerek kutu, referans kutusu ve ok-kutu çakışmaları denetlendi. Java/C örnek export ve verify geçti; indirilebilir Doubly sınıfı ve C kaynakları derlendi.
 
 Canlı Chrome 1440×900: boş isEmpty sonucu true; A ardından B addFirst, head.prev adımı 5/8, Previous ve Next, final B↔A ve head/tail doğrulandı. Son kaynakla senaryo yeniden çalıştırıldı. 390×844: body viewport ile aynı; final Fit %47, SVG 280×112px ve canvas 324×144px, tüm ok/null/ref öğeleri görünür. Fit CSS geçiş kırpılması düzeltildi; son kare yerleşince boş hazırlık yüksekliği kaldırıldı. Kanıt doubly-add-first-prev.png, doubly-completed-list.png, doubly-mobile.png. Geçici viewport sıfırlandı. Performans/FPS ölçülmedi; push/deploy yapılmadı.
+
+- 2026-10-14: Renk revizyonu build başarılı. Chrome iki nesneli final listede hesaplanan stroke/fill doğrulandı: prev ve tail rgb(101,84,173), next rgb(57,123,165); her marker ucu kendi çizgisiyle aynı renk. Kanıt doubly-pointer-colors.png. Algoritma/geometri değişmedi; önceki 31 test sonucu geçerli, bu sunum değişikliğinde tekrar test koşulmadı. Renk öncesi checkpoint e74c8e1 pushlandı; renk revizyonu henüz yerel.
+
+- 2026-10-14: Şeftali renk revizyonu build başarılı. Kaynak screenshot sRGB renk örneği #e8c6ae; canlı hesaplanan prev/tail stroke rgb(232,198,174) ile aynı. Next mavi kaldı. Model/animasyon değişmedi; yalnız renk ve etiket zemini güncellendi. Kanıt doubly-peach-pointers.png; bu revizyon yerel, push yapılmadı.
+
+## 2026-10-15 — Son doğrulama
+
+- npm test -- --watch=false: 8 dosyada 56 test geçti.
+- npm run verify:examples: Java/C için 138 Doubly davranış senaryosu ve ileri/geri bağlantı invariantları geçti; mevcut Singly kontrolleri de geçti. C AddressSanitizer/UndefinedBehaviorSanitizer ile doğrulandı.
+- npm run build: başarılı; ilk paket toplamı 329.07 kB. Bu bir FPS veya çalışma zamanı performans ölçümü değildir.
+- Otomatik kontroller: boş/tek/tekrarlı değerler, geçersiz indisler, rastgele işlemler, üç dilde trace-key eşleşmesi, Java yorumlarının olmaması, ara geometride kutu/etiket/ok çakışmaları.
+- Yerel tarayıcıda araya ekleme, ortadan silme, Clear ara adımı, Previous/Next, Reset, geçersiz get, set, ters lastIndexOf ve dil değişimi gözlendi. Kullanıcı kabulü ve production yayını ayrıca yapılmış sayılmaz.
+
+## 2026-11-11 — Tail tabanlı Circular Linkedlist
+
+- Kaynak/test: npm test -- --watch=false ile 9 dosyada 79 test geçti. Circular testleri boş/tek/tekrarlı/Türkçe metin, eksik/NaN/kesirli/negatif/sınır indisler, 500 ardışık karma işlem ve tail.next halka invariantını kapsar. Bütün adımlar üç dilde tam bir satıra eşlenir; iç çağrıların return satırları karışmaz. İleri/geri geçişler 0/0.25/0.5/0.75/1 ara karelerinde kutu/ok çakışması ve kamera sınırlarıyla doğrulandı. Gerçek Angular template testi klasör sırası, 18 dosya, yalnız tail, highlight, source link ve yapı izolasyonunu doğrular.
+- Java/C: npm run verify:examples başarılı. 138 Circular ve 138 Doubly davranış senaryosu; mevcut Singly kontrolleri geçti. Circular export gerçek javac/java -ea ve clang ASan/UBSan ile derlendi/çalıştı; clear iki kez güvenle çağrıldı. İndirilen Java tek başına derlenir.
+- Build: NG_BUILD_CACHE_STORE=sqlite npm run build başarılı; 355.73 kB raw, 87.32 kB tahmini transfer. Varsayılan yerel LMDB cache’i Node native malloc abort üretti; SQLite cache ile aynı production konfigürasyonu doğrulandı. Proje konfigürasyonu veya bağımlılıklar değiştirilmedi. Bu paket ölçüsü FPS/INP ölçümü değildir.
+- Browser: Chrome 1440×900 üzerinde self-loop; A/C halkasına insertAt(1,B) link/attach adımları; A/B/C halkasında removeAt(1) unlink adımı gözlendi. Next/Previous satırları ve referansları eşleşti. Reset silme öncesi A/B/C’yi geri getirdi. Traversal ["A","B","C"] ile bir turda sonlandı; C/Pseudocode/Java değişiminde tek highlight korundu. get(99) Türkçe hata/null ile size=3 halkasını korudu. Clear size=0 yaptı; Reset tekrar size=3 getirdi. Zoom In/Out/Fit çalıştı. Console error=0.
+- Mobil: 390×844 viewport ve body aynı; sayfa taşması yok. Fit SVG 292×105.63 px, canvas 324×143.83 px; dış dönüş oku ve tail etiketi görünür. Head reference sayısı 0, tail 1. Gerçek telefon cihazı kullanılmadı.
+- Kanıt: circular-insert-step.png, circular-completed-list.png (dev browser); circular-remove-step.png, circular-mobile.png (yerel production browser). Asset metadata docs/assets.json içinde. Dev server test sırasında yeniden başlatıp bellekteki state’i sıfırladığından son kontroller ayrı production önizlemesinde tekrarlandı.
+- Performans/kabul/yayın: FPS, Web Vitals ve kullanıcı öğrenme kabulü ölçülmedi; production yayını ve Git push yapılmadı.

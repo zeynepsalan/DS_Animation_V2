@@ -1,3 +1,4 @@
+// Bileşen, signal ve yaşam döngüsü araçları Angular’dan gelir; görünümü bu araçlarla yönetiriz.
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 // İkon adlarını sınırlayarak template içinde yanlış isim yazılmasını TypeScript ile yakalarız.
@@ -39,8 +40,11 @@ const PATHS: Record<IconName, string> = {
 
 // İkon dekoratiftir; erişilebilir eylem adı ikonu taşıyan button üzerinde tanımlanır.
 @Component({
+  // Bu isim, bileşenin HTML içinde hangi etiketle kullanılacağını belirler.
   selector: 'app-icon',
+  // OnPush ile Angular giriş veya signal değişikliklerini izler; gereksiz görünüm kontrollerini azaltır.
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // Bu HTML şablonunda süslü parantezler metni, köşeli parantezler değerleri, normal parantezler olayları bağlar.
   template:
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path [attr.d]="path()" /></svg>',
 })

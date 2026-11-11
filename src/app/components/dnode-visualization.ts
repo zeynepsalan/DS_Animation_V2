@@ -1,16 +1,22 @@
+// Bileşen, signal ve yaşam döngüsü araçları Angular’dan gelir; görünümü bu araçlarla yönetiriz.
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+// Yalnız derleyicide kullanılan tür sözleşmelerini getirir; bu import çalışma anında kod yüklemez.
 import type { ExecutionStep } from '../core/execution.types';
 
 /** Sabit ayrı slotlar, constructor adımlarında iki yöndeki öğelerin çakışmasını önler. */
 @Component({
+  // Bu isim, bileşenin HTML içinde hangi etiketle kullanılacağını belirler.
   selector: 'app-dnode-visualization',
+  // OnPush ile Angular giriş veya signal değişikliklerini izler; gereksiz görünüm kontrollerini azaltır.
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // Bu HTML şablonunda süslü parantezler metni, köşeli parantezler değerleri, normal parantezler olayları bağlar.
   template: `
     <!-- Parametreler solda; gerçek atama açıklaması sağda mevcut kart düzenini kullanır. -->
     <div class="execution-summary">
       <div class="variables-panel">
         <span class="mini-label">VARIABLES & REFERENCES</span>
         <div class="variable-chips">
+          <!-- Angular @for koleksiyonu çizer; track anahtarı aynı nesnenin DOM kimliğini koruyarak animasyonun kesilmesini önler. -->
           @for (variable of variables(); track variable[0]) {
             <div class="variable-chip">
               <span>{{ variable[0] }}</span
@@ -33,6 +39,7 @@ import type { ExecutionStep } from '../core/execution.types';
     </div>
     <!-- SVG viewBox bütün kutu, etiket ve okları kapsar; dar panelde birlikte ölçeklenir. -->
     <div class="dnode-canvas" tabindex="0" aria-label="DNode ve iki yönlü referanslar">
+      <!-- SVG koordinatları gerçek Node/ok geometrisini çizer; viewBox bütün sahnenin aynı ölçekle görünmesini sağlar. -->
       <svg viewBox="0 0 680 300" role="img" aria-label="Bağımsız DNode: prev, data, next">
         <defs>
           <marker
@@ -47,6 +54,7 @@ import type { ExecutionStep } from '../core/execution.types';
             <path d="M 0 0 L 10 5 L 0 10 z" class="arrow-head" />
           </marker>
         </defs>
+        <!-- Angular @for koleksiyonu çizer; track anahtarı aynı nesnenin DOM kimliğini koruyarak animasyonun kesilmesini önler. -->
         @for (node of neighbors(); track node.id) {
           <!-- Komşular solda/sağda, merkez DNode’dan ayrı slotlarda durur. -->
           <g [attr.transform]="'translate(' + neighborX(node.id) + ',160)'" class="node-shape">
@@ -59,6 +67,7 @@ import type { ExecutionStep } from '../core/execution.types';
             <text x="107" y="20" class="field-label next-field">next</text>
             <text x="17" y="46" class="next-value">∅</text>
             <text x="117" y="46" class="next-value">∅</text>
+            <!-- SVG içine HTML veri kutusu yerleştirir; uzun data metni kutunun sınırları içinde kalır. -->
             <foreignObject x="49" y="29" width="46" height="29"
               ><div xmlns="http://www.w3.org/1999/xhtml" class="node-value" [title]="node.data">
                 {{ node.data }}
@@ -67,6 +76,7 @@ import type { ExecutionStep } from '../core/execution.types';
             <text x="0" y="88" class="node-id">{{ node.id }} · independent</text>
           </g>
         }
+        <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
         @if (center(); as node) {
           <!-- Geri ve ileri oklar ayrı taraflardan çıkar; Node kutusunun içinden geçmez. -->
           <path
@@ -79,9 +89,11 @@ import type { ExecutionStep } from '../core/execution.types';
             [attr.d]="node.next ? 'M 442 202 H 472' : 'M 442 202 H 450 Q 458 202 458 210 V 260'"
             marker-end="url(#dnode-arrow)"
           />
+          <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
           @if (!node.prev) {
             <text x="202" y="282" class="null-label">null</text>
           }
+          <!-- Angular @if, koşula göre bu HTML bloğunu oluşturur veya kaldırır; state değişince seçim yeniden okunur. -->
           @if (!node.next) {
             <text x="446" y="282" class="null-label">null</text>
           }
@@ -92,6 +104,7 @@ import type { ExecutionStep } from '../core/execution.types';
             <path d="M 36 24 V 50" marker-end="url(#dnode-arrow)" />
           </g>
           <g class="node-shape" data-dnode="center" transform="translate(238,160)">
+            <!-- Hücre dolgularını radiuslu Node sınırında kırpar; renkler kutu dışına taşmaz. -->
             <clipPath id="dnode-clip"><rect width="204" height="64" rx="8" /></clipPath>
             <rect width="204" height="64" rx="8" class="node-box" />
             <rect width="60" height="64" class="node-next-cell" clip-path="url(#dnode-clip)" />
@@ -108,6 +121,7 @@ import type { ExecutionStep } from '../core/execution.types';
             <text x="155" y="20" class="field-label next-field">next</text>
             <text x="12" y="46" class="next-value">{{ node.prev ?? '∅' }}</text>
             <text x="155" y="46" class="next-value">{{ node.next ?? '∅' }}</text>
+            <!-- SVG içine HTML veri kutusu yerleştirir; uzun data metni kutunun sınırları içinde kalır. -->
             <foreignObject x="70" y="29" width="66" height="29"
               ><div xmlns="http://www.w3.org/1999/xhtml" class="node-value" [title]="node.data">
                 {{ node.data || '—' }}
@@ -128,6 +142,7 @@ import type { ExecutionStep } from '../core/execution.types';
 export class DNodeVisualization {
   // Constructor trace’i ortak oynatıcıdan gelir; bu component algoritmayı değiştirmez.
   readonly step = input<ExecutionStep<string> | null>(null);
+  // Üst bileşenden gelen değeri input signal olarak tutar; değişince şablon güncellenir.
   readonly stepNumber = input('');
   // node referansı merkez nesneyi komşulardan ayırır.
   readonly center = computed(() =>
@@ -139,6 +154,7 @@ export class DNodeVisualization {
   );
   // Gerçek constructor parametreleri karta aktarılır.
   readonly variables = computed(() => Object.entries(this.step()?.variables ?? {}));
+  // neighborX yardımcı fonksiyonu ilgili hesaplamayı tek yerde tutar; çağıran kod aynı kuralı paylaşır.
   neighborX(id: string) {
     // prev solda, next sağdadır; null etiketi komşu slotunda görünmez.
     return id === this.step()?.variables['prev'] ? 64 : 472;

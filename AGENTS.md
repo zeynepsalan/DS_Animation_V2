@@ -71,3 +71,25 @@ Bu dosya proje genelinde geçerlidir. Asistan, proje boyunca full-stack gelişti
 - 2026-10-14: DNode siteye eklendi: Sidebar sınıf dosyası, Java/C/Pseudocode constructor kaynağı, imzada data/prev/next parametreleri, bağımsız komşu veya null seçimi. Her data/prev/next ataması ayrı kod satırı ve ayrı trace adımıdır. Ortak playback ve klavye kısayolları kullanılır; DNode trace Singly listesini değiştirmez. Constructor yalnız kendi alanlarını atar, komşuların ters bağlantıları null kalır. Sahne merkez/sol/sağ slotları ve aşağı ayrılan null yollarıyla çakışmayı önler. Doubly Linkedlist fonksiyonları henüz entegre edilmedi.
 
 - 2026-10-14: Doubly Linkedlist ilk fonksiyon grubu uygulandı: isEmpty(), size(), addFirst(value). Her prev/next/head/tail/count güncellemesi ayrı kod satırı ve ayrı trace adımıdır. Singly/Doubly kalıcı listeleri ayrıdır; yapı veya fonksiyon değiştirilince tamamlanmamış işlem kendi başlangıcına döner. Model generic DNode(data, prev, next) kullanır. İleri ve geri oklar farklı yüksekliklerde/koridorlarda; head/tail/node etiketleri Node üstündeki ayrı portlarda. Tek RAF, hareket kilidi, Previous/Next/Reset, hız, klavye ve Zoom/Fit desteklenir. Kalan Doubly fonksiyonları sonraki gruplardadır; Reverse Traversal kararı hâlâ açık.
+
+- 2026-10-14: Kullanıcı renk revizyonundan önce mevcut sürümün pushlanmasını istedi; checkpoint e74c8e1 main branch’ine başarıyla pushlandı. Sonraki yerel renk revizyonunda Doubly prev okları ve tail referansı #6554ad indigo; next/head #397ba5 mavi kullanır. Her yönde çizgi ve SVG marker ucu aynı renktedir. Tail etiketi ve legend yön/renk eşlemesini gösterir.
+
+- 2026-10-14: Kullanıcı ekran örneğine göre Doubly prev ve tail rengi #e8c6ae şeftali olarak değiştirildi (görselin sRGB baskın metin rengi örneklendi). next/head mavisi korunur. Tail etiketi ve prev legend koyu zeminle açık rengin okunurluğunu korur. Önceki indigo prev kararı bu kullanıcı seçimiyle değiştirildi.
+
+## Güncel kapsam ve yorum kuralı — 2026-10-15
+
+- Doubly Linkedlist için 18 işlem uygulanmıştır: isEmpty(), size(), clear(), addFirst(value), insertAt(index, value), addLast(value), removeAt(index), removeFirst(), removeLast(), indexOf(value), get(index), getFirst(), getLast(), set(index, value), contains(value), lastIndexOf(value), remove(value), Traversal. Önceki üç fonksiyonluk kayıt tarihsel aşamadır.
+- Kullanıcının son kararı: sitede gösterilen Java kodları yorum içermez. Bu kural Java sunumunda önceki öğretici yorum gereksiniminin yerini alır. Angular/TypeScript, HTML ve script kaynaklarında başlangıç seviyesine uygun açıklayıcı Türkçe yorumlar korunur; C/Pseudocode açıklamaları korunur.
+- Her algoritmik atama, koşul ve sayaç değişimi ayrı kod satırı/trace adımı olmalıdır.
+
+## 2026-11-10 — Sonraki kapsam
+
+Kullanıcı bağımsız Reverse Traversal istemedi; bu işlem kapsam dışıdır. Doubly Linkedlist ve Array temelleri tamamlandıktan sonra ilerideki veri yapılarının Array ve Linked List tabanlı implementasyonlarına geçilecek. Mevcut Doubly işlemlerinin içindeki gerekli prev yönlü erişimler korunur.
+
+## 2026-11-10 — Circular önceliği ve Array kapasitesi
+
+Kullanıcı geliştirme sırasını değiştirdi: önce Circular Linkedlist, ardından sabit kapasiteli Array uygulanacak. Array otomatik büyümeyecek. Bu temellerin ardından ilerideki yapıların Array ve Linked List tabanlı implementasyonları ele alınacak. Circular yapının tek/çift yön seçimi kullanıcıya soruldu; henüz karar değildir. Reverse Traversal kapsam dışı kalır.
+
+## 2026-11-11 — Circular Linkedlist kararı
+
+Kullanıcı Circular yapının tek yönlü olmasını, Singly ve Doubly klasörlerinin hemen altında gösterilmesini ve head yerine yalnız tail tutulmasını istedi. CircularLinkedlist<T> bağımsız Node<T>(data, next) kullanır; ilk Node tail.next ile bulunur. Boşta tail=null; tek Node'da tail.next=tail; dolu halkada son next ilk Node'a döner. Aynı 18 liste işlemi ve ortak playback kullanılır. Array hâlâ sonraki aşamadır ve sabit kapasiteli olacaktır.

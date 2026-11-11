@@ -51,3 +51,19 @@ Bağımsız `DNode<T>` sınıfı eklendi. Constructor `DNode(data, prev, next)` 
 - `void addFirst(T value)`: yeni DNode(value, null, null) oluşturur. Önce node.next=head; dolu listede head.prev=node, boş listede tail=node; ardından head=node ve size++ ayrı adımlarda çalışır.
 
 Final koşulları: boş listede head=tail=null; tek elemanda head=tail, prev=next=null. Dolu listede head.prev=null, tail.next=null; komşuların next/prev bağlantıları karşılıklıdır. Tekrarlı ekleme ve aynı değer tekrarları desteklenir. UI eksik/boş value değerinde mevcut listeye dokunmadan Türkçe hata verir. API kaynakları examples/java/DoublyLinkedlist.java ve examples/c/doubly_linkedlist.c; indirilebilir sürümler public/examples altında. Diğer Doubly fonksiyonları henüz uygulanmadı.
+
+## Doubly Linkedlist — uygulanmış API (2026-10-15)
+
+isEmpty(), size(), clear(), addFirst(value), insertAt(index, value), addLast(value), removeAt(index), removeFirst(), removeLast(), indexOf(value), get(index), getFirst(), getLast(), set(index, value), contains(value), lastIndexOf(value), remove(value), Traversal.
+
+DNode<T>(data, prev, next) bağımsızdır. Sonuçlar doğrudan void/T/int/boolean/List<T> türündedir. Geçersiz indis/boş liste kontrolleri if guard ile yapılır; başarısız T işlemi null döndürür. lastIndexOf tail üzerinden prev yönünde ilerler; indisli erişim yakın uçtan başlar.
+
+## Circular Linkedlist — tail tabanlı uygulanmış API (2026-11-11)
+
+Bağımsız `Node<T>(data, next)` yeniden kullanılır; `CircularLinkedlist<T>` içinde head veya prev alanı bulunmaz. Saklanan tek uç `tail`; eleman sayacı ayrıca tutulur. Boşta tail=null, tek Node’da tail.next=tail, diğer durumlarda tail.next ilk Node’dur. `ListSnapshot.head` yalnız ortak renderer için tail.next’ten türetilen çizim başlangıcıdır; modelde veya öğrenciye gösterilen kodda saklanan head değildir.
+
+18 işlem: isEmpty(), size(), clear(), addFirst(value), insertAt(index, value), addLast(value), removeAt(index), removeFirst(), removeLast(), indexOf(value), get(index), getFirst(), getLast(), set(index, value), contains(value), lastIndexOf(value), remove(value), Traversal. İmza, doğrudan dönüş, String veri ve index guard sözleşmeleri diğer listelerle aynıdır. get/set/removeAt için 0≤index<size, insertAt için 0≤index≤size gerekir. Hatalı işlem listeyi değiştirmez; başarısız T dönüşü null, bulunamayan index -1, remove/contains false döner.
+
+addFirst, addLast, getFirst, getLast ve removeFirst O(1); removeLast öncül bulmak için ileri dolaşır. indexOf/lastIndexOf/Traversal en fazla size Node işler; null bekleyerek sonsuz döngüye girmez. lastIndexOf tek yönde tam tur ilerler; Reverse Traversal eklenmedi. contains indexOf; remove indexOf ve removeAt çağırır. Panelde çağrılan method’ların kaynakları da açılır ve iç içe çağrı prefix’leri satır eşleşmesini korur. clear önce tail.next=null ile halkayı açar, tail=null yapar, geçici current/following ile Node bağlantılarını ve C belleğini temizler.
+
+Örnekler: examples/java/CircularLinkedlist.java, examples/c/circular_linkedlist.c ve examples/CircularLinkedlist.pseudo; indirilebilir eşleri public/examples altındadır. C cll_ prefix’i, borrowed const char* veriler ve malloc guard kullanır. Java görünümü yorumsuzdur. Reset ve yarım işlem iptali diğer listelerden bağımsız Circular başlangıcını geri yükler.

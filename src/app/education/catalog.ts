@@ -1,11 +1,19 @@
+// Yalnız derleyicide kullanılan tür sözleşmelerini getirir; bu import çalışma anında kod yüklemez.
 import type { Language, Operation, Selection } from '../core/execution.types';
 
+// Bu interface nesnenin hangi alanları taşıyacağını derleyiciye söyler; çalışma anında sınıf oluşturmaz.
 export interface FunctionInfo {
+  // Adımlar arasında aynı nesneyi izleten görsel kimlik; bu alan kayıt sözleşmesinin parçasıdır.
   id: Operation;
+  // label hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   label: string;
+  // group hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   group: string;
+  // description hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   description: string;
+  // value hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   value?: boolean;
+  // Kullanıcının seçtiği, sıfırdan başlayan hedef konum; bu alan kayıt sözleşmesinin parçasıdır.
   index?: boolean;
 }
 /** Sidebar ve parametre formu aynı katalogdan gelir; imzalar ayrı ayrı tekrar edilmez. */
@@ -131,21 +139,20 @@ export const FUNCTIONS: FunctionInfo[] = [
     description: 'Değerin listede bulunup bulunmadığını öğren.',
   },
 ];
+// Explorer dosyalarını inceleme, ekleme, silme, okuma ve arama başlıklarına ayırır.
 export const GROUPS = ['Inspect', 'Insert', 'Remove', 'Read & Update', 'Search'];
+// Kod dili seçiminin adı ve dosya uzantısını eşler.
 export const LANGUAGES: { id: Language; label: string; extension: string }[] = [
   { id: 'java', label: 'Java', extension: 'java' },
   { id: 'c', label: 'C', extension: 'c' },
   { id: 'pseudo', label: 'Pseudocode', extension: 'pseudo' },
 ];
+// Singly veya Doubly seçim kimliğini ortak fonksiyon katalog kaydına bağlar.
 export function infoFor(selection: Selection): FunctionInfo | undefined {
-  // Doubly fonksiyonları aynı parametre sözleşmesini kullanır.
-  const id =
-    selection === 'doublyAddFirst'
-      ? 'addFirst'
-      : selection === 'doublyIsEmpty'
-        ? 'isEmpty'
-        : selection === 'doublySize'
-          ? 'size'
-          : selection;
+  // İki liste aynı method adları ve parametre sözleşmesini kullanır.
+  const raw = selection.startsWith('circular') ? selection.slice(8) : selection.startsWith('doubly') ? selection.slice(6) : selection;
+  // Adımlar arasında aynı nesneyi izleten görsel kimlik bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
+  const id = selection.startsWith('doubly') || selection.startsWith('circular') ? raw[0].toLowerCase() + raw.slice(1) : raw;
+  // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
   return FUNCTIONS.find((f) => f.id === id);
 }

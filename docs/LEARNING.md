@@ -70,3 +70,13 @@ Angular animate.enter/animate.leave, öğeyi aniden ekleyip kaldırmak yerine op
 Ayrık Node ikinci satırda gösterilir. Yerleşim testi geçişin 101 ara oranını örnekler ve Node kutularının çakışmadığını kontrol eder. Etiketler ayrı yatay şeritlere alınır; ok uçları aynı Node üzerinde farklı yerlere iner.
 
 Zoom görüntüyü değiştirir, algoritma durumunu değiştirmez. Fit, ResizeObserver ile canvas boyutunu ölçüp bütün işlem sahnesini sığdırır. Sahne boyutu işlem adımları boyunca sabit tutulur; tamamlanınca boş geçici satır kaldırılır ve Fit sonuç listesini yumuşak scale geçişiyle büyütür. Manuel zoom seçilmişse bu seçim korunur.
+
+## Kaynak kodu okuma rotası
+
+Önce core/dnode.ts ile veri modelini, sonra core/doubly-linkedlist.ts ile işlemleri incele. education/doubly-code.ts ekranda görünen metinleri üretir; tarayıcı bu Java/C metinlerini çalıştırmaz. Trace key kod satırını animasyon adımına bağlar. playback.service.ts işlem adımlarını ve liste durumunu yönetir. components/doubly-visualization.ts çizim ve hareketi sunar. signal durum saklar; computed mevcut durumlardan sonuç türetir; input/output bileşenler arasında veri ve olay taşır. Kaynak yorumları bu akışı küçük birimler üzerinden açıklar. Sitedeki Java yorumları kullanıcının son tercihiyle kaldırılmıştır.
+
+## Circular Linkedlist’i okuma sırası
+
+Önce src/app/core/circular-linkedlist.ts içindeki tail ve count alanlarını incele: head saklanmaz, ilk Node tail.next’tir. addFirst ile addLast arasındaki son tail atamasını karşılaştır. removeLast’te tail tutulmasına rağmen previous bulmak için neden ileri dolaşma gerektiğini izle. Ardından Traversal’da i<size koşulunu incele: halka null ile bitmediği için bir tur sınırı gerekir. Clear’da önce tail.next=null ile halka açılır; bundan sonra current!=null koşulu güvenle kullanılabilir.
+
+Sitedeki Java örneği aynı atamaları yorumsuz gösterir; Türkçe açıklamalar Execution Step kartında ve TypeScript kaynak yorumlarındadır. Fonksiyon içindeki diğer method çağrıları kod panelinde aşağıda açılır; adımlama doğru çağrının satırına kayar. Snapshot.head ortak çizim altyapısı için tail.next’ten türetilir; modelde yeni bir head alanı değildir.

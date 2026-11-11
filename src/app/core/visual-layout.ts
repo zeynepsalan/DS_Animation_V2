@@ -1,23 +1,32 @@
+// Yalnız derleyicide kullanılan tür sözleşmelerini getirir; bu import çalışma anında kod yüklemez.
 import type { ListSnapshot, NodeSnapshot, ExecutionStep, Selection } from './execution.types';
 // Snapshot verisine çizimde kullanılacak koordinatlar ve bağlantı durumu eklenir.
 export interface PositionedNode extends NodeSnapshot<string> {
+  // x hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   x: number;
+  // y hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   y: number;
+  // detached hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   detached: boolean;
 }
 // Aynı işlemde eski listenin hangi konumları koruyacağını belirleyen bağlamdır.
 export interface SceneContext {
+  // Reset veya iptal için korunan işlem başlangıç listesi; bu alan kayıt sözleşmesinin parçasıdır.
   baseline: ListSnapshot<string>;
+  // operation hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   operation: Selection;
+  // completed hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   completed: boolean;
 }
 // Kutular ve pointer uçları aynı genişlik/yükseklik sabitlerini paylaşır.
 export const NODE_WIDTH = 144;
+// NODE_HEIGHT hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
 export const NODE_HEIGHT = 64;
 // İki Node arasındaki adım, etiketler ve oklar için boşluk bırakır.
 export const NODE_PITCH = 210;
 // Normal liste üstte; yeni Node oluşurken mevcut liste alt hazırlık satırındadır.
 export const NORMAL_Y = 122;
+// STAGING_Y hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
 export const STAGING_Y = 290;
 
 // Head’den erişilen gerçek sıra, snapshot dizisinin kayıt sırasından bağımsız bulunur.
@@ -87,7 +96,10 @@ export function layoutNodes(
 export function nextPoints(
   node: PositionedNode,
   nodes: PositionedNode[],
-): { x: number; y: number }[] {
+): {
+  /* x hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır. */ x: number;
+  /* y hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır. */ y: number;
+}[] {
   // next oku kaynak Node’un sağ kenarının orta noktasından çıkar.
   const sx = node.x + NODE_WIDTH,
     sy = node.y + NODE_HEIGHT / 2;
@@ -95,6 +107,7 @@ export function nextPoints(
   const target = nodes.find((n) => n.id === node.next);
   // Hedef yoksa null etiketine kısa düz bir bağlantı çizilir.
   if (!target)
+    // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
     return [
       { x: sx, y: sy },
       { x: sx + 12, y: sy },
@@ -111,11 +124,15 @@ export function nextPoints(
   ].sort((a, b) => a.y - b.y || a.x - b.x || a.id.localeCompare(b.id));
   // Sol kenarın yüksekliği eşit aralıklara bölünür; girişler merkez etrafında simetriktir.
   const rank = incoming.findIndex((source) => source.id === node.id);
+  // Yatay hareketin bu karedeki oranını hesaplar; iki fazlı hareket için dikey orandan ayrıdır.
   const tx = target.x - 2;
+  // Dikey hareketin bu karedeki oranını hesaplar; kutuların iç içe geçmesini önler.
   const ty = target.y + (NODE_HEIGHT * (rank + 1)) / (incoming.length + 1);
   // Aynı sıradaki bağlantı yalnız giriş farkı kadar kısa bir koridorda yukarı/aşağı ayrılır.
   if (Math.abs(node.y - target.y) < 0.01 && tx > sx) {
+    // middle hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const middle = (sx + tx) / 2;
+    // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
     return [
       { x: sx, y: sy },
       { x: middle, y: sy },
@@ -125,7 +142,9 @@ export function nextPoints(
   }
   // Yukarıdaki ileri hedefe iki Node arasındaki koridordan çıkılır.
   if (tx > sx && ty < sy) {
+    // Dikey geçişin Node kutuları arasındaki güvenli x şeridini seçer.
     const corridor = (sx + tx) / 2;
+    // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
     return [
       { x: sx, y: sy },
       { x: corridor, y: sy },
@@ -135,13 +154,16 @@ export function nextPoints(
   }
   // Aşağıdaki hedefe dönen bağlantı sağ ve alt dış şeridi kullanır; yukarı çıkan okla kesişmez.
   if (ty > sy) {
+    // right hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const right = Math.max(sx, target.x + NODE_WIDTH) + 40;
     // İki satır arasındaki boşluk kullanılır; alt listenin düz next okları kesilmez.
     const bottom =
       node.y + NODE_HEIGHT < target.y
         ? (node.y + NODE_HEIGHT + target.y) / 2
         : Math.max(node.y, target.y) + NODE_HEIGHT + 40;
+    // entry hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const entry = tx - 16;
+    // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
     return [
       { x: sx, y: sy },
       { x: right, y: sy },
@@ -153,6 +175,7 @@ export function nextPoints(
   }
   // Diğer geri yönlü bağlantılar kutuların altından güvenle geçirilir.
   const lane = Math.max(node.y, target.y) + NODE_HEIGHT + 40;
+  // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
   return [
     { x: sx, y: sy },
     { x: sx + 24, y: sy },
@@ -162,6 +185,7 @@ export function nextPoints(
     { x: tx, y: ty },
   ];
 }
+// Güncel next uçlarını radiuslu SVG komutlarıyla birleştirir.
 export function nextPath(node: PositionedNode, nodes: PositionedNode[]): string {
   // Güncel ara Node pozlarından ok köşeleri alınır.
   const points = nextPoints(node, nodes);
@@ -169,28 +193,39 @@ export function nextPath(node: PositionedNode, nodes: PositionedNode[]): string 
   const clean = points.filter(
     (point, index) => !index || point.x !== points[index - 1].x || point.y !== points[index - 1].y,
   );
+  // Noktaları SVG M/L/Q komutlarına dönüştüren yol metnini biriktirir.
   let path = `M ${clean[0].x} ${clean[0].y}`;
+  // Koleksiyonun elemanlarını sırayla işler; her turda ilgili nesne, kayıt veya test senaryosu ele alınır.
   for (let index = 1; index < clean.length - 1; index++) {
+    // Bağlantı değişmeden önce saklanan önceki komşu bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const previous = clean[index - 1],
       corner = clean[index],
       next = clean[index + 1];
+    // Bu hedefe gelen aynı yönlü kaynakları toplar veya köşenin giriş uzunluğunu ölçer.
     const incoming = Math.hypot(corner.x - previous.x, corner.y - previous.y);
+    // Köşenin çıkış segmenti uzunluğunu ölçer; radius bu mesafeyi aşmaz.
     const outgoing = Math.hypot(next.x - corner.x, next.y - corner.y);
     // 24px radius kısa segmentlerde yarı uzunlukla sınırlandırılır; ok ters dönmez.
     const radius = Math.min(24, incoming / 2, outgoing / 2);
+    // Hareketin başlangıç zamanını saklar; geçen süre tek RAF saatinden hesaplanır.
     const start = {
       x: corner.x + ((previous.x - corner.x) * radius) / incoming,
       y: corner.y + ((previous.y - corner.y) * radius) / incoming,
     };
+    // Okun hedef nesnedeki ayrı giriş noktasını hesaplar.
     const end = {
       x: corner.x + ((next.x - corner.x) * radius) / outgoing,
       y: corner.y + ((next.y - corner.y) * radius) / outgoing,
     };
+    // Bu işlem mevcut yerel durumu günceller veya ilgili yardımcıyı çağırır; sıra algoritma kaydında korunur.
     path += ` L ${start.x} ${start.y} Q ${corner.x} ${corner.y} ${end.x} ${end.y}`;
   }
+  // Okun hedef nesnedeki ayrı giriş noktasını hesaplar.
   const end = clean.at(-1)!;
+  // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
   return path + ` L ${end.x} ${end.y}`;
 }
+// Ayrık nesnenin hangi index slotunda gösterileceğini işlem parametresinden bulur.
 export function detachedIndexFor(step: ExecutionStep<string> | null, operation: Selection): number {
   // Baş işlemleri ilk slotu kullanır.
   if (operation === 'addFirst' || operation === 'removeFirst') return 0;
@@ -202,15 +237,24 @@ export function detachedIndexFor(step: ExecutionStep<string> | null, operation: 
 
 // Referans tanımı, animasyon motorundan bağımsız saf geometri fonksiyonlarına aktarılır.
 export interface ReferenceSpec {
+  // name hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   name: string;
+  // Bir sonraki karelerin ulaşacağı nesne konumları; bu alan kayıt sözleşmesinin parçasıdır.
   target: string;
+  // opacity hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   opacity: number;
 }
+// Bu interface nesnenin hangi alanları taşıyacağını derleyiciye söyler; çalışma anında sınıf oluşturmaz.
 export interface PositionedReference extends ReferenceSpec {
+  // x hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   x: number;
+  // y hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   y: number;
+  // path hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   path: string;
+  // endX hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   endX: number;
+  // endY hesabında kullanılan ara değer; bu alan kayıt sözleşmesinin parçasıdır.
   endY: number;
 }
 
@@ -221,35 +265,48 @@ export function layoutReferences(
 ): PositionedReference[] {
   // Bir referans kaybolurken kalan etiketlerin gereksiz yer değiştirmemesi için isim sırası sabittir.
   const priority = ['head', 'previous', 'current', 'node'];
+  // sorted hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
   const sorted = [...references].sort((a, b) => {
     // Bilinmeyen geçici isimler de mevcut isimlerden sonra deterministik sıralanır.
     const rank = (name: string) =>
       priority.includes(name) ? priority.indexOf(name) : priority.length;
+    // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
     return rank(a.name) - rank(b.name) || a.name.localeCompare(b.name);
   });
+  // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
   return sorted.flatMap((ref) => {
     // Hedefi bulunmayan referans için ekranda sahte bir ok oluşturulmaz.
     const node = nodes.find((n) => n.id === ref.target);
+    // Eksik veya daha önce ziyaret edilen nesneyi atlar; iki yönlü zincirde sonsuz döngü oluşmaz.
     if (!node) return [];
     // Aynı Node'a yönelen etiketlerin kendi grubundaki sıra numarası bulunur.
     const group = sorted.filter((item) => item.target === ref.target);
+    // Kullanıcının seçtiği, sıfırdan başlayan hedef konum bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const index = group.indexOf(ref);
     // Etiketler solda ve sağda ayrı kolonlara, sonraki çiftler daha üst satıra yerleşir.
     // Üç referans varsa hepsi sol dış kolonda ayrı satırlara alınır; yollar etiketleri kesmez.
     const stacked = group.length > 2;
+    // left hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const left = stacked || index % 2 === 0;
     // Tek referans kendi Node’unun üstünde kalır; komşu Node etiketlerinin alanına girmez.
     const x = node.x + (group.length === 1 ? 36 : left ? -84 : NODE_WIDTH - 72);
+    // y hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const y = node.y - 44 - (stacked ? index : Math.floor(index / 2)) * 32;
     // Her pointer Node'un üst kenarında ayrı bir noktaya gelir.
     const endX = node.x + (group.length === 1 ? 48 : 24 + (index * 96) / (group.length - 1));
+    // endY hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const endY = node.y - 5;
     // Etiketin Node'a bakan kenarından başlayan eğri diğer etiketlerin içine girmez.
     const fromBottom = group.length === 1 || !left;
+    // startX hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const startX = fromBottom ? 36 : 72;
+    // localX hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const localX = endX - x;
+    // localY hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const localY = endY - y;
+    // bend hesabında kullanılan ara değer bu kapsamda saklanır; sonraki satırlar aynı değeri kullanır.
     const bend = startX + (left ? 16 : -16);
+    // Hesaplanan sonucu çağıran koda verir; çağıran bu değeri bir sonraki işlemde kullanabilir.
     return [
       {
         ...ref,
@@ -267,22 +324,32 @@ export function layoutReferences(
 export function sceneBounds(
   nodes: PositionedNode[],
   references: ReferenceSpec[] = [],
-): { width: number; height: number } {
+): {
+  /* Kamera veya panel için hesaplanan yatay ölçü; bu alan kayıt sözleşmesinin parçasıdır. */ width: number;
+  /* Kamera veya panel için hesaplanan dikey ölçü; bu alan kayıt sözleşmesinin parçasıdır. */ height: number;
+} {
   // Node alanı, kimlik satırı ve null etiketi dahil başlangıç sınırını belirler.
   let right = 320,
     bottom = 190;
+  // Koleksiyonun elemanlarını sırayla işler; her turda ilgili nesne, kayıt veya test senaryosu ele alınır.
   for (const node of nodes) {
+    // Bu atamayla right güncellenir; sonraki satır yeni değeri kullanır.
     right = Math.max(right, node.x + 230);
+    // Bu atamayla bottom güncellenir; sonraki satır yeni değeri kullanır.
     bottom = Math.max(bottom, node.y + 88);
     // Okun bütün köşe noktaları bounds'a dahil edilir; alt şerit kırpılmaz.
     for (const point of nextPoints(node, nodes)) {
+      // Bu atamayla right güncellenir; sonraki satır yeni değeri kullanır.
       right = Math.max(right, point.x);
+      // Bu atamayla bottom güncellenir; sonraki satır yeni değeri kullanır.
       bottom = Math.max(bottom, point.y);
     }
   }
   // Referans etiketinin kutusu ve giriş noktası kamera sınırında kalır.
   for (const ref of layoutReferences(nodes, references)) {
+    // Bu atamayla right güncellenir; sonraki satır yeni değeri kullanır.
     right = Math.max(right, ref.x + 72, ref.endX);
+    // Bu atamayla bottom güncellenir; sonraki satır yeni değeri kullanır.
     bottom = Math.max(bottom, ref.y + 24, ref.endY);
   }
   // Stroke ve arrowhead için her sınırın sonunda emniyet boşluğu bırakılır.

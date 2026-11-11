@@ -48,3 +48,6 @@ Thumbs.db
 examples/java/*.class
 examples/c/*.o
 examples/c/check
+
+# Yerel tarayıcı otomasyonunun geçici kayıtları
+.playwright-mcp/
