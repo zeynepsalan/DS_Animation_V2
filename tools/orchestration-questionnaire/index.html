@@ -6,23 +6,52 @@
 </style></head><body><main><h1>Orkestrasyon kararları</h1><p>Her soru için bir seçenek işaretleyebilir, kendi yanıtınızı yazabilir veya ikisini birlikte kullanabilirsiniz.</p>
 <form id="form" novalidate><input type="hidden" id="token" value="__TOKEN__">
 <!-- Her soru kendi seçeneklerini ve her zaman açık serbest yanıt alanını taşır. -->
-<fieldset><legend>1. Production deploy yetkisi nasıl olsun?</legend><label class="option"><input type="radio" name="q1" value="1"> GitHub push otomatik; production deploy için ayrıca benim onayım alınsın.</label><label class="option"><input type="radio" name="q1" value="2"> Production deploy da doğrulamalardan sonra yönetici kararıyla otomatik yapılsın.</label><label for="t1">Ek açıklama veya kendi yanıtınız</label><textarea id="t1" rows="3"></textarea><p class="error" id="e1"></p></fieldset>
-<fieldset><legend>2. Yeni worker açma yetkisi nasıl dağıtılsın?</legend><label class="option"><input type="radio" name="q2" value="1"> Yalnız yönetici worker açsın; worker ihtiyaç duyarsa yöneticiden istesin.</label><label class="option"><input type="radio" name="q2" value="2"> Worker, yöneticiye bağlı kalarak kendi görevi için alt worker açabilsin.</label><label for="t2">Ek açıklama veya kendi yanıtınız</label><textarea id="t2" rows="3"></textarea><p class="error" id="e2"></p></fieldset>
-<fieldset><legend>3. Paralel kod işlerinde çalışma alanı nasıl seçilsin?</legend><label class="option"><input type="radio" name="q3" value="1"> Yönetici bağımlılık ve riske göre ayrı worktree veya ortak alan seçsin.</label><label class="option"><input type="radio" name="q3" value="2"> Her bağımsız kod işi ayrı worktree’de yürüsün; birleştirme ayrı görev olsun.</label><label class="option"><input type="radio" name="q3" value="3"> Ortak çalışma alanı kullanılsın; aynı dosyanın tek yazarı olsun.</label><label for="t3">Ek açıklama veya kendi yanıtınız</label><textarea id="t3" rows="3"></textarea><p class="error" id="e3"></p></fieldset>
+<fieldset><legend>1. Production deploy yetkisi nasıl olsun?</legend><p>GitHub push: kodu GitHub’a gönderir. Production deploy: uygulamanın kullanıcıların eriştiği canlı sürümünü yayınlar.</p><label class="option"><input type="radio" name="q1" value="1"> GitHub push otomatik; production deploy için ayrıca benim onayım alınsın.</label><label class="option"><input type="radio" name="q1" value="2"> Production deploy da doğrulamalardan sonra yönetici kararıyla otomatik yapılsın.</label><label for="t1">Ek açıklama veya kendi yanıtınız</label><textarea id="t1" rows="3"></textarea><p class="error" id="e1"></p></fieldset>
+<p>Önceden kararlaştırıldı: yalnız yönetici worker açar. Yönetici bağımlılık ve riske göre ayrı worktree veya ortak çalışma alanı seçer.</p>
 <button id="send" type="submit">Gönder</button><p id="status" class="status" role="status" aria-live="polite"></p></form></main>
 <script>
 // Taslağı tarayıcıda saklayarak bağlantı hatasında yanıtları korur.
 const form=document.querySelector('#form'), status=document.querySelector('#status'), button=document.querySelector('#send');
-let busy=false, submitId=null, pollTimer=null;
-const draftKey='orchestration-questionnaire-draft-v1';
+let busy=false, submitId=null;
+const draftKey='orchestration-questionnaire-draft-v2';
+const submitKey='orchestration-questionnaire-submit-v2';
+// Sayfa yenilense de belirsiz gönderim aynı kimlikle kontrol edilir, yeniden queue edilmez.
+try{submitId=sessionStorage.getItem(submitKey);}catch(e){}
 // Formdaki mevcut seçenek ve metinleri toplar.
-function answers(){return [1,2,3].map(i=>({option:form.querySelector(`input[name=q${i}]:checked`)?.value||null,text:document.querySelector(`#t${i}`).value}));}
+function answers(){return [1].map(i=>({option:form.querySelector(`input[name=q${i}]:checked`)?.value||null,text:document.querySelector(`#t${i}`).value}));}
 // Önceki taslağı aynı tarayıcı sekmesinde geri yükler.
-try {const draft=JSON.parse(sessionStorage.getItem(draftKey)||'null'); if(draft) draft.forEach((a,i)=>{document.querySelector(`#t${i+1}`).value=a.text; if(a.option) form.querySelector(`input[name=q${i+1}][value="${a.option}"]`).checked=true;});} catch(e) {}
+try {const draft=JSON.parse(sessionStorage.getItem(draftKey)||sessionStorage.getItem('orchestration-questionnaire-draft-v1')||'null'); if(draft) draft.slice(0,1).forEach((a,i)=>{document.querySelector(`#t${i+1}`).value=a.text; if(a.option) form.querySelector(`input[name=q${i+1}][value="${a.option}"]`).checked=true;});} catch(e) {}
 // Her düzenlemede taslağı günceller ve yeni içerik için yeni kimlik ayırır.
-form.addEventListener('input',()=>{sessionStorage.setItem(draftKey,JSON.stringify(answers()));submitId=null;});
-// Gerçek sohbet aracı onayı gelene kadar yalnız iletiliyor durumunu gösterir.
-async function poll(id){try {const response=await fetch('/status/'+id,{cache:'no-store'});const data=await response.json();if(data.delivered){status.textContent='Yanıtlar sohbete iletildi.';sessionStorage.removeItem(draftKey);return;}}catch(e){} pollTimer=setTimeout(()=>poll(id),1500);}
+form.addEventListener('input',()=>{sessionStorage.setItem(draftKey,JSON.stringify(answers()));submitId=null;sessionStorage.removeItem(submitKey);});
+// Gönderim hatasında alanları açar; aynı kimlikli yanıt yeniden denenebilir.
+function unlock(){busy=false;button.disabled=false;form.querySelectorAll('fieldset').forEach(el=>el.disabled=false);}
 // Eksik soruları gösterir, geçerli yanıtı yalnız bir kez kaydeder.
-form.addEventListener('submit',async event=>{event.preventDefault();if(busy)return;const values=answers();let first=null;values.forEach((a,i)=>{const missing=!a.option&&!a.text.trim();document.querySelector(`#e${i+1}`).textContent=missing?'Bir seçenek seçin veya yanıtınızı yazın.':'';if(missing&&!first)first=document.querySelector(`#t${i+1}`);});if(first){first.focus();return;}busy=true;button.disabled=true;form.querySelectorAll('fieldset').forEach(el=>el.disabled=true);status.textContent='Yanıtlar kaydediliyor…';submitId=submitId||crypto.randomUUID();const currentId=submitId;try{const response=await fetch('/submit',{method:'POST',headers:{'Content-Type':'application/json','X-Session-Token':document.querySelector('#token').value},body:JSON.stringify({version:'2026-11-14-v1',submitId:currentId,answers:values})});if(!response.ok)throw Error();status.textContent='Yanıtlar kaydedildi, sohbete iletiliyor…';poll(currentId);}catch(e){status.textContent='Bağlantı kurulamadı. Yanıtlarınız korundu; yeniden deneyin.';busy=false;button.disabled=false;form.querySelectorAll('fieldset').forEach(el=>el.disabled=false);}});
+form.addEventListener('submit',async event=>{
+  event.preventDefault();if(busy)return;
+  const values=answers();let first=null;
+  // Eksik cevaplar yerel olarak açıklanır; hiçbir varsayılan karar gönderilmez.
+  values.forEach((a,i)=>{const missing=!a.option&&!a.text.trim();document.querySelector(`#e${i+1}`).textContent=missing?'Bir seçenek seçin veya yanıtınızı yazın.':'';if(missing&&!first)first=document.querySelector(`#t${i+1}`);});
+  if(first){first.focus();return;}
+  busy=true;button.disabled=true;form.querySelectorAll('fieldset').forEach(el=>el.disabled=true);
+  status.textContent='Yanıtlar kaydediliyor ve sohbet kuyruğuna gönderiliyor…';
+  submitId=submitId||crypto.randomUUID();sessionStorage.setItem(submitKey,submitId);const currentId=submitId;
+  try{
+    const response=await fetch('/submit',{method:'POST',headers:{'Content-Type':'application/json','X-Session-Token':document.querySelector('#token').value},body:JSON.stringify({version:'2026-11-14-v2',submitId:currentId,answers:values})});
+    const data=await response.json();
+    // Yeniden başlatılan sunucunun token'ını alır; taslak ve gönderi kimliği korunur.
+    if(data.error==='schema_changed'){status.textContent='Form soruları güncellendi. Yanıt taslağınız korundu; sayfayı yenileyin.';unlock();return;}
+    if(data.error==='stale_session'){
+      const page=await fetch('/',{cache:'no-store'});
+      const html=new DOMParser().parseFromString(await page.text(),'text/html');
+      document.querySelector('#token').value=html.querySelector('#token').value;
+      status.textContent='Bağlantı yenilendi; yanıtlarınız korundu. Gönder’e yeniden basın.';unlock();return;
+    }
+    // Kuyruğa kabul, yöneticinin cevapları okuduğu anlamına gelmez.
+    if(response.ok&&data.delivery==='queued'){status.textContent='Yanıtlar sohbet kuyruğuna alındı. Yönetici mevcut işi bitince otomatik okuyacak.';sessionStorage.removeItem(draftKey);sessionStorage.removeItem(submitKey);sessionStorage.removeItem('orchestration-questionnaire-draft-v1');return;}
+    if(data.delivery==='read'){status.textContent='Yanıtlar yönetici tarafından okundu.';return;}
+    if(data.delivery==='unknown'){status.textContent='Yanıtlar kaydedildi; sohbet kuyruğuna kabul sonucu belirsiz. Tekrar gönderim durduruldu; yönetici teslim durumunu kontrol etmeli.';return;}
+    if(data.saved){status.textContent='Yanıtlar yerel olarak kaydedildi; sohbet kuyruğuna gönderilemedi. Gönder’e basarak yeniden deneyin.';unlock();return;}
+    throw Error();
+  }catch(e){status.textContent='Bağlantı kurulamadı. Yanıtlarınız korundu; yeniden deneyin.';unlock();}
+});
 </script></body></html>

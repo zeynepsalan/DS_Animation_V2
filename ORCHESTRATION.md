@@ -7,6 +7,7 @@ Bu belge, kullanıcının önceki görüşmelerde verdiği kararları 2026-11-14
 - Orkestrasyon her projede ayrı kullanılabilmelidir. Yeniden kullanılabilir süreç kuralları ile projeye özgü görev, karar, brief ve durum bilgileri ayrılır. Bu kayıt şimdilik yalnız bu repodadır: global kurulum, başka repolara yayılım, runtime ayarları ve otomatik enforcement uygulanmamıştır.
 - Kullanıcının tek muhatabı yöneticidir. Yönetici görevleri, bağımlılıkları, atamaları, brief ve revizyonları, worker açılmasını ve teslim kararını yönetir. Yönetim belgelerini okuyabilir ve güncelleyebilir. Ürün kodu yazmaz, ürün testi yapmaz ve uygulamayı çalıştırmaz; bu işleri açıkça görevlendirilmiş worker'lara verir. Genel teknik sahiplik yönergesi, yöneticinin sorumluluğu ve worker'ların icrası olarak uygulanır. Worker görevi ve modeli açık atanır; worker yönetici rolünü miras alıp kendi işini durdurmaz. Ürün geliştirme beklemededir; öncelik orkestrasyon tasarımıdır.
 - Şimdilik yalnız Codex worker'ları kullanılır. Süreç gelecekte sağlayıcı değişebilmesine elverişlidir. Bu karar önceki Roku/Claude yönergeleriyle çeliştiğinde geçerlidir; otomatik Claude çağrısı yapılmaz.
+- 2026-11-14 kullanıcı kararı: Yalnız yönetici worker açar; worker ihtiyaç duyarsa yöneticiden ister. Yönetici, görev bağımlılıklarına ve riskine göre ayrı worktree veya ortak çalışma alanı seçer.
 - Cost, token tüketimidir. Hız hedefi veya mevcut sert token/cost sınırı yoktur; kalite önceliklidir. Gereksiz worker açma, tüm sohbeti her worker'a aktarma, tekrarlı araştırma ve test ile gereksiz rapor azaltılır; kısalık uğruna kalite düşürülmez. Ürün kalitesi toplam token karşılığıyla değerlendirilir; ölçüm yoksa tasarruf yüzdesi veya token miktarı uydurulmaz. Ürün ve mimari kararları, kapsam değişiklikleri ve ileride bir bütçe tanımlanırsa onu aşma kararı kullanıcıdadır.
 - Yönetici kayda değer ve doğrulanmış bir değişiklik için kullanıcının GitHub hesabı üzerinden otomatik normal push kararı verebilir; Git icrasını worker'a devredebilir. Push yalnız ilgili değişiklikleri içerir, kullanıcının ilgisiz işleri dahil edilmez. Her push için yeniden onay istenmez. Production deploy ayrı bir karardır; GitHub push yetkisi deploy onayı değildir.
 - Her kod değişikliği için ayrı test worker'ı zorunlu değildir. Fonksiyonel veya riskli değişikliğin bütünlüğü tamamlandığında uygun testler yapılır; uygulayıcı worker bunları çalıştırabilir. Her anlamlı değişiklik grubu tamamlandığında uygulayıcıdan bağımsız inceleme yapılır. İnceleme ve test farklıdır; inceleme onayı testlerin çalıştığını kanıtlamaz. Ürün kodu değişmeyen dokümantasyon görevinde uygulama testleri gerekmez.
@@ -19,7 +20,11 @@ Bu belge, kullanıcının önceki görüşmelerde verdiği kararları 2026-11-14
 
 ### Yerel form düzeltmesi — 2026-11-14
 
-Yerleşik soru formu kullanıcıya görünmedi. Bunun ardından `tools/orchestration-questionnaire/` altında yerel HTML formu ve Python standart kitaplığıyla çalışan sunucu hazırlandı. Sunucu `python3 tools/orchestration-questionnaire/server.py` ile başlatılır; çalışma anındaki adres ve port sunucu çıktısından alınır. Form seçenek veya serbest yanıt alır, boş yanıtları engeller ve sunucu onayını bekler. Yanıtın mevcut sohbete otomatik iletilmesi için aktif bir receiver gerekir; yalnız yerel kaydetme sohbet teslimi değildir. Formdan mevcut sohbete uçtan uca teslim henüz gerçekleşmedi ve doğrulanmış sayılmaz. Yanıtlanmamış sorular karar değildir.
+Yerleşik soru formu kullanıcıya görünmediği için `tools/orchestration-questionnaire/` altında yerel HTML formu ve Python sunucusu hazırlandı. İlk sürümde receiver gerekliydi; otomatik `send_message_to_thread` aracı bulunamadı, başlangıçta ack yazılmadı ve yönetici kullanıcının mevcut mesajı üzerine yanıtı dosyadan okudu. Receiver artık gerekli değildir ve durduruldu.
+
+Güncel sunucu yanıtı kaydettikten sonra desteklenen `codex queue` komutunu doğrudan kullanır. Başlatma ve mevcut sohbeti hedefleyen ortam değişkenleri [araç README'sinde](tools/orchestration-questionnaire/README.md) açıklanır; yeni sohbette doğru hedef yeniden yapılandırılmalıdır. Bu, global kurulum değildir. `queued` CLI kabulünü, eski `manager-read` ise yönetici okumasını gösterir. Belirsiz teslimde kör tekrar engellenir. İzole v1 teknik form testi, kullanıcı ek mesaj atmadan yeni yönetici turunun açılması ve test dosyasının okunmasına kadar doğrulandı. Canlı v2 formundan gerçek deploy yanıtı henüz gelmedi; yanıtlanmamış sorular karar değildir.
+
+2026-11-14 kullanıcı gereksinimi: Gönder sonrasında yanıtın okunmasını tetiklemek için kullanıcının ayrıca sohbet mesajı göndermesi gerekmemelidir. Bu akış izole v1 teknik testiyle doğrulandı; canlı v2'nin gerçek kullanıcı yanıtıyla teslimi henüz gerçekleşmedi.
 
 ## Model yönlendirmeleri
 
@@ -37,5 +42,5 @@ Kullanıcının “imagen” ifadesi Codex'in resim üretme aracını (`image_ge
 
 ## Açık konular ve uygulanmamış ayrıntılar
 
-- Production deploy için kullanıcıya soru soruldu; yanıt henüz yoktur.
-- Brief formatı, görev durumları, dosya kilidi veya worktree politikası, eşzamanlı worker sayısı ve somut görev takibi altyapısı henüz kararlaştırılmamıştır. Bu konular için bir uygulama kurulduğu varsayılmaz.
+- Production deploy sorusunda kullanıcı terimin açıklamasını istedi; karar açık kalır.
+- Brief formatı, görev durumları, dosya kilidi, eşzamanlı worker sayısı ve somut görev takibi altyapısı henüz kararlaştırılmamıştır. Bu konular için bir uygulama kurulduğu varsayılmaz.
