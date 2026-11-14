@@ -101,3 +101,5 @@ Kullanıcı Circular yapının tek yönlü olmasını, Singly ve Doubly klasörl
 Bu proje, kullanıcının onayladığı yönetici ve Codex worker düzenini benimser. Kararların kapsamı, önceki yönergelerle önceliği ve açık konular için kanonik kayıt [ORCHESTRATION.md](../ORCHESTRATION.md) dosyasıdır. Bu tarih kararların konsolidasyon tarihidir; önceki görüşmelerdeki özgün karar tarihleri olarak varsayılmaz. Production deploy onayı açık kalır.
 
 2026-11-14: Proje, yönetici mesajlarının sonunda gerçek worker/görev/model/durum tablosu gösterilmesi ve kullanıcı kararlarının ilgili kanonik belgede kalıcı kaydı kurallarını benimsedi. Ayrıntılar [ORCHESTRATION.md](../ORCHESTRATION.md) içindedir.
+
+2026-11-14: Kullanıcı, soruların seçenekler ve alternatif yazma alanı bulunan HTML arayüzünde sorulmasını ve Gönder ile cevapların doğrudan asistana gelmesini istedi. Bu tercihin uygulanma koşulları [ORCHESTRATION.md](../ORCHESTRATION.md) içindedir.

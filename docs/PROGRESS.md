@@ -140,3 +140,7 @@ Belgeleme gpt-6.1-terra worker tarafından yapıldı; gpt-6.1-sol bağımsız in
 2026-11-14: Kullanıcının worker raporlama tablosu ve kararların kalıcı kaydı kuralları orkestrasyon ve proje belgelerine eklendi; değişiklik yalnız dokümantasyondur.
 
 Belgeleme gpt-6.1-terra worker tarafından yapıldı; gpt-6.1-sol bağımsız incelemesi başarılı. git diff --check ve yerel bağlantı hedefleri doğrulandı; uygulama kodu ve testleri değişmedi.
+
+2026-11-14: Kullanıcının seçenekli, serbest yanıtlı ve cevabı aynı sohbete gönderen soru formu tercihi yönetim ve karar belgelerine kaydedildi. Özel form veya uygulama geliştirilmedi.
+
+Belgeleme gpt-6.1-terra worker tarafından yapıldı; gpt-6.1-sol bağımsız incelemesi başarılı. git diff --check ve yerel bağlantı hedefleri doğrulandı.

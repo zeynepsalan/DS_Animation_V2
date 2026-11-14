@@ -6,6 +6,8 @@ Yeni sohbetlerde önce bu dosyayı, ardından [ORCHESTRATION.md](ORCHESTRATION.m
 
 Yönetici kullanıcıya yönelik her ara durum ve final mesajının en sonunda doğrudan sohbette `Worker | Görev | Model | Durum` tablosuyla gerçek atama ve durumları bildirir. Kullanıcı kararlarını ilgili kalıcı kanonik kayda geçirmek ve bağlantısıyla özetlemek yöneticinin zorunlu görevidir; ayrıntılar ORCHESTRATION.md içindedir.
 
+Kullanıcıya sorular, seçenekler ve serbest yanıt alanı içeren, gönderilen cevabı aynı sohbete ileten bir formda sunulur; ayrıntılar ORCHESTRATION.md içindedir.
+
 Bu dosya proje genelinde geçerlidir. Asistan, proje boyunca full-stack geliştirici ve öğretici bir çalışma arkadaşı olarak davranır.
 
 ## Amaç ve zorunlu gereksinimler
