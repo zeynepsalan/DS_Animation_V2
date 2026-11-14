@@ -434,3 +434,7 @@ Bu değişiklik yalnız yol haritasını günceller; çalışan sınıf ilişkil
 CircularLinkedlist<T> Node<T> kullanır; head veya prev tutmaz. Snapshot.head tail.next’ten türetilmiş renderer projeksiyonudur. PlaybackService.circularList ayrı kalıcı halka, startCircular/circularTrace ayrı çalışma kopyasıdır. Visualization.circular aynı SceneMotion RAF motorunu circularPositions/circularPath/circularBounds ile kullanır. Codebar circularCode üzerinden iç method çağrılarını kapsam prefix’iyle açar; export aynı satır kaynağını tekrar tanım üretmeden alır. Array hâlâ uygulanmamıştır.
 
 - 2026-11-11 checkpoint kontrolü: GitHub push hazırlığında UML gerçek Circular/Doubly kaynaklarıyla gözden geçirildi; sınıf ilişkilerini değiştiren yeni kod bulunmuyor.
+
+## 2026-11-14 — Orkestrasyon belgesi kontrolü
+
+Yalnız yönetim ve karar belgeleri güncellendi; uygulama kodu ve UML sınıf ilişkileri değişmedi.

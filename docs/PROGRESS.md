@@ -130,3 +130,9 @@ Tarayıcıda self-loop, A→B→C→A, araya ekleme, ortadan silme, Previous/Nex
 ## 2026-11-11 — GitHub checkpoint
 
 Kullanıcı mevcut sürümün pushlanmasını istedi. Checkpoint kapsamı: tamamlanmış 18 Doubly işlemi, tek yönlü tail tabanlı Circular ve 18 işlemi, Java/C/Pseudocode export’ları, kaynak yorumları/Java sade görünümü, testler, proje notları ve ekran kanıtları. Son kaynak doğrulaması 79 test, Java/C 138 Circular + 138 Doubly senaryosu ve SQLite cache ile production build başarılıdır. Bu push isteğinde uygulama kodu değiştirilmedi; doğrulamayı yeniden çalıştırmayı gerektiren değişiklik yoktur.
+
+## 2026-11-14 — Orkestrasyon belgesi
+
+Kullanıcının onaylı yönetici/worker, model yönlendirmesi, doğrulama ve GitHub push kararları kökteki [ORCHESTRATION.md](../ORCHESTRATION.md) içinde konsolide edildi; AGENTS.md yeni sohbetler için okuma sırasını ve önceliği gösterir. Global kurulum veya otomatik enforcement yapılmadı. Production deploy kararı açık; ürün geliştirme beklemede. Bu değişiklik grubu yalnız dokümantasyondur; uygulama testi gerektirmez.
+
+Belgeleme gpt-6.1-terra worker tarafından yapıldı; gpt-6.1-sol bağımsız incelemesinin model seçenekleri ifadesi düzeltildi ve tekrar inceleme başarılı. git diff --check ve yerel belge link hedefleri doğrulandı. Yalnız belge değişikliği olduğundan uygulama/build testi çalıştırılmadı.

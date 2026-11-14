@@ -95,3 +95,7 @@ Kullanıcı geliştirme sırasını değiştirdi: önce Circular Linkedlist, ard
 ## 2026-11-11 — Circular Linkedlist kararı
 
 Kullanıcı Circular yapının tek yönlü olmasını, Singly ve Doubly klasörlerinin hemen altında gösterilmesini ve head yerine yalnız tail tutulmasını istedi. CircularLinkedlist<T> bağımsız Node<T>(data, next) kullanır; ilk Node tail.next ile bulunur. Boşta tail=null; tek Node'da tail.next=tail; dolu halkada son next ilk Node'a döner. Aynı 18 liste işlemi ve ortak playback kullanılır. Array hâlâ sonraki aşamadır ve sabit kapasiteli olacaktır.
+
+## 2026-11-14 — Orkestrasyon kararlarının konsolidasyonu
+
+Bu proje, kullanıcının onayladığı yönetici ve Codex worker düzenini benimser. Kararların kapsamı, önceki yönergelerle önceliği ve açık konular için kanonik kayıt [ORCHESTRATION.md](../ORCHESTRATION.md) dosyasıdır. Bu tarih kararların konsolidasyon tarihidir; önceki görüşmelerdeki özgün karar tarihleri olarak varsayılmaz. Production deploy onayı açık kalır.
