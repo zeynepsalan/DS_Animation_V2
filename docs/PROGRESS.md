@@ -144,3 +144,5 @@ Belgeleme gpt-6.1-terra worker tarafından yapıldı; gpt-6.1-sol bağımsız in
 2026-11-14: Kullanıcının seçenekli, serbest yanıtlı ve cevabı aynı sohbete gönderen soru formu tercihi yönetim ve karar belgelerine kaydedildi. Özel form veya uygulama geliştirilmedi.
 
 Belgeleme gpt-6.1-terra worker tarafından yapıldı; gpt-6.1-sol bağımsız incelemesi başarılı. git diff --check ve yerel bağlantı hedefleri doğrulandı.
+
+2026-11-14: Yerleşik formun görünmemesi üzerine yerel HTML formu ve sunucu hazırlandı. Ayrı test ortamında form, 360/736 responsive görünüm, ağ hatasında girdi koruma, çift tıklama ve origin/token/body kontrolleri sınandı. İncelemede bulunan gönderim sırasındaki yarış düzeltildi; gecikmeli POST sırasında fieldset kilidi, değişmeyen kimlik ve ağ hatasında yanıt koruma Playwright ile doğrulandı. Sol son bağımsız incelemesi başarılı. Mevcut sohbete kullanıcı yanıtının uçtan uca teslimi henüz gerçekleşmedi; aktif receiver gerektirir.

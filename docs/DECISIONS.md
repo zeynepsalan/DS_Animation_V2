@@ -103,3 +103,5 @@ Bu proje, kullanıcının onayladığı yönetici ve Codex worker düzenini beni
 2026-11-14: Proje, yönetici mesajlarının sonunda gerçek worker/görev/model/durum tablosu gösterilmesi ve kullanıcı kararlarının ilgili kanonik belgede kalıcı kaydı kurallarını benimsedi. Ayrıntılar [ORCHESTRATION.md](../ORCHESTRATION.md) içindedir.
 
 2026-11-14: Kullanıcı, soruların seçenekler ve alternatif yazma alanı bulunan HTML arayüzünde sorulmasını ve Gönder ile cevapların doğrudan asistana gelmesini istedi. Bu tercihin uygulanma koşulları [ORCHESTRATION.md](../ORCHESTRATION.md) içindedir.
+
+2026-11-14 uygulama kaydı: Yerleşik form kullanıcıya görünmediği için yerel HTML alternatifi hazırlandı; aktif receiver ve henüz doğrulanmamış sohbet teslimi koşulları [ORCHESTRATION.md](../ORCHESTRATION.md) içinde açıklanır. Soruların yanıtları henüz kullanıcı kararı olarak kaydedilmedi.

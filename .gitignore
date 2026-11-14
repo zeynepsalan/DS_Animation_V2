@@ -51,3 +51,5 @@ examples/c/check
 
 # Yerel tarayıcı otomasyonunun geçici kayıtları
 .playwright-mcp/
+
+/tools/orchestration-questionnaire/runtime/
