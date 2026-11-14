@@ -4,11 +4,11 @@ Durum: Kabul edilmiş kaynak süreç hükmü. Kapsam: bu proje; tekrar kullanıl
 
 Kaynak: [özgün süreç belgesi](../../ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/ORCHESTRATION.source.md). Bağlam: kullanıcı ile yönetici/worker çalışma düzeni.
 
-Karar: Sorular seçenekli ve serbest metinli formda sunulur, Gönder yanıtı aynı sohbete ulaştırır; kullanıcı ayrıca mesaj göndermemelidir. İzole v1 queue testi gerçekleşti, canlı v2 gerçek deploy yanıtı yoktur.
+Karar: Sorular seçenekli ve serbest metinli formda sunulur, Gönder yanıtı aynı sohbete ulaştırır; kullanıcı ayrıca mesaj göndermemelidir. İzole v1 queue testi gerçekleşti; canlı v2 gerçek yanıtı da yöneticiye otomatik ulaşıp okundu ([DEC-0035](../README.md#dec-0035)).
 
 Gerekçe: kaynakta ayrıca belirtilmediyse bilinmiyor. Yerine aldığı / geçen: kaynakta belirtilmedi. Uygulama ve doğrulama: [güncel durum](../../ORCHESTRATION/context/CURRENT.md); kabul edilmesi, otomatik uygulama veya test edildiği anlamına gelmez.
 
-## Kaynak ayrıntısı
+## Kaynak ayrıntısı — yanıt öncesi tarihsel durum
 
 - Kullanıcı soru tercihini şöyle ifade etti: “bana soracağın soruları bir html arayüzünde sor, cevaplar için şıklar ekle, ayrıca şıklarda cevabımı bulamazsam diye ekstra yazma alanım olsun. gönder butonuna bastığımda cevaplar direkt sana gelsin.” Sorular seçenekler ve serbest metin alternatifi sunan bir formda sorulur. Gönderilen yanıtı doğrudan aynı sohbete ileten yerleşik soru formu bu gereksinimi sağladığında kullanılabilir; sırf soru sormak için ayrı site, uygulama veya backend kurulmaz. Bu kayıt özel bir HTML dosyası yapıldığını veya özelleştirilmiş callback'in test edildiğini iddia etmez. Özel HTML gerektiğinde ancak gerçek host-chat bağlantısı varsa yanıtın gönderildiği söylenir; yalnız localStorage, clipboard veya download aynı sohbete gönderim değildir. Kullanıcı doldurup Gönder demeden seçili varsayılan karar veya onay sayılmaz. Gönderilen yanıtlar geldikten sonra kararlar ilgili kanonik dosyaya kaydedilir; cevaplanmamış form maddeleri onaylı gösterilmez.
 
@@ -17,3 +17,7 @@ Yerleşik soru formu kullanıcıya görünmediği için `tools/orchestration-que
 Güncel sunucu yanıtı kaydettikten sonra desteklenen `codex queue` komutunu doğrudan kullanır. Başlatma ve mevcut sohbeti hedefleyen ortam değişkenleri [araç README'sinde](../../tools/orchestration-questionnaire/README.md) açıklanır; yeni sohbette doğru hedef yeniden yapılandırılmalıdır. Bu, global kurulum değildir. `queued` CLI kabulünü, eski `manager-read` ise yönetici okumasını gösterir. Belirsiz teslimde kör tekrar engellenir. İzole v1 teknik form testi, kullanıcı ek mesaj atmadan yeni yönetici turunun açılması ve test dosyasının okunmasına kadar doğrulandı. Canlı v2 formundan gerçek deploy yanıtı henüz gelmedi; yanıtlanmamış sorular karar değildir.
 
 2026-11-14 kullanıcı gereksinimi: Gönder sonrasında yanıtın okunmasını tetiklemek için kullanıcının ayrıca sohbet mesajı göndermesi gerekmemelidir. Bu akış izole v1 teknik testiyle doğrulandı; canlı v2'nin gerçek kullanıcı yanıtıyla teslimi henüz gerçekleşmedi.
+
+## 2026-11-14 — Canlı v2 sonucu
+
+Gerçek gönderim desteklenen queue akışıyla kullanıcıdan ek sohbet mesajı gerektirmeden yönetici için yeni tur açtı; yönetici yanıt dosyasını okudu. Kullanıcı kararı [DEC-0035](../README.md#dec-0035) içinde kayıtlıdır. Yukarıdaki yanıt gelmedi ifadeleri bu olay öncesi tarihsel durumu anlatır.

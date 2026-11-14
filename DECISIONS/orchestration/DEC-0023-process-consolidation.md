@@ -19,3 +19,5 @@ Bu proje, kullanıcının onayladığı yönetici ve Codex worker düzenini beni
 2026-11-14 kullanıcı gereksinimi: Form yanıtının okunması için ayrıca sohbet mesajı göndermek gerekmemelidir. İzole v1 teknik form testi, otomatik yeni yönetici turu ve dosyanın okunmasına kadar doğrulandı; canlı v2'den gerçek deploy yanıtı henüz gelmedi. Teknik test kullanıcı kararı değildir.
 
 Kapsam: bu proje. Gerekçe: kaynakta belirtilenler dışında bilinmiyor. Uygulama ve doğrulama: kaynak kayıtları ve [doğrulama kaydı](../../docs/VALIDATION.md); kararın kabulü uygulama veya test kanıtı değildir.
+
+Bu bölüm yanıt öncesi tarihsel kayıttır; deploy sorusunun sonraki kararı [DEC-0035](../README.md#dec-0035), canlı form teslimi [DEC-0034](../README.md#dec-0034) içindedir.

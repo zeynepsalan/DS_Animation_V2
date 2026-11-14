@@ -446,3 +446,7 @@ Yalnız yönetim ve karar belgeleri güncellendi; uygulama kodu ve UML sınıf i
 ## 2026-11-14 — Belge yapısı kontrolü
 
 Bu değişiklik yalnız belge ve süreç yapısıdır; UML sınıf ilişkileri değişmedi.
+
+## 2026-11-14 — Deploy karar kaydı kontrolü
+
+Bu belge grubu süreç kararını kaydeder; UML sınıf ilişkileri değişmedi.

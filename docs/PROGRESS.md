@@ -172,3 +172,7 @@ Kullanıcı, yanıtın ayrıca sohbet mesajıyla tetiklenmeden otomatik okunmas�
 ## 2026-11-14 — Belge yapısı ve göç
 
 Kategorili karar kaydı, süreç ve belge rehberi kuruldu; erişilen 11 baseline Markdown birebir arşivlendi, 590 blok eşlendi ve 30 karar ID kontrol edildi. Bağımsız semantik inceleme geçti. Ürün build/test/tarayıcı, restore testi veya global kurulum yapılmadı; bilinmeyen geçmiş sohbetlerin kapsamı doğrulanamaz. [Görev ve kanıt](../ORCHESTRATION/tasks/TASK-0001-documentation-structure.md).
+
+## 2026-11-14 — Canlı form ve production deploy kararı
+
+Canlı v2 kullanıcı gönderimi desteklenen queue ile ek sohbet mesajı olmadan yeni yönetici turunu açtı; yönetici yanıtı okudu. Kullanıcı GitHub push otomatik kalırken her production deploy için ayrı onay istedi. Önceki açık karar ve henüz yanıt gelmedi kayıtları bu olay öncesi tarihseldir. [DEC-0035](../DECISIONS/orchestration/DEC-0035-production-deploy-approval.md). Production deploy yapılmadı.

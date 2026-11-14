@@ -4,9 +4,9 @@ Durum: Kabul edilmiş kaynak süreç hükmü. Kapsam: bu proje; tekrar kullanıl
 
 Kaynak: [özgün süreç belgesi](../../ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/ORCHESTRATION.source.md). Bağlam: kullanıcı ile yönetici/worker çalışma düzeni.
 
-Karar: Ürün, mimari, kapsam ve gelecekte bütçe kararı kullanıcıya aittir. Yönetici anlamlı doğrulanmış değişiklik için ilgili dosyalarla normal GitHub push kararı verebilir; production deploy ayrı ve açık karardır.
+Karar: Ürün, mimari, kapsam ve gelecekte bütçe kararı kullanıcıya aittir. Yönetici anlamlı doğrulanmış değişiklik için ilgili dosyalarla normal GitHub push kararı verebilir; production deploy için ayrı kullanıcı onayı gerekir ([DEC-0035](../README.md#dec-0035)).
 
-Gerekçe: kaynakta ayrıca belirtilmediyse bilinmiyor. Yerine aldığı / geçen: kaynakta belirtilmedi. Uygulama ve doğrulama: [güncel durum](../../ORCHESTRATION/context/CURRENT.md); kabul edilmesi, otomatik uygulama veya test edildiği anlamına gelmez.
+Gerekçe: kaynakta ayrıca belirtilmediyse bilinmiyor. Yerine geçen: yalnız önceki açık deploy sorusu [DEC-0035](../README.md#dec-0035) ile karara bağlandı; diğer hükümler korunur. Uygulama ve doğrulama: [güncel durum](../../ORCHESTRATION/context/CURRENT.md); kabul edilmesi, otomatik uygulama veya test edildiği anlamına gelmez.
 
 ## Kaynak ayrıntısı
 
@@ -15,3 +15,5 @@ Gerekçe: kaynakta ayrıca belirtilmediyse bilinmiyor. Yerine aldığı / geçen
 - Yönetici kayda değer ve doğrulanmış bir değişiklik için kullanıcının GitHub hesabı üzerinden otomatik normal push kararı verebilir; Git icrasını worker'a devredebilir. Push yalnız ilgili değişiklikleri içerir, kullanıcının ilgisiz işleri dahil edilmez. Her push için yeniden onay istenmez. Production deploy ayrı bir karardır; GitHub push yetkisi deploy onayı değildir.
 
 - Production deploy sorusunda kullanıcı terimin açıklamasını istedi; karar açık kalır.
+
+İlgili sonraki kayıt: [DEC-0035](../README.md#dec-0035). Yalnız deploy sorusunun açık olması yerini ayrı onay kuralına bıraktı.
