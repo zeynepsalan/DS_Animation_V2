@@ -438,3 +438,5 @@ CircularLinkedlist<T> Node<T> kullanır; head veya prev tutmaz. Snapshot.head ta
 ## 2026-11-14 — Orkestrasyon belgesi kontrolü
 
 Yalnız yönetim ve karar belgeleri güncellendi; uygulama kodu ve UML sınıf ilişkileri değişmedi.
+
+- 2026-11-14: Worker raporlama ve karar kaydı belge güncellemesinde uygulama sınıf ilişkileri değişmedi.

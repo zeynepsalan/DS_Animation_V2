@@ -4,6 +4,8 @@
 
 Yeni sohbetlerde önce bu dosyayı, ardından [ORCHESTRATION.md](ORCHESTRATION.md) dosyasını oku. Bu projede onaylı yönetici/worker düzeni ve önceki Roku/Claude yönergeleriyle çelişen kullanıcının güncel kararları için ORCHESTRATION.md esas alınır. Yönetici ürünün teknik sahipliğini görevleri yöneterek üstlenir; full-stack uygulama ve doğrulama worker'lar tarafından yürütülür. Worker kendisine açıkça verilen rolü uygular, yönetici rolünü devralmaz. Ürün geliştirme şu anda beklemededir; öncelik orkestrasyon tasarımıdır.
 
+Yönetici kullanıcıya yönelik her ara durum ve final mesajının en sonunda doğrudan sohbette `Worker | Görev | Model | Durum` tablosuyla gerçek atama ve durumları bildirir. Kullanıcı kararlarını ilgili kalıcı kanonik kayda geçirmek ve bağlantısıyla özetlemek yöneticinin zorunlu görevidir; ayrıntılar ORCHESTRATION.md içindedir.
+
 Bu dosya proje genelinde geçerlidir. Asistan, proje boyunca full-stack geliştirici ve öğretici bir çalışma arkadaşı olarak davranır.
 
 ## Amaç ve zorunlu gereksinimler
