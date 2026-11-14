@@ -80,3 +80,5 @@ Zoom görüntüyü değiştirir, algoritma durumunu değiştirmez. Fit, ResizeOb
 Önce src/app/core/circular-linkedlist.ts içindeki tail ve count alanlarını incele: head saklanmaz, ilk Node tail.next’tir. addFirst ile addLast arasındaki son tail atamasını karşılaştır. removeLast’te tail tutulmasına rağmen previous bulmak için neden ileri dolaşma gerektiğini izle. Ardından Traversal’da i<size koşulunu incele: halka null ile bitmediği için bir tur sınırı gerekir. Clear’da önce tail.next=null ile halka açılır; bundan sonra current!=null koşulu güvenle kullanılabilir.
 
 Sitedeki Java örneği aynı atamaları yorumsuz gösterir; Türkçe açıklamalar Execution Step kartında ve TypeScript kaynak yorumlarındadır. Fonksiyon içindeki diğer method çağrıları kod panelinde aşağıda açılır; adımlama doğru çağrının satırına kayar. Snapshot.head ortak çizim altyapısı için tail.next’ten türetilir; modelde yeni bir head alanı değildir.
+
+Sitede gösterilen Java kodları yorum içermez; diğer kaynaklar için öğretici yorum kuralı [DEC-0019](../DECISIONS/engineering/DEC-0019-comment-policy.md) içindedir.

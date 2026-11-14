@@ -152,3 +152,23 @@ Belgeleme gpt-6.1-terra worker tarafından yapıldı; gpt-6.1-sol bağımsız in
 Kullanıcı, yanıtın ayrıca sohbet mesajıyla tetiklenmeden otomatik okunmasını istedi. Resmî Codex CLI `queue` komutuyla mevcut sohbete teknik test mesajı kuyruğa alındı ve yönetici turu bitince kullanıcı ek mesaj göndermeden yeni turda alındı. Bu ayrı idle tetikleme testi doğrulandı. Test mesajı kullanıcı kararı değildir.
 
 2026-11-14: Sunucu doğrudan `codex queue` entegrasyonuna geçti; ayrı receiver durduruldu. Form v2 yalnız açık production deploy sorusunu sorar, iki onaylı kararı bilgi olarak gösterir. İzole v1 tarayıcı testinde yanıt atomik kaydedildi, CLI ve arayüz queue kabulünü gösterdi; kullanıcı ek mesaj atmadan yeni yönetici turu açıldı ve yönetici teknik test dosyasını okudu. Teknik test karar değildir. Canlı v2 tek soruluk görünümü ve kaynak testleri ayrı doğrulandı; gerçek deploy yanıtı henüz gelmedi. `queued` kabul, `manager-read` okuma anlamındadır. Dispatching kaydı belirsiz sonuçlarda kör tekrarı engeller; süreç başlatma hatası güvenli tekrar sunar. Altı birim testi geçti; son bağımsız kaynak incelemesi başarılı ve üç bulgu kapatıldı, incelemede testler tekrarlanmadı. Başlatma ve mevcut sohbet hedefi yapılandırması [araç README'sindedir](../tools/orchestration-questionnaire/README.md); global kurulum yapılmadı.
+
+## Göçte korunan tarihsel olay — DEC-0003-git-init
+
+- 2026-10-13: Kullanıcı Git kurulumu ve kendi adına push istedi. Mevcut klasörde Git repo bulunmadığı için main dalıyla yerel repo başlatıldı; hedef remote kullanıcıdan bekleniyor. Git sistemde zaten kurulu.
+
+## Göçte korunan tarihsel olay — DEC-0004-git-origin
+
+- 2026-10-13: Kullanıcının verdiği https://github.com/zeynepsalan/DS_Animation_V2.git origin olarak eklendi. Uzak repo başlangıçta boştu; main dalı başarıyla pushlandı ve origin/main takibi kuruldu. Mevcut Git kimlik doğrulaması yeterli olduğundan ek GitHub CLI girişi gerekmedi.
+
+## Göçte korunan tarihsel olay — DEC-0015-dnode-integration
+
+- 2026-10-14: DNode siteye eklendi: Sidebar sınıf dosyası, Java/C/Pseudocode constructor kaynağı, imzada data/prev/next parametreleri, bağımsız komşu veya null seçimi. Her data/prev/next ataması ayrı kod satırı ve ayrı trace adımıdır. Ortak playback ve klavye kısayolları kullanılır; DNode trace Singly listesini değiştirmez. Constructor yalnız kendi alanlarını atar, komşuların ters bağlantıları null kalır. Sahne merkez/sol/sağ slotları ve aşağı ayrılan null yollarıyla çakışmayı önler. Doubly Linkedlist fonksiyonları henüz entegre edilmedi.
+
+## Göçte korunan tarihsel olay — DEC-0016-doubly-first
+
+- 2026-10-14: Doubly Linkedlist ilk fonksiyon grubu uygulandı: isEmpty(), size(), addFirst(value). Her prev/next/head/tail/count güncellemesi ayrı kod satırı ve ayrı trace adımıdır. Singly/Doubly kalıcı listeleri ayrıdır; yapı veya fonksiyon değiştirilince tamamlanmamış işlem kendi başlangıcına döner. Model generic DNode(data, prev, next) kullanır. İleri ve geri oklar farklı yüksekliklerde/koridorlarda; head/tail/node etiketleri Node üstündeki ayrı portlarda. Tek RAF, hareket kilidi, Previous/Next/Reset, hız, klavye ve Zoom/Fit desteklenir. Kalan Doubly fonksiyonları sonraki gruplardadır; Reverse Traversal kararı hâlâ açık.
+
+## 2026-11-14 — Belge yapısı ve göç
+
+Kategorili karar kaydı, süreç ve belge rehberi kuruldu; erişilen 11 baseline Markdown birebir arşivlendi, 590 blok eşlendi ve 30 karar ID kontrol edildi. Bağımsız semantik inceleme geçti. Ürün build/test/tarayıcı, restore testi veya global kurulum yapılmadı; bilinmeyen geçmiş sohbetlerin kapsamı doğrulanamaz. [Görev ve kanıt](../ORCHESTRATION/tasks/TASK-0001-documentation-structure.md).

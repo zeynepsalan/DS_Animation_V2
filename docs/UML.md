@@ -442,3 +442,7 @@ Yalnız yönetim ve karar belgeleri güncellendi; uygulama kodu ve UML sınıf i
 - 2026-11-14: Worker raporlama ve karar kaydı belge güncellemesinde uygulama sınıf ilişkileri değişmedi.
 - 2026-11-14: Soru formu tercihinin belgelenmesi uygulama sınıf ilişkilerini değiştirmedi.
 - 2026-11-14: Orkestrasyon için yerel soru formu ve kullanıcı kararları kayıtları uygulamanın veri yapısı sınıf ilişkilerini değiştirmedi.
+
+## 2026-11-14 — Belge yapısı kontrolü
+
+Bu değişiklik yalnız belge ve süreç yapısıdır; UML sınıf ilişkileri değişmedi.

@@ -65,8 +65,10 @@ Keyfi eleman sınırı yok; uzun listeler yatay kaydırılır. Her adım snapsho
 
 ## Proje kayıtları
 
+Tüm belgelerin rolleri için [belge rehberi](docs/README.md).
+
 - [Çalışma kuralları](AGENTS.md)
-- [Kararlar](docs/DECISIONS.md)
+- [Kararlar](DECISIONS/README.md)
 - [İlerleme](docs/PROGRESS.md)
 - [API](docs/API.md)
 - [UML](docs/UML.md)
@@ -100,3 +102,5 @@ isEmpty(), size(), clear(), addFirst(value), insertAt(index, value), addLast(val
 `src/app/core/circular-linkedlist.ts` Angular’dan bağımsız generic Node<T> kullanır ve yalnız `tail` ile `size` tutar. İlk Node `tail.next` üzerinden bulunur; tek eleman kendisine döner. Mevcut 18 işlem Java/C/Pseudocode, adım açıklamaları ve aynı playback/klavye/Zoom/Fit kontrolleriyle çalışır. Diğer listelerden ayrı kalıcı state kullanır. Her dolaşma bir turla sınırlıdır; arama ve Traversal null beklemez. `Reset` işlem öncesindeki halkayı geri getirir; `clear()` halkayı açıp boşaltır. Kod paneli method çağrılarını aşağıda açar; iç çağrıların satırları benzersiz trace anahtarlarıyla vurgulanır.
 
 Yerel Angular LMDB cache’i native çökme üretirse, bağımlılık değiştirmeden `NG_BUILD_CACHE_STORE=sqlite npm run build` kullanılabilir. Bu görevde production build bu komutla doğrulandı.
+
+Sitede gösterilen Java kodları yorum içermez; diğer kaynaklar için öğretici yorum kuralı [DEC-0019](DECISIONS/engineering/DEC-0019-comment-policy.md) içindedir.

@@ -1,0 +1,82 @@
+{
+  "baseline_commit": "cb22c7fe4fcf33da8fb55c406a427919588c04b1",
+  "files": [
+    {
+      "source": "AGENTS.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/AGENTS.source.md",
+      "size": 17654,
+      "sha256": "c1e7b929bc10a7b1d9c42776653daf9e8f1f701d871789fda6e8fdbff7ac398c",
+      "git_blob": "cda896dae83e2ec7e53a66368765e58bec8bf44a"
+    },
+    {
+      "source": "ORCHESTRATION.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/ORCHESTRATION.source.md",
+      "size": 9608,
+      "sha256": "8149a341cade1877822d877eb972212f4b867331b0f6d162b11a0573330e39ea",
+      "git_blob": "efe249bc28561d2fc9e5dffc79b77dfa18964c59"
+    },
+    {
+      "source": "README.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/README.source.md",
+      "size": 10654,
+      "sha256": "37cd45ed9d4a0e01dfb779f1c5fcb669bb9afc8155aab3f830e4850edaca296e",
+      "git_blob": "23d33308d238a08d794fbc86e0f7c1acc98b8ecc"
+    },
+    {
+      "source": "docs/API.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/docs/API.source.md",
+      "size": 8548,
+      "sha256": "da0296da26b2146c3c2c08f66644455996685d80ee85a309ac4a3595855901d2",
+      "git_blob": "0c42ce6eb229343da2e27ecc1609912edaed3325"
+    },
+    {
+      "source": "docs/DECISIONS.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/docs/DECISIONS.source.md",
+      "size": 18452,
+      "sha256": "bc2440e35f8764af37ef6289b5d1b95bfe3d2cdde0a32979b1846fb02cad75fb",
+      "git_blob": "f44e9de385dbebe7c195b9a24db043c2f32303aa"
+    },
+    {
+      "source": "docs/DESIGN.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/docs/DESIGN.source.md",
+      "size": 15073,
+      "sha256": "4da6f63ad147c1a4a0d53750956e4037d91c4f81f77d35de51bb091c741d2044",
+      "git_blob": "4abee3c26928705fc95c54a263058bdacc256a62"
+    },
+    {
+      "source": "docs/LEARNING.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/docs/LEARNING.source.md",
+      "size": 8176,
+      "sha256": "411d9d4fed1328cb84b81edd2eebb3025e473489fa19d16d91024700ca6ca4a2",
+      "git_blob": "70a2e035321b651c98438db65c0aed7a064b6dd3"
+    },
+    {
+      "source": "docs/PROGRESS.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/docs/PROGRESS.source.md",
+      "size": 23345,
+      "sha256": "34a2ac210a6e0a8d9ce2ed56d1124c8115e4fb6cfca66c3d82c9403be3df7b44",
+      "git_blob": "b70f909b07b66ad54a37df3c419448dcc85cb280"
+    },
+    {
+      "source": "docs/UML.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/docs/UML.source.md",
+      "size": 19782,
+      "sha256": "1ad37ff9b2c51cb82b3c842a9b9448fdef9fddf8bc7a056ce1389e1dc9612f30",
+      "git_blob": "8e0fd5ac6842dc385a9eeb7b263779f619db4369"
+    },
+    {
+      "source": "docs/VALIDATION.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/docs/VALIDATION.source.md",
+      "size": 20241,
+      "sha256": "f1d7173bf6ee6dfb657e3ffe67f03d92e7b5bc3c35c03a5633b353c8fdefda01",
+      "git_blob": "ca7ca9b228855019134ebaf48b5fb1b355844685"
+    },
+    {
+      "source": "tools/orchestration-questionnaire/README.md",
+      "snapshot": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/tools/orchestration-questionnaire/README.source.md",
+      "size": 3183,
+      "sha256": "fdf6646c365358dde438a2b49ff96ed19f5fa602f8a86adf7c6e8bd972679e00",
+      "git_blob": "c376d79f62ea98b240c2b725e408bcfb62d6d493"
+    }
+  ]
+}
