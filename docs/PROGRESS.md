@@ -176,3 +176,11 @@ Kategorili karar kaydı, süreç ve belge rehberi kuruldu; erişilen 11 baseline
 ## 2026-11-14 — Canlı form ve production deploy kararı
 
 Canlı v2 kullanıcı gönderimi desteklenen queue ile ek sohbet mesajı olmadan yeni yönetici turunu açtı; yönetici yanıtı okudu. Kullanıcı GitHub push otomatik kalırken her production deploy için ayrı onay istedi. Önceki açık karar ve henüz yanıt gelmedi kayıtları bu olay öncesi tarihseldir. [DEC-0035](../DECISIONS/orchestration/DEC-0035-production-deploy-approval.md). Production deploy yapılmadı.
+
+## 2026-11-16 — Proje planlamasına dönüş
+
+Kullanıcı, `sources` PDF’leriyle önce devam planı, mimari ve UML; mevcut sorular korunarak soru arayüzünde yeni kategori ve çalışma stratejisinin değerlendirilmesini istedi. [DEC-0036](../DECISIONS/orchestration/DEC-0036-project-planning-resumption.md), [TASK-0003](../ORCHESTRATION/tasks/TASK-0003-project-planning.md). Strateji, kapsam ve mimari önerileri kullanıcı kararı bekler; yeni veri yapısı uygulaması başlatılmadı.
+
+2026-11-16 planlama arayüzü worker raporunda 12 backend testi ve Python derleme kontrolü geçti; 360/736/1440 piksel gözlemlerinde dört SVG ve kaydırma kontrol edildi, eski katalog hash'i korundu. Bağımsız kaynak ve ekran görüntüsü incelemesi maddi bulgu bildirmedi. Üç planlama kararı kullanıcı yanıtını bekler; kullanıcı kabulü veya production deploy gerçekleşmiş sayılmaz. Belge evrim kaydı ve denetim kanıtı [TASK-0003](../ORCHESTRATION/tasks/TASK-0003-project-planning.md) içindedir.
+
+2026-11-16: README evrim kaydı ve belge denetimi bağımsız incelendi; maddi bulgu yok. Dokuz açık evrim kaydıyla belge denetimi geçti; üç planlama kararı bekliyor. Yeni veri yapısı kodu başlatılmadı.

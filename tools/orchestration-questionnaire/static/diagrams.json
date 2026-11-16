@@ -1,0 +1,30 @@
+[
+  {
+    "file": "uml-1.svg",
+    "title": "Mevcut sınıflar",
+    "source": "docs/UML.md",
+    "sourceHash": "c38aee4efa4ae7360eb3f98d468b50eb3bf287204e92fa201e06b40c34ff5d1f",
+    "generator": "@mermaid-js/mermaid-cli@12.2.0"
+  },
+  {
+    "file": "uml-2.svg",
+    "title": "Mevcut modüller ve akış",
+    "source": "docs/UML.md",
+    "sourceHash": "c38aee4efa4ae7360eb3f98d468b50eb3bf287204e92fa201e06b40c34ff5d1f",
+    "generator": "@mermaid-js/mermaid-cli@12.2.0"
+  },
+  {
+    "file": "uml-3.svg",
+    "title": "Taslak — Array entegrasyonu",
+    "source": "docs/UML.md",
+    "sourceHash": "c38aee4efa4ae7360eb3f98d468b50eb3bf287204e92fa201e06b40c34ff5d1f",
+    "generator": "@mermaid-js/mermaid-cli@12.2.0"
+  },
+  {
+    "file": "uml-4.svg",
+    "title": "TASLAK — ders fazlarının bağımlılıkları",
+    "source": "docs/UML.md",
+    "sourceHash": "c38aee4efa4ae7360eb3f98d468b50eb3bf287204e92fa201e06b40c34ff5d1f",
+    "generator": "@mermaid-js/mermaid-cli@12.2.0"
+  }
+]

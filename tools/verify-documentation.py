@@ -12,6 +12,8 @@ base = root / 'ORCHESTRATION/evidence/2026-11-14-documentation-migration'
 manifest = json.loads((base / 'manifest.json').read_text())
 coverage = json.loads((base / 'coverage.json').read_text())
 errors = []
+evolution = json.loads((root / 'ORCHESTRATION/evidence/2026-11-16-project-planning/document-evolution.json').read_text())
+evolution_used = set()
 sha = lambda data: hashlib.sha256(data).hexdigest()
 
 # Snapshot hem manifest hem baseline Git blobu ile eşleşmelidir.
@@ -41,9 +43,31 @@ for item in manifest['files']:
         if row['handling'] == 'unchanged':
             original = ''.join(lines[row['start'] - 1:row['end']]).strip()
             if not any(original in (root / target).read_text() for target in row['targets']):
-                errors.append('Değişmeden korunan blok bulunamadı: ' + item['source'])
+                # Yalnız açıkça kaydedilmiş blok, doğrulanmış baseline ve var olan ardıl ile evrilebilir.
+                key = (row['start'], row['end'], row['block_sha256'])
+                listed = [(b['start'], b['end'], b['block_sha256']) for b in evolution['blocks']]
+                valid = (
+                    item['source'] == evolution['source']
+                    and item['snapshot'] == evolution['preserved_in']
+                    and evolution['successor'] in row['targets']
+                    and bool(evolution['date']) and bool(evolution['reason'])
+                    and (root / evolution['task']).is_file()
+                    and (root / evolution['successor']).is_file()
+                    and bool((root / evolution['successor']).read_text().strip())
+                    and key in listed and listed.count(key) == 1
+                    and original in (root / evolution['preserved_in']).read_text()
+                )
+                if valid:
+                    evolution_used.add(key)
+                else:
+                    errors.append('Değişmeden korunan blok bulunamadı: ' + item['source'])
     if seen != {i for i, line in enumerate(lines, 1) if line.strip()}:
         errors.append('Eksik veya fazla kaynak satırı: ' + item['source'])
+
+# Evrim kayıtları yalnız eksik etkin blokları karşılamalı, kullanılmayan kayıt kalmamalı.
+listed_keys = [(b['start'], b['end'], b['block_sha256']) for b in evolution['blocks']]
+if len(listed_keys) != len(set(listed_keys)) or set(listed_keys) != evolution_used:
+    errors.append('Evrim kaydı kapsamı uyuşmuyor')
 
 # Karar dosyası ID'leri tekil; açık DEC referansları tanımlı olmalıdır.
 files = list((root / 'DECISIONS').glob('*/*.md'))

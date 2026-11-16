@@ -16,6 +16,7 @@ Kanonik kategorili kayıtlar. ID kalıcıdır; boş numaralar tarihsel olayları
 - <a id="dec-0033"></a>[DEC-0033 — manager-reporting](orchestration/DEC-0033-manager-reporting.md)
 - <a id="dec-0034"></a>[DEC-0034 — question-form](orchestration/DEC-0034-question-form.md)
 - <a id="dec-0035"></a>[DEC-0035 — production-deploy-approval](orchestration/DEC-0035-production-deploy-approval.md)
+- <a id="dec-0036"></a>[DEC-0036 — project-planning-resumption](orchestration/DEC-0036-project-planning-resumption.md)
 
 ## product
 

@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-16",
+  "reason": "TASK-0003: soru formu v2’den v3’e gelişti; etkin kullanım rehberi yeni davranışı açıklıyor.",
+  "task": "ORCHESTRATION/tasks/TASK-0003-project-planning.md",
+  "source": "tools/orchestration-questionnaire/README.md",
+  "preserved_in": "ORCHESTRATION/evidence/2026-11-14-documentation-migration/snapshot/tools/orchestration-questionnaire/README.source.md",
+  "successor": "tools/orchestration-questionnaire/README.md",
+  "blocks": [
+    {
+      "start": 1,
+      "end": 1,
+      "block_sha256": "cfb40e48367c9d888526704369ed3a38cc187c17a71067679734c253e45510ee"
+    },
+    {
+      "start": 3,
+      "end": 3,
+      "block_sha256": "9c1ee1da483909bc75e1cca1cceae38206c23517d21163de55fc55b69a082430"
+    },
+    {
+      "start": 5,
+      "end": 5,
+      "block_sha256": "39107a62991565c90e504991596397925ab952cc612b72b7b3e55bb9e311fe3c"
+    },
+    {
+      "start": 7,
+      "end": 7,
+      "block_sha256": "89354df500e75529d98445f14f8b87958fc07b73a00f351e65e3f1feb4b4b947"
+    },
+    {
+      "start": 9,
+      "end": 9,
+      "block_sha256": "eb7988097907da0330d9334e550f821b8a3d209c900a1333c3f2cb76026bcf9c"
+    },
+    {
+      "start": 11,
+      "end": 11,
+      "block_sha256": "96fdc15315cbefe720b6b40b79e8cc0656238d109f9e97bcb1e9dc7390154b1e"
+    },
+    {
+      "start": 13,
+      "end": 13,
+      "block_sha256": "369f547ad721034d159a03eda2c652a5c778fe1a081cbabf1a508ae0169a8fc6"
+    },
+    {
+      "start": 15,
+      "end": 15,
+      "block_sha256": "556ad16d21040635651332e6c906e2b88ca4fc9ff05c6dc20e1c9bc06e60f2a0"
+    },
+    {
+      "start": 17,
+      "end": 17,
+      "block_sha256": "6fd72c32ae683778270ecf2a0bf5e66040571d51837736ffc5bf6a4af0753e35"
+    }
+  ]
+}

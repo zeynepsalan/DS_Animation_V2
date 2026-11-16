@@ -1,6 +1,6 @@
 # Proje bağlamı ve zorunlu uygulama kuralları
 
-Bu belge Data Structures Lab projesine özgüdür; tekrar kullanılabilir süreç için [süreç girişi](../README.md), kararlar için [indeks](../../DECISIONS/README.md) okunur. Geçmiş ve güncel kapsam farklı olabilir; [CURRENT](CURRENT.md), API ve karar kayıtları güncel durumu belirtir. Aşağıdaki kurallar uygulanırken sonraki kullanıcı kararları ve bu bağlantılı kayıtlar önceliklidir. Ürün geliştirme şimdilik beklemededir.
+Bu belge Data Structures Lab projesine özgüdür; tekrar kullanılabilir süreç için [süreç girişi](../README.md), kararlar için [indeks](../../DECISIONS/README.md) okunur. Geçmiş ve güncel kapsam farklı olabilir; [CURRENT](CURRENT.md), API ve karar kayıtları güncel durumu belirtir. Aşağıdaki kurallar uygulanırken sonraki kullanıcı kararları ve bu bağlantılı kayıtlar önceliklidir. 2026-11-14 geliştirme beklemesinden sonra kullanıcı 2026-11-16 tarihinde önce planlama, mimari ve UML istemiştir; kapsam ve mimari kararları beklenmektedir ([DEC-0036](../../DECISIONS/orchestration/DEC-0036-project-planning-resumption.md)).
 
 ## Amaç ve zorunlu gereksinimler
 

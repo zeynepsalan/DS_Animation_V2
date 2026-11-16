@@ -6,7 +6,8 @@
 - [README](../README.md): ürün kapsamı ve çalıştırma.
 - [API](API.md): işlem sözleşmeleri ve sınırlar.
 - [DESIGN](DESIGN.md): görsel ve hareket sözleşmesi; taslak/uygulama ayrımı.
-- [UML](UML.md): sınıf ilişkileri ve kontrol geçmişi.
+- [UML](UML.md): güncel sınıf ilişkileri ve açıkça ayrılmış taslak.
+- [Geliştirme planı](planning/PROJECT_PLAN.md), [mimari](planning/ARCHITECTURE.md), [kaynak haritası](planning/SOURCE_MAP.md): öneriler, kod envanteri ve ders PDF dayanakları.
 - [LEARNING](LEARNING.md): Angular okuma rehberi.
 - [PROGRESS](PROGRESS.md): tarihsel ilerleme.
 - [VALIDATION](VALIDATION.md): test ve gözlem kanıtı, kapsam sınırlamaları.

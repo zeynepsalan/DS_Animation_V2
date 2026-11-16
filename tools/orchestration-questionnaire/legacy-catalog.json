@@ -1,0 +1,82 @@
+{
+  "2026-11-14-v1": [
+    {
+      "id": "production-deploy",
+      "revision": 1,
+      "label": "Production deploy yetkisi nasıl olsun?",
+      "options": [
+        {
+          "id": "1",
+          "label": "GitHub push otomatik; production deploy için ayrıca benim onayım alınsın."
+        },
+        {
+          "id": "2",
+          "label": "Production deploy da doğrulamalardan sonra yönetici kararıyla otomatik yapılsın."
+        }
+      ],
+      "state": "decided",
+      "decision": "DECISIONS/orchestration/DEC-0035-production-deploy-approval.md",
+      "answer": "GitHub push otomatik; her production deploy için ayrıca kullanıcı onayı alınır."
+    },
+    {
+      "id": "worker-authority",
+      "revision": 1,
+      "label": "Yeni worker açma yetkisi nasıl dağıtılsın?",
+      "options": [
+        {
+          "id": "1",
+          "label": "Yalnız yönetici worker açsın; worker ihtiyaç duyarsa yöneticiden istesin."
+        },
+        {
+          "id": "2",
+          "label": "Worker, yöneticiye bağlı kalarak kendi görevi için alt worker açabilsin."
+        }
+      ],
+      "state": "decided",
+      "decision": "DECISIONS/orchestration/DEC-0026-manager-authority.md",
+      "answer": "Yalnız yönetici worker açar."
+    },
+    {
+      "id": "worktree-policy",
+      "revision": 1,
+      "label": "Paralel kod işlerinde çalışma alanı nasıl seçilsin?",
+      "options": [
+        {
+          "id": "1",
+          "label": "Yönetici bağımlılık ve riske göre ayrı worktree veya ortak alan seçsin."
+        },
+        {
+          "id": "2",
+          "label": "Her bağımsız kod işi ayrı worktree’de yürüsün; birleştirme ayrı görev olsun."
+        },
+        {
+          "id": "3",
+          "label": "Ortak çalışma alanı kullanılsın; aynı dosyanın tek yazarı olsun."
+        }
+      ],
+      "state": "decided",
+      "decision": "DECISIONS/orchestration/DEC-0027-worktree.md",
+      "answer": "Yönetici bağımlılık ve riske göre ayrı worktree veya ortak alan seçer; dosya başına tek yazar."
+    }
+  ],
+  "2026-11-14-v2": [
+    {
+      "id": "production-deploy",
+      "revision": 1,
+      "label": "Production deploy yetkisi nasıl olsun?",
+      "options": [
+        {
+          "id": "1",
+          "label": "GitHub push otomatik; production deploy için ayrıca benim onayım alınsın."
+        },
+        {
+          "id": "2",
+          "label": "Production deploy da doğrulamalardan sonra yönetici kararıyla otomatik yapılsın."
+        }
+      ],
+      "state": "decided",
+      "decision": "DECISIONS/orchestration/DEC-0035-production-deploy-approval.md",
+      "answer": "GitHub push otomatik; her production deploy için ayrıca kullanıcı onayı alınır."
+    }
+  ]
+}
