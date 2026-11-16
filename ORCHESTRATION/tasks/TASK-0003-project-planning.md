@@ -20,3 +20,9 @@ Yeni veri yapısı kodu, worktree oluşturma, commit, push ve production deploy 
 Arayüz worker raporu: 12 backend testi, Python derleme kontrolü ve diff kontrolü geçti; 360, 736 ve 1440 piksel tarayıcı gözlemlerinde dört SVG, taşma ve gerçek boyutta kaydırma kontrol edildi; eski katalog JSON hash'i korundu. Bağımsız `course_pdf_analysis` (`gpt-6.1-sol`) kaynak ve ekran görüntülerini inceledi, maddi bulgu bildirmedi. Bu sonuçlar kullanıcı kabulü değildir. Çalışma biçimi, kapsam ve mimariye ilişkin üç kullanıcı yanıtı bekleniyor; production deploy yapılmadı.
 
 Belge denetiminde formun v2'den v3'e geçişi nedeniyle dokuz eski README bloğu etkin ardılda bulunmadı. [Açık evrim kaydı](../evidence/2026-11-16-project-planning/document-evolution.json), değiştirilmemiş baseline snapshot ve etkin ardılı eşler; checker snapshot/blob ve tüm blok kontrollerini koruyarak bu dokuz kaydı doğrular. Düzeltme sonrası `python3 tools/verify-documentation.py` geçti: 11 snapshot, 590 blok, 32 karar ID ve etkin yerel bağlantılar. Verifier ve evrim kaydı `course_pdf_analysis` tarafından bağımsız salt-okunur incelendi: PASS; maddi bypass bulgusu yok. Negatif dallar kod üzerinden incelendi, testler bu incelemede tekrar çalıştırılmadı.
+
+## 2026-11-16 — Array temsil sınırı
+
+Kullanıcı gerçek Array/cell durumuyla gösterim sınırını netleştirdi; [DEC-0037](../../DECISIONS/engineering/DEC-0037-array-representation.md) kaydedildi. Array henüz uygulanmadı; genel mimari, kapsam ve strateji soruları bekler. UML gözden geçirildi: mevcut sınıf ilişkileri değişmedi ve Array taslağı zaten Node’a zorlamama sınırını ifade ediyor; UML dosyası ve SVG değiştirilmedi. Ürün kodu ve soru kataloğu değiştirilmedi.
+
+`course_pdf_analysis` bu dar belge düzeltmesini bağımsız salt-okunur inceledi: PASS, maddi bulgu yok. İncelemeci test çalıştırmadı.

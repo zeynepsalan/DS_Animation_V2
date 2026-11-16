@@ -184,3 +184,5 @@ Kullanıcı, `sources` PDF’leriyle önce devam planı, mimari ve UML; mevcut s
 2026-11-16 planlama arayüzü worker raporunda 12 backend testi ve Python derleme kontrolü geçti; 360/736/1440 piksel gözlemlerinde dört SVG ve kaydırma kontrol edildi, eski katalog hash'i korundu. Bağımsız kaynak ve ekran görüntüsü incelemesi maddi bulgu bildirmedi. Üç planlama kararı kullanıcı yanıtını bekler; kullanıcı kabulü veya production deploy gerçekleşmiş sayılmaz. Belge evrim kaydı ve denetim kanıtı [TASK-0003](../ORCHESTRATION/tasks/TASK-0003-project-planning.md) içindedir.
 
 2026-11-16: README evrim kaydı ve belge denetimi bağımsız incelendi; maddi bulgu yok. Dokuz açık evrim kaydıyla belge denetimi geçti; üç planlama kararı bekliyor. Yeni veri yapısı kodu başlatılmadı.
+
+2026-11-16: Kullanıcı Array tabanlı görünümün gerçek Array/cell durumuyla eşleşmesini netleştirdi; [DEC-0037](../DECISIONS/engineering/DEC-0037-array-representation.md). Array henüz uygulanmadı; diğer planlama kararları bekliyor. UML ilişkileri değişmedi.

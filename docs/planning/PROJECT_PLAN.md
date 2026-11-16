@@ -15,7 +15,7 @@ Tam sıralı çalışma entegrasyonu basitleştirir ama bağımsız analiz ve te
 ### P0 — Kapsam ve sözleşme
 
 - **Amaç:** Array işlem kümesi, kapasite girişi ve dolu/boş hata davranışlarını netleştirmek; kaynak haritasından sonraki adayları karara sunmak. Kullanıcıya ürün/mimari seçenekleri sorulur, mevcut kararlar tekrar sorulmaz.
-- **İzinli alan:** plan, mimari, UML ve ilgili karar/görev belgeleri; ürün kodu yok. **Bağımlılık:** kaynak haritası ve mevcut API. **Bittiğinde:** seçilen kapsam ve trace/state sınırı kayıtlı; liste davranışları için regresyon ölçütleri yazılı. **Kontrol:** belge bağlantıları ve kaynak/karar çapraz incelemesi. **Risk:** Array hücrelerini Node snapshot'ına zorlamak. **Devir:** kullanıcı kararlarıyla Array entegrasyon briefi.
+- **İzinli alan:** plan, mimari, UML ve ilgili karar/görev belgeleri; ürün kodu yok. **Bağımlılık:** kaynak haritası ve mevcut API. **Bittiğinde:** seçilen kapsam ve trace/state sınırı kayıtlı; liste davranışları için regresyon ölçütleri yazılı. **Kontrol:** belge bağlantıları ve kaynak/karar çapraz incelemesi. **Kesin sınır:** Array tabanlı gerçek durum indeksli Array/cell kullanır; Node snapshot’ına zorlanmaz ([DEC-0037](../../DECISIONS/engineering/DEC-0037-array-representation.md)). **Risk:** ortak trace tasarımının bu sınırı ihlal etmesi. **Devir:** kullanıcı kararlarıyla Array entegrasyon briefi.
 
 ### P1 — Sabit kapasiteli Array
 

@@ -9,3 +9,5 @@ Doubly Linkedlist 18 işlem kapsamındadır. Circular tek yönlüdür ve yalnız
 2026-11-16 planlama arayüzü worker doğrulaması ve bağımsız kaynak/görsel inceleme raporlandı; ayrıntı [TASK-0003](../tasks/TASK-0003-project-planning.md). Çalışma biçimi, kapsam ve mimari için üç kullanıcı kararı bekleniyor. Bu gözlem kullanıcı kabulü değildir.
 
 Belge evrimi verifier ve kaynak/arayüz incelemesi bağımsız PASS bildirdi; üç planlama yanıtı bekleniyor. Yeni veri yapısı kodu başlatılmadı. [TASK-0003](../tasks/TASK-0003-project-planning.md).
+
+2026-11-16: Kullanıcı Array tabanlı gösterimin gerçek indeksli Array/cell durumuna dayanacağını netleştirdi ([DEC-0037](../../DECISIONS/engineering/DEC-0037-array-representation.md)). Array henüz uygulanmadı; genel mimari, kapsam ve strateji soruları bekliyor.

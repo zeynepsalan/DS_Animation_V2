@@ -45,5 +45,6 @@ Kanonik kategorili kayıtlar. ID kalıcıdır; boş numaralar tarihsel olayları
 - <a id="dec-0012"></a>[DEC-0012 — playback-shortcuts](engineering/DEC-0012-playback-shortcuts.md)
 - <a id="dec-0014"></a>[DEC-0014 — dnode-constructor](engineering/DEC-0014-dnode-constructor.md)
 - <a id="dec-0019"></a>[DEC-0019 — comment-policy](engineering/DEC-0019-comment-policy.md)
+- <a id="dec-0037"></a>[DEC-0037 — array-representation](engineering/DEC-0037-array-representation.md)
 
 Yeni ID mevcut en yüksek ID + 1 olarak ayrılır; eski, reddedilmiş, yerine geçilmiş veya çıkarılmış taslak ID tekrar kullanılmaz ve olay boşlukları doldurulmaz. Özgün bilinen karar tarihi ile kayıt/konsolidasyon tarihi ayrıdır; bugünün tarihi eski karara atanmaz.
