@@ -143,6 +143,30 @@ class DeliveryTest(unittest.TestCase):
             self.assertEqual(self.post(dict(self.data, **change))[0], 400)
         self.assertFalse(list(Path(self.temp.name).glob('*.response.json')))
 
+    # Arşivlenen soru yeni yanıta zorlanmaz; eski cevap snapshot'ı ham dosyayı değiştirmeden kalır.
+    def test_archived_questions_and_v3_history(self):
+        question = dict(self.module.CATALOG['categories'][1]['questions'][0], id='retired-test', state='archived')
+        self.module.CATALOG['categories'][1]['questions'].append(question)
+        with patch.object(self.module.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0)):
+            self.assertEqual(self.post()[0], 200)
+        # Eski soruyu güncel payload'a eklemek de kabul edilmez.
+        invalid = json.loads(json.dumps(self.data))
+        invalid['submitId'] = str(uuid.uuid4())
+        invalid['answers'].append(dict(invalid['answers'][0], questionId='retired-test'))
+        self.assertEqual(self.post(invalid)[0], 400)
+        archived = json.loads(Path(__file__).with_name('catalog-history.json').read_text())['2026-11-16-v3']
+        question = archived['categories'][1]['questions'][0]
+        identifier = str(uuid.uuid4())
+        payload = {'version': archived['version'], 'categoryId': 'project-planning', 'submitId': identifier,
+                   'answers': [{'questionId': question['id'], 'revision': question['revision'], 'option': 'parallel', 'text': 'özgün not',
+                                'snapshot': {key: question[key] for key in ('label', 'description', 'options')}}]}
+        path = Path(self.temp.name)/(identifier+'.response.json')
+        path.write_text(json.dumps(payload, ensure_ascii=False))
+        original = path.read_bytes()
+        record = next(item for item in self.module.history() if item['submitId'] == identifier)
+        self.assertEqual(record['answers'][0]['snapshot'], payload['answers'][0]['snapshot'])
+        self.assertEqual(path.read_bytes(), original)
+
     # Belge GET ve POST arasında değişirse onay eski metne bağlanmaz, queue çağrılmaz.
     def test_stale_documents_and_immutable_snapshot(self):
         with patch.object(self.module.subprocess, 'run', return_value=subprocess.CompletedProcess([],0)) as run:
@@ -184,8 +208,12 @@ class DeliveryTest(unittest.TestCase):
             finally:
                 response.close()
         self.assertEqual(get('/history')[0],403)
+        self.assertEqual(get('/catalog-history')[0],403)
         headers={'X-Session-Token':self.module.TOKEN}
         self.assertEqual(get('/history',headers)[0],200)
+        code, archive = get('/catalog-history',headers)
+        self.assertEqual(code,200)
+        self.assertIn('2026-11-16-v3',json.loads(archive))
         self.assertEqual(get('/document/plan',headers)[0],200)
         for path in ['/document/../../AGENTS.md','/document/%2e%2e%2fAGENTS.md','/diagram/../server.py']:
             self.assertEqual(get(path,headers)[0],404)

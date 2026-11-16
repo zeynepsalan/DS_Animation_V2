@@ -13,3 +13,5 @@ Gerekçe: kaynakta ayrıca belirtilmediyse bilinmiyor. Yerine aldığı / geçen
 - 2026-11-14 kullanıcı kararı: Yalnız yönetici worker açar; worker ihtiyaç duyarsa yöneticiden ister. Yönetici, görev bağımlılıklarına ve riskine göre ayrı worktree veya ortak çalışma alanı seçer.
 
 - Brief formatı, görev durumları, dosya kilidi, eşzamanlı worker sayısı ve somut görev takibi altyapısı henüz kararlaştırılmamıştır. Bu konular için bir uygulama kurulduğu varsayılmaz.
+
+İlgili sonraki kayıt: [DEC-0039](DEC-0039-concept-worktrees.md) paralel çalışma biçimini kısmen netleştirir; genel yetki ve tek yazar korunur.

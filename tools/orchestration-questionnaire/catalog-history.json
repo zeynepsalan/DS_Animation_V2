@@ -1,0 +1,138 @@
+{
+  "2026-11-16-v3": {
+    "version": "2026-11-16-v3",
+    "categories": [
+      {
+        "id": "orchestration",
+        "label": "Orkestrasyon",
+        "description": "Önceki sorularınız, yanıtlarınız ve kabul edilen süreç kararları.",
+        "questions": [
+          {
+            "id": "production-deploy",
+            "revision": 1,
+            "label": "Production deploy yetkisi nasıl olsun?",
+            "options": [
+              {
+                "id": "1",
+                "label": "GitHub push otomatik; production deploy için ayrıca benim onayım alınsın."
+              },
+              {
+                "id": "2",
+                "label": "Production deploy da doğrulamalardan sonra yönetici kararıyla otomatik yapılsın."
+              }
+            ],
+            "state": "decided",
+            "decision": "DECISIONS/orchestration/DEC-0035-production-deploy-approval.md",
+            "answer": "GitHub push otomatik; her production deploy için ayrıca kullanıcı onayı alınır."
+          },
+          {
+            "id": "worker-authority",
+            "revision": 1,
+            "label": "Yeni worker açma yetkisi nasıl dağıtılsın?",
+            "options": [
+              {
+                "id": "1",
+                "label": "Yalnız yönetici worker açsın; worker ihtiyaç duyarsa yöneticiden istesin."
+              },
+              {
+                "id": "2",
+                "label": "Worker, yöneticiye bağlı kalarak kendi görevi için alt worker açabilsin."
+              }
+            ],
+            "state": "decided",
+            "decision": "DECISIONS/orchestration/DEC-0026-manager-authority.md",
+            "answer": "Yalnız yönetici worker açar."
+          },
+          {
+            "id": "worktree-policy",
+            "revision": 1,
+            "label": "Paralel kod işlerinde çalışma alanı nasıl seçilsin?",
+            "options": [
+              {
+                "id": "1",
+                "label": "Yönetici bağımlılık ve riske göre ayrı worktree veya ortak alan seçsin."
+              },
+              {
+                "id": "2",
+                "label": "Her bağımsız kod işi ayrı worktree’de yürüsün; birleştirme ayrı görev olsun."
+              },
+              {
+                "id": "3",
+                "label": "Ortak çalışma alanı kullanılsın; aynı dosyanın tek yazarı olsun."
+              }
+            ],
+            "state": "decided",
+            "decision": "DECISIONS/orchestration/DEC-0027-worktree.md",
+            "answer": "Yönetici bağımlılık ve riske göre ayrı worktree veya ortak alan seçer; dosya başına tek yazar."
+          }
+        ]
+      },
+      {
+        "id": "project-planning",
+        "label": "Proje Planı ve Mimari",
+        "description": "Kaynaklara dayanan devam planı, mimari ve UML. Öneriler kullanıcı kararı yerine geçmez.",
+        "questions": [
+          {
+            "id": "planning.execution.v1",
+            "revision": 1,
+            "label": "Geliştirme nasıl yürüsün?",
+            "description": "shared/execution.types, playback ve app dosyaları tamamen bağımsız değildir. Tercihiniz ne olursa olsun aynı dosyada tek yazar kuralı korunur.",
+            "state": "pending",
+            "options": [
+              {
+                "id": "hybrid",
+                "label": "Kontrollü hibrit (Önerilen): ortak sözleşmeleri sırayla netleştirelim; bağımsız işleri ayrı worktree’lerde paralel yapalım; entegrasyon tek yazarda olsun."
+              },
+              {
+                "id": "sequential",
+                "label": "Adım adım: bir yapı ve doğrulaması tamamlanmadan sonraki yapıya geçmeyelim."
+              },
+              {
+                "id": "parallel",
+                "label": "Geniş paralel çalışma: farklı yapıların geliştirilmesini ayrı worktree’lerde birlikte başlatalım; entegrasyon riskini planda görünür tutalım."
+              }
+            ]
+          },
+          {
+            "id": "planning.scope.v1",
+            "revision": 1,
+            "label": "İlk onaylayacağımız geliştirme kapsamı hangisi olsun?",
+            "description": "PDF’lerde ayrıntılı kaynağı olmayan Graph/Paths/MST ve tam AVL/RedBlack delete otomatik dahil olmaz; ayrıca kaynak ve kapsam gerekir. Her iki seçimde de tüm plan ve kaynak haritası okunabilir. Sabit Array kararı korunur.",
+            "state": "pending",
+            "options": [
+              {
+                "id": "linear-first",
+                "label": "Önce sabit Array, ardından Stack/Queue/Deque ve uygun Array/Linked List uygulamaları (Önerilen ilk etap). Diğer PDF konuları yol haritasında kalsın."
+              },
+              {
+                "id": "all-pdf-staged",
+                "label": "PDF’lerde yeterli anlatımı bulunan bütün konuları aşamalı plana alalım; ileri yapıları bağımlılık sırasıyla son etaplarda geliştirelim."
+              }
+            ]
+          },
+          {
+            "id": "planning.architecture.v1",
+            "revision": 1,
+            "label": "Plan, mimari ve UML önerisiyle nasıl ilerleyelim?",
+            "description": "Serbest notlarınız da kararın parçasıdır; gönderim tek başına otomatik mimari onayı olarak yorumlanmaz.",
+            "state": "pending",
+            "options": [
+              {
+                "id": "approve-core",
+                "label": "Önerilen ortak trace/playback sınırını ve Array hazırlığını onaylıyorum; seçtiğim kapsamla ilerleyelim."
+              },
+              {
+                "id": "revise",
+                "label": "Önce aşağıdaki notlarıma göre revize edelim; mimari henüz onaylı değil."
+              },
+              {
+                "id": "discuss",
+                "label": "Karar vermeden önce mimari alternatifleri açıklayalım."
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

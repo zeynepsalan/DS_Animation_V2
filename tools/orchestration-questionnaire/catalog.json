@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-16-v3",
+  "version": "2026-11-16-v4",
   "categories": [
     {
       "id": "orchestration",
@@ -44,7 +44,7 @@
         },
         {
           "id": "worktree-policy",
-          "revision": 1,
+          "revision": 2,
           "label": "Paralel kod işlerinde çalışma alanı nasıl seçilsin?",
           "options": [
             {
@@ -61,22 +61,22 @@
             }
           ],
           "state": "decided",
-          "decision": "DECISIONS/orchestration/DEC-0027-worktree.md",
-          "answer": "Yönetici bağımlılık ve riske göre ayrı worktree veya ortak alan seçer; dosya başına tek yazar."
+          "decision": "DECISIONS/orchestration/DEC-0039-concept-worktrees.md",
+          "answer": "Her konsept ayrı worktree’de geliştirilir ve kendi testinden geçer; ardından ayrı integration worktree’de birleştirilir ve birleşik regression doğrulanır. Bu tanım bütün konseptleri aynı anda başlatma onayı değildir."
         }
       ]
     },
     {
       "id": "project-planning",
       "label": "Proje Planı ve Mimari",
-      "description": "Kaynaklara dayanan devam planı, mimari ve UML. Öneriler kullanıcı kararı yerine geçmez.",
+      "description": "İki temel ve çalışma alanı kararları kaydedildi. Aşağıdaki iki dar soru yanıt bekler; gönderim genel mimari onayı değildir.",
       "questions": [
         {
           "id": "planning.execution.v1",
-          "revision": 1,
+          "revision": 2,
           "label": "Geliştirme nasıl yürüsün?",
           "description": "shared/execution.types, playback ve app dosyaları tamamen bağımsız değildir. Tercihiniz ne olursa olsun aynı dosyada tek yazar kuralı korunur.",
-          "state": "pending",
+          "state": "archived",
           "options": [
             {
               "id": "hybrid",
@@ -90,14 +90,15 @@
               "id": "parallel",
               "label": "Geniş paralel çalışma: farklı yapıların geliştirilmesini ayrı worktree’lerde birlikte başlatalım; entegrasyon riskini planda görünür tutalım."
             }
-          ]
+          ],
+          "retirementReason": "Bu soruya seçim gelmedi. Paralel çalışma tanımı DEC-0039 ile netleşti; bu durum bütün işleri paralel başlatma onayı değildir."
         },
         {
           "id": "planning.scope.v1",
-          "revision": 1,
+          "revision": 2,
           "label": "İlk onaylayacağımız geliştirme kapsamı hangisi olsun?",
           "description": "PDF’lerde ayrıntılı kaynağı olmayan Graph/Paths/MST ve tam AVL/RedBlack delete otomatik dahil olmaz; ayrıca kaynak ve kapsam gerekir. Her iki seçimde de tüm plan ve kaynak haritası okunabilir. Sabit Array kararı korunur.",
-          "state": "pending",
+          "state": "archived",
           "options": [
             {
               "id": "linear-first",
@@ -107,14 +108,16 @@
               "id": "all-pdf-staged",
               "label": "PDF’lerde yeterli anlatımı bulunan bütün konuları aşamalı plana alalım; ileri yapıları bağımlılık sırasıyla son etaplarda geliştirelim."
             }
-          ]
+          ],
+          "retirementReason": "Bu soruya seçim gelmedi. Kapsam sorusu aşağıdaki daha dar güncel soruyla değiştirildi; önceki tanım ve taslaklar korunur.",
+          "replacedBy": "planning.initial_scope.v2"
         },
         {
           "id": "planning.architecture.v1",
-          "revision": 1,
+          "revision": 2,
           "label": "Plan, mimari ve UML önerisiyle nasıl ilerleyelim?",
           "description": "Serbest notlarınız da kararın parçasıdır; gönderim tek başına otomatik mimari onayı olarak yorumlanmaz.",
-          "state": "pending",
+          "state": "archived",
           "options": [
             {
               "id": "approve-core",
@@ -127,6 +130,45 @@
             {
               "id": "discuss",
               "label": "Karar vermeden önce mimari alternatifleri açıklayalım."
+            }
+          ],
+          "retirementReason": "Genel onay gelmedi. Son kullanıcı yönü DEC-0038 ile kaydedildi; ayrıntılı sözleşmeler öneridir."
+        },
+        {
+          "id": "planning.arraylist_meaning.v2",
+          "revision": 1,
+          "label": "ArrayList (fixed capacity) hangi rolü ifade ediyor?",
+          "description": "Array ve LinkedList iki temelimizdir; Array kapasitesi sabittir. Burada yalnız ArrayList adının bağımsız bir List implementasyonunu mu, Array tabanlı tüm implementasyonları mı ifade ettiğini netleştiriyoruz. Her iki durumda gösterim gerçek modele dayanır; her ADT bütün List işlemlerine zorlanmaz.",
+          "state": "pending",
+          "options": [
+            {
+              "id": "list-implementation",
+              "label": "Bağımsız List implementasyonu (Önerilen): List<T> altında sabit kapasiteli ArrayList ve bağlı liste implementasyonları olsun. Stack/Queue gibi diğer interface’ler uygun Array veya LinkedList temelini kullansın."
+            },
+            {
+              "id": "array-family",
+              "label": "Array tabanlı implementasyonların genel adı: ArrayList ifadesiyle ArrayStack/ArrayQueue gibi yapıların Array temsillerini kastediyorum; ayrıca bir List katmanı istemiyorum."
+            },
+            {
+              "id": "discuss",
+              "label": "Bu iki seçeneğin farkını örnekle açıklayalım; henüz tercih yapmıyorum."
+            }
+          ]
+        },
+        {
+          "id": "planning.initial_scope.v2",
+          "revision": 1,
+          "label": "İlk geliştirme kapsamı nasıl sıralansın?",
+          "description": "Bu seçim önceki iki temel, sabit kapasite ve worktree kararlarını değiştirmez. Graph/Paths/MST ve tam izi olmayan AVL/Red-Black delete yeterli kaynak ve ayrı kapsam olmadan dahil olmaz. PDF sırası zorunlu ürün kapsamı değildir.",
+          "state": "pending",
+          "options": [
+            {
+              "id": "linear-first",
+              "label": "Önce doğrusal yapılar (Önerilen): Array temeli ve seçilen List anlamından sonra Stack/Queue/Deque, uygun Array ve LinkedList temsilleriyle aşamalı ilerlesin. Diğer konular yol haritasında kalsın."
+            },
+            {
+              "id": "all-pdf-staged",
+              "label": "Yeterli kaynağı bulunan PDF konularının tümünü aşamalı kapsama alalım; geliştirmeyi bağımlılık sırasına göre yürütelim."
             }
           ]
         }

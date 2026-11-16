@@ -186,3 +186,7 @@ Kullanıcı, `sources` PDF’leriyle önce devam planı, mimari ve UML; mevcut s
 2026-11-16: README evrim kaydı ve belge denetimi bağımsız incelendi; maddi bulgu yok. Dokuz açık evrim kaydıyla belge denetimi geçti; üç planlama kararı bekliyor. Yeni veri yapısı kodu başlatılmadı.
 
 2026-11-16: Kullanıcı Array tabanlı görünümün gerçek Array/cell durumuyla eşleşmesini netleştirdi; [DEC-0037](../DECISIONS/engineering/DEC-0037-array-representation.md). Array henüz uygulanmadı; diğer planlama kararları bekliyor. UML ilişkileri değişmedi.
+
+2026-11-16: Kullanıcı iki temel yapı, arayüzler altındaki temsiller, konsept worktree akışı ve proaktif bağlam kaydını belirledi. [DEC-0038](../DECISIONS/engineering/DEC-0038-foundations-and-interfaces.md), [DEC-0039](../DECISIONS/orchestration/DEC-0039-concept-worktrees.md), [DEC-0040](../DECISIONS/orchestration/DEC-0040-proactive-context.md); uygulama kodu başlatılmadı.
+
+2026-11-16 TASK-0004: 13 izole backend testi ve 360/736/1440 piksel arayüz gözlemleri worker tarafından geçti olarak raporlandı; karşılıklı kaynak incelemesinde maddi bulgu yok. Canlı form iki açık soruyla hazır, gerçek POST/queue gönderilmedi. Gerçek runtime için önce/sonra hash ölçülmedi; izole değişmezlik testi vardır. [Kanıt sınırları](../ORCHESTRATION/tasks/TASK-0004-architecture-revision.md).

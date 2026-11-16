@@ -6,15 +6,15 @@ Durum: 2026-11-16 planlama taslağı; kullanıcı tarafından henüz kabul edilm
 
 Node, DNode ve üç bağlı liste kaynakta vardır; Array henüz yoktur. Dolayısıyla [DEC-0021](../../DECISIONS/product/DEC-0021-circular-priority.md) gereğince sonraki temel sabit kapasiteli Array'dir. Bu kaynak envanteri yeni test veya cihaz gözlemi değildir. Mevcut liste işlevleri ve davranış sözleşmeleri [API](../API.md) ve [proje kuralları](../../ORCHESTRATION/context/PROJECT.md) ile korunur.
 
-## Çalışma biçimi önerisi
+## Çalışma biçimi
 
-Tam sıralı çalışma entegrasyonu basitleştirir ama bağımsız analiz ve test hazırlığını bekletir. Tam paralel geliştirme `execution.types.ts`, `playback.service.ts`, `app.ts`, katalog, kod örnekleri ve görsel altyapıdaki ortak değişikliklerde çatışma ve davranış sapması doğurur. **Kontrollü hibrit önerilir:** ürün kapsamı ve ortak trace/playback sözleşmesi önce sırayla belirlenir; sözleşme sabitlenince dosya sahipliği açık, gerçekten bağımsız model/test veya kaynak analizi ayrı worktree'lerde paralel yürütülebilir. Paylaşılan entegrasyon dosyalarına tek yazar atanır; entegrasyon ve her grup doğrulaması sıralı yapılır. Graph ve diğer gelecek yapılar ortak sözleşme ve kaynak bağımlılıkları nedeniyle otomatik olarak bağımsız sayılmaz. [DEC-0027](../../DECISIONS/orchestration/DEC-0027-worktree.md) yöneticiye risk ve bağımlılığa göre worktree/ortak alan seçimi verir; bu öneri yeni kullanıcı seçimi yerine geçmez. Henüz worktree açılmadı.
+[DEC-0039](../../DECISIONS/orchestration/DEC-0039-concept-worktrees.md) paralelliği konsept başına ayrı worktree, her biri için gerekli testler ve tek entegrasyon worktree'sinde toplama olarak tanımlar. Paylaşılan trace, registry ve playback sınırları ile bağımlılıklar önce belirlenir; tek dosya tek yazara aittir. Bu karar tüm konuların hemen paralel başlatılması anlamına gelmez; bu görevde worktree oluşturulmadı.
 
 ## Fazlar ve teslim kapıları
 
 ### P0 — Kapsam ve sözleşme
 
-- **Amaç:** Array işlem kümesi, kapasite girişi ve dolu/boş hata davranışlarını netleştirmek; kaynak haritasından sonraki adayları karara sunmak. Kullanıcıya ürün/mimari seçenekleri sorulur, mevcut kararlar tekrar sorulmaz.
+- **Amaç:** Array işlem kümesi, kapasite girişi ve dolu/boş hata davranışlarını netleştirmek; kaynak haritasından sonraki adayları karara sunmak. Kullanıcının belirlediği temel ve temsil kararları uygulanır; yalnız işlem kümesi ve gerçekten eksik ayrıntılar sorulur.
 - **İzinli alan:** plan, mimari, UML ve ilgili karar/görev belgeleri; ürün kodu yok. **Bağımlılık:** kaynak haritası ve mevcut API. **Bittiğinde:** seçilen kapsam ve trace/state sınırı kayıtlı; liste davranışları için regresyon ölçütleri yazılı. **Kontrol:** belge bağlantıları ve kaynak/karar çapraz incelemesi. **Kesin sınır:** Array tabanlı gerçek durum indeksli Array/cell kullanır; Node snapshot’ına zorlanmaz ([DEC-0037](../../DECISIONS/engineering/DEC-0037-array-representation.md)). **Risk:** ortak trace tasarımının bu sınırı ihlal etmesi. **Devir:** kullanıcı kararlarıyla Array entegrasyon briefi.
 
 ### P1 — Sabit kapasiteli Array
@@ -49,6 +49,9 @@ Her ADT'ye otomatik olarak iki temsil atanmaz: Stack, Queue ve Deque için doğa
 
 ## Karar bekleyen konular
 
-1. **Çalışma biçimi (`planning.execution.v1`):** önerilen kontrollü hibrit; sıralı çalışma; veya geniş paralel çalışma. Paylaşılan sözleşme ve entegrasyon bağımlılıkları yukarıda açıklanmıştır.
-2. **Kapsam (`planning.scope.v1`):** önce doğrusal yapılar (Array → Stack → Queue → Deque, uygun yapılarda iki temsil) veya yeterli kaynak bulunan PDF konularının tümünü aşamalı kapsama alma. İkincisi eksik Graph kaynaklarını ve tam izi bulunmayan AVL/Red-Black silmelerini otomatik olarak kapsamaz.
-3. **Mimari (`planning.architecture.v1`):** ortak trace/playback sınırı ve seçilen kapsamla Array hazırlığını onaylama; revizyon isteme (onay verilmez); veya alternatifleri tartışma. Bu hazırlığın somut önerisi: kapasitesi oluşturulurken kullanıcı tarafından pozitif bir parametreyle belirlenen, otomatik büyümeyen Array ve `get`, `set`, `insertAt`, `removeAt`, `size`, `isEmpty`, uygun ise `clear` işlemleri. Bu liste öneridir; kapsam ve kesin API onaylanmış değildir. Sabit kapasite kararı zaten verilmiştir.
+İki temel yapı, sabit kapasite, gerçek Array/cell temsili ve paralel worktree tanımı karardır; tekrar sorulmaz. Aşağıdaki iki soru, serbest metinle birlikte soru arayüzünde sunulmak üzere hazırlanmıştır; cevap veya onay değildir:
+
+- `planning.arraylist_meaning.v2` r1: `ArrayList (fixed capacity)` bağımsız List implementasyonu mu, tüm Array tabanlı implementasyonların genel adı mı, yoksa fark önce açıklansın mı? İlk seçenek öneridir.
+- `planning.initial_scope.v2` r1: önce Array ve seçilen List anlamı, ardından Stack/Queue/Deque mi; yoksa yeterli kaynaklı tüm PDF konuları aşamalı mı? İlk seçenek öneridir. Eksik Graph kaynağı ve tam deletion izleri otomatik kapsama girmez.
+
+Hata davranışı ayrıca sorulmaz: mevcut null/erken return ve anlaşılır Türkçe geri bildirim kuralları geçerlidir. Somut trace API'si ve composition/delegation tasarım ayrıntılarıdır; genel mimarinin yeniden onaylanması istenmez.

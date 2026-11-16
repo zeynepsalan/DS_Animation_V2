@@ -20,6 +20,24 @@ Ortak playback zamanlama ve cursor davranışını kullanabilir, ancak başlang�
 
 Yeni yapılar için erken bir evrensel arayüz dayatılmaz: önce kaynak ve ürün kapsamı belirlenir, ardından ortaklaştırma en az iki somut ihtiyacın kanıtıyla değerlendirilir. Giriş doğrulaması, state sahipliği, trace üretimi, kod eşlemesi ve görselleştirme ayrı sorumluluklar olarak test edilir. Kapsam büyürken App ve playback dallarının nasıl ayrılacağı Array entegrasyonundaki somut sözleşme üzerinden kararlaştırılır.
 
+## Temel yapılar ve ADT sınırları
+
+[DEC-0038](../../DECISIONS/engineering/DEC-0038-foundations-and-interfaces.md) uyarınca Array ve Linked List iki temeldir. Mevcut Node/DNode ve Singly/Doubly/Circular gerçek kaynak sınıflarıdır, genişletilebilir; Array henüz yoktur. Gelecekte farklı ADT/interface sözleşmeleri altında Linked List ve sabit kapasiteli ArrayList implementasyonları yer alır. Array temeli fiziksel sabit hücreleri ve indeksleri ifade eder. Somut tasarım önerisinde fixed-capacity ArrayList bunun üzerinde mantıksal boyut ve List işlemleri/kaydırmayı sunar; kullanıcının ArrayList terimiyle bağımsız List implementasyonunu mu yoksa tüm Array tabanlı implementasyonları mı kastettiği açıklık bekler. Bu öneri zorunlu ek public katman kararı değildir. Buradaki ArrayList Java'nın dinamik `ArrayList` sınıfı değildir. Hangi arayüz ve işlemlerin önce geleceği ayrı kapsam konusudur.
+
+Davranış sözleşmesi, gerçek temsil ve yapı türüne özgü state/trace/render ayrı sorumluluklardır. Composition veya delegation somut düzenleme için öneridir; generic `Node` veya evrensel bir kalıtım hiyerarşisi bütün yapılara dayatılmaz. Aynı ADT'nin farklı temsilleri ortak davranışı sağlayabilir, ancak fiziksel state ve görselleştirme seçilen gerçek temsile uyar. Her ADT tüm List işlemlerine zorlanmaz; örneğin circular Array Queue doğrudan hücrelere erişebilir ve packed ArrayList kullanmaya zorlanmaz. Yapı türünü ayırt eden snapshot ve ayrı ADT state/baseline önerisi incelenebilir; mevcut `ExecutionStep`/`Trace` hâlâ Node odaklı `ListSnapshot` kullanır. Bu yön ayrıntılı trace API onayı değildir.
+
+## Taslak modül sınırları
+
+Aşağıdaki düzen bir geçiş önerisidir; mevcut `src/app/core` dosyaları taşınmış veya yeni klasörler oluşturulmuş değildir:
+
+- `contracts/`: seçilen List, Stack, Queue gibi ADT'lerin davranış ve doğrudan dönüş sözleşmeleri; her arayüz yalnız kendi işlemlerini tanımlar.
+- `foundations/`: fiziksel Array hücre/indeks deposu ve Linked List'in Node, DNode ve liste temelleri. Fiziksel Array ayrı public sınıf olmak zorunda değildir; iç depolama olabilir.
+- `implementations/`: kapsam kararıyla seçilen ADT/temsil çiftleri; uygun temel davranış yeniden kullanılır. Composition/delegation olası çözümdür.
+- `trace/` ve `render/`: temsil türüne uygun state, baseline ve adım kayıtları ile bunların sahnesi; ortak adım bilgileri yapı özel verisini silmez.
+- `playback/`: cursor, zamanlama ve geri yükleme davranışı; seçili temsilin state'i ile bağlanır. Ortak registry ve entegrasyon tek yazarda tutulur.
+
+Bu klasör adları ve taşınma sırası uygulanacak kesin sözleşme değildir; önce küçük Array dilimi ve mevcut liste regresyonlarıyla doğrulanmalıdır.
+
 ## Taslak Queue temsil sınırı
 
 Mevcut `SinglyLinkedlist` yalnız `head` tutar ve `addLast` son Node'a kadar yürür; doğrudan bu çağrıya dayanan bir LinkedQueue için enqueue O(1) olduğu varsayılamaz. Week05'teki O(1) linked Queue davranışını hedeflemek için, onaylanmış nihai tasarım olmamak üzere iki seçenek incelenir: tail-only Circular üzerinde uygun bir Queue adaptörü veya kendi `head`/`tail` uçlarını tutan ayrı linked Queue. Her seçenekte FIFO sırası, boş/tek Node geçişleri ve bağımsız state/trace doğrulanmalıdır; mevcut Singly davranışı sessizce değiştirilmez.

@@ -218,6 +218,10 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == '/catalog':
             self.respond(200, json.dumps(dict(CATALOG, documentVersions=document_versions(document_snapshot())), ensure_ascii=False).encode())
             return
+        # Arşiv yalnız özgün herkese açık soru tanımlarını içerir; özel taslakları içermez.
+        if self.path == '/catalog-history':
+            self.respond(200, (BASE / 'catalog-history.json').read_bytes())
+            return
         if self.path == '/history':
             self.respond(200, json.dumps(history(), ensure_ascii=False).encode())
             return

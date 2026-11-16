@@ -55,3 +55,7 @@ Yukarıdaki genel çalışma bağlamı bu oturumda kullanıcı tarafından sağl
 Bu oturumda verilen kullanıcı AGENTS yönergesinin diğer uygulanabilir hükümleri: kapsamlı web/SaaS/mobil/masaüstü UI/UX işi için `roku-design-orchestrator` etkinleştirilir; otomatik Claude çağrısı yalnız Codex worker kararıyla sınırlandığı ölçüde uygulanmaz. Claude bu oturumu yalnız görsel üretimi için çağırdıysa imagegen skill'i kullanılır, gerçek çıktı raporlanır ve Claude'a geri çağrı yapılmaz. Genel kullanıcı tercihleri ile proje kararları ayrı tutulur. Kaynak/build, tarayıcı/cihaz gözlemi, performans ölçümü, kullanıcı kabulü ve production durumu ayrı ayrı raporlanır.
 
 Kullanıcının bu oturumdaki yönergesine göre UX yapısı ve görsel yön brief ve kanıta göre seçilir; yalnız eksik ürün gerçeği, hedef kitle, birincil eylem, hukuki iddia veya sabit marka kısıtı için soru sorulur. İlgili AGENTS, DESIGN, ekran görüntüleri ve kesin kabul ölçütleri worker briefine verilir; desteklenen cihazlarda bitmiş arayüz doğrulaması yönetilir. Bu sorumluluklar güncel yönetici/worker yetki ayrımıyla uygulanır.
+
+## 2026-11-16 temel katman yönü
+
+Array ve Linked List iki temeldir; mevcut iki Node ve üç liste türü genişletilebilir. Farklı arayüzlerin Linked List ve sabit kapasiteli ArrayList implementasyonları hedeflenir; Java dinamik ArrayList kastedilmez. Gerçek temsil ve gösterim eşleşir. Ayrıntılar [DEC-0038](../../DECISIONS/engineering/DEC-0038-foundations-and-interfaces.md); Array henüz uygulanmadı.

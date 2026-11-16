@@ -17,6 +17,8 @@ Kanonik kategorili kayıtlar. ID kalıcıdır; boş numaralar tarihsel olayları
 - <a id="dec-0034"></a>[DEC-0034 — question-form](orchestration/DEC-0034-question-form.md)
 - <a id="dec-0035"></a>[DEC-0035 — production-deploy-approval](orchestration/DEC-0035-production-deploy-approval.md)
 - <a id="dec-0036"></a>[DEC-0036 — project-planning-resumption](orchestration/DEC-0036-project-planning-resumption.md)
+- <a id="dec-0039"></a>[DEC-0039 — concept-worktrees](orchestration/DEC-0039-concept-worktrees.md)
+- <a id="dec-0040"></a>[DEC-0040 — proactive-context](orchestration/DEC-0040-proactive-context.md)
 
 ## product
 
@@ -46,5 +48,6 @@ Kanonik kategorili kayıtlar. ID kalıcıdır; boş numaralar tarihsel olayları
 - <a id="dec-0014"></a>[DEC-0014 — dnode-constructor](engineering/DEC-0014-dnode-constructor.md)
 - <a id="dec-0019"></a>[DEC-0019 — comment-policy](engineering/DEC-0019-comment-policy.md)
 - <a id="dec-0037"></a>[DEC-0037 — array-representation](engineering/DEC-0037-array-representation.md)
+- <a id="dec-0038"></a>[DEC-0038 — foundations-and-interfaces](engineering/DEC-0038-foundations-and-interfaces.md)
 
 Yeni ID mevcut en yüksek ID + 1 olarak ayrılır; eski, reddedilmiş, yerine geçilmiş veya çıkarılmış taslak ID tekrar kullanılmaz ve olay boşlukları doldurulmaz. Özgün bilinen karar tarihi ile kayıt/konsolidasyon tarihi ayrıdır; bugünün tarihi eski karara atanmaz.
